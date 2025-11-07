@@ -1,3 +1,4 @@
+#include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
 #include "glz_sqlgen/transpilation/Col.hpp"
 #include "glz_sqlgen/transpilation/Value.hpp"

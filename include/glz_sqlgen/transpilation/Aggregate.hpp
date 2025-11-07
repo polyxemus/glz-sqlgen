@@ -2,6 +2,8 @@
 
 #include <string_view>
 #include <variant>
+#include "Desc.hpp"
+#include "Value.hpp"
 
 namespace glz_sqlgen::transpilation {
 
@@ -49,6 +51,11 @@ struct Aggregate {
     constexpr bool is_distinct() const noexcept {
         return Type == AggregateType::count_distinct;
     }
+
+    // Return descending order marker for ORDER BY
+    constexpr auto desc() const noexcept {
+        return make_desc(*this);
+    }
 };
 
 // Forward declaration for Condition
@@ -58,32 +65,32 @@ struct Condition;
 // Comparison operators for Aggregate types
 template <AggregateType Type, class ExprType, class T>
 constexpr auto operator==(const Aggregate<Type, ExprType>& lhs, const T& rhs) {
-    return Condition<Aggregate<Type, ExprType>, Operator::equal, T>{lhs, rhs};
+    return Condition<Aggregate<Type, ExprType>, Operator::equal, Value<T>>{lhs, Value<T>{rhs}};
 }
 
 template <AggregateType Type, class ExprType, class T>
 constexpr auto operator!=(const Aggregate<Type, ExprType>& lhs, const T& rhs) {
-    return Condition<Aggregate<Type, ExprType>, Operator::not_equal, T>{lhs, rhs};
+    return Condition<Aggregate<Type, ExprType>, Operator::not_equal, Value<T>>{lhs, Value<T>{rhs}};
 }
 
 template <AggregateType Type, class ExprType, class T>
 constexpr auto operator<(const Aggregate<Type, ExprType>& lhs, const T& rhs) {
-    return Condition<Aggregate<Type, ExprType>, Operator::less_than, T>{lhs, rhs};
+    return Condition<Aggregate<Type, ExprType>, Operator::less_than, Value<T>>{lhs, Value<T>{rhs}};
 }
 
 template <AggregateType Type, class ExprType, class T>
 constexpr auto operator<=(const Aggregate<Type, ExprType>& lhs, const T& rhs) {
-    return Condition<Aggregate<Type, ExprType>, Operator::less_equal, T>{lhs, rhs};
+    return Condition<Aggregate<Type, ExprType>, Operator::less_equal, Value<T>>{lhs, Value<T>{rhs}};
 }
 
 template <AggregateType Type, class ExprType, class T>
 constexpr auto operator>(const Aggregate<Type, ExprType>& lhs, const T& rhs) {
-    return Condition<Aggregate<Type, ExprType>, Operator::greater_than, T>{lhs, rhs};
+    return Condition<Aggregate<Type, ExprType>, Operator::greater_than, Value<T>>{lhs, Value<T>{rhs}};
 }
 
 template <AggregateType Type, class ExprType, class T>
 constexpr auto operator>=(const Aggregate<Type, ExprType>& lhs, const T& rhs) {
-    return Condition<Aggregate<Type, ExprType>, Operator::greater_equal, T>{lhs, rhs};
+    return Condition<Aggregate<Type, ExprType>, Operator::greater_equal, Value<T>>{lhs, Value<T>{rhs}};
 }
 
 } // namespace glz_sqlgen::transpilation

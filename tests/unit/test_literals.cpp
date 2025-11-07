@@ -1,3 +1,4 @@
+#include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
 #include "glz_sqlgen/literals.hpp"
 

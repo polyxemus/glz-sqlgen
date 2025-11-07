@@ -1,3 +1,4 @@
+#include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
 #include <glz_sqlgen/select_from.hpp>
 #include <glz_sqlgen/aggregates.hpp>

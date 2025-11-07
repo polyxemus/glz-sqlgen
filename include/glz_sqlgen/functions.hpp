@@ -13,7 +13,9 @@ namespace glz_sqlgen {
 /// CONCAT - Concatenate strings
 template <class... ArgTypes>
 constexpr auto concat(const ArgTypes&... args) {
-    return transpilation::Function<transpilation::FunctionType::concat, std::remove_cvref_t<ArgTypes>...>{args...};
+    return transpilation::Function<transpilation::FunctionType::concat, std::add_const_t<std::decay_t<ArgTypes>>...>{
+        args...
+    };
 }
 
 /// LENGTH - String length
@@ -56,7 +58,11 @@ constexpr auto rtrim(const ArgType& arg) {
 template <class StrType, class FromType, class ToType>
 constexpr auto replace(const StrType& str, const FromType& from, const ToType& to) {
     return transpilation::Function<transpilation::FunctionType::replace,
-        std::remove_cvref_t<StrType>, std::remove_cvref_t<FromType>, std::remove_cvref_t<ToType>>{str, from, to};
+        std::decay_t<StrType>, std::decay_t<FromType>, std::decay_t<ToType>>{
+        str,
+        from,
+        to
+    };
 }
 
 /// SUBSTRING - Extract substring (str, start, length)
@@ -228,7 +234,10 @@ constexpr auto weekday(const ArgType& arg) {
 template <class Date1Type, class Date2Type>
 constexpr auto days_between(const Date1Type& date1, const Date2Type& date2) {
     return transpilation::Function<transpilation::FunctionType::days_between,
-        std::remove_cvref_t<Date1Type>, std::remove_cvref_t<Date2Type>>{date1, date2};
+        std::decay_t<Date1Type>, std::decay_t<Date2Type>>{
+        date1,
+        date2
+    };
 }
 
 /// UNIXEPOCH - Convert to Unix timestamp
@@ -250,7 +259,9 @@ constexpr auto cast(const ExprType& expr) {
 /// COALESCE - Return first non-NULL value
 template <class... ArgTypes>
 constexpr auto coalesce(const ArgTypes&... args) {
-    return transpilation::Function<transpilation::FunctionType::coalesce, std::remove_cvref_t<ArgTypes>...>{args...};
+    return transpilation::Function<transpilation::FunctionType::coalesce, std::add_const_t<std::decay_t<ArgTypes>>...>{
+        args...
+    };
 }
 
 } // namespace glz_sqlgen

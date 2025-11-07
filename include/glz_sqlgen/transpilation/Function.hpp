@@ -114,7 +114,7 @@ struct Function {
     static constexpr FunctionType function_type = Type;
     std::tuple<ArgTypes...> arguments;
 
-    constexpr Function(ArgTypes... args) : arguments(std::make_tuple(args...)) {}
+    constexpr Function(const ArgTypes&... args) : arguments(std::make_tuple(args...)) {}
 };
 
 /// Marker type for CAST target type
@@ -168,32 +168,63 @@ constexpr auto operator%(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
 // Comparison operators for Function types
 template <FunctionType Type, class... ArgTypes, class T>
 constexpr auto operator==(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
-    return Condition<Function<Type, ArgTypes...>, Operator::equal, T>{lhs, rhs};
+    return Condition<Function<Type, ArgTypes...>, Operator::equal, Value<T>>{lhs, Value<T>{rhs}};
 }
 
 template <FunctionType Type, class... ArgTypes, class T>
 constexpr auto operator!=(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
-    return Condition<Function<Type, ArgTypes...>, Operator::not_equal, T>{lhs, rhs};
+    return Condition<Function<Type, ArgTypes...>, Operator::not_equal, Value<T>>{lhs, Value<T>{rhs}};
 }
 
 template <FunctionType Type, class... ArgTypes, class T>
 constexpr auto operator<(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
-    return Condition<Function<Type, ArgTypes...>, Operator::less_than, T>{lhs, rhs};
+    return Condition<Function<Type, ArgTypes...>, Operator::less_than, Value<T>>{lhs, Value<T>{rhs}};
 }
 
 template <FunctionType Type, class... ArgTypes, class T>
 constexpr auto operator<=(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
-    return Condition<Function<Type, ArgTypes...>, Operator::less_equal, T>{lhs, rhs};
+    return Condition<Function<Type, ArgTypes...>, Operator::less_equal, Value<T>>{lhs, Value<T>{rhs}};
 }
 
 template <FunctionType Type, class... ArgTypes, class T>
 constexpr auto operator>(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
-    return Condition<Function<Type, ArgTypes...>, Operator::greater_than, T>{lhs, rhs};
+    return Condition<Function<Type, ArgTypes...>, Operator::greater_than, Value<T>>{lhs, Value<T>{rhs}};
 }
 
 template <FunctionType Type, class... ArgTypes, class T>
 constexpr auto operator>=(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
-    return Condition<Function<Type, ArgTypes...>, Operator::greater_equal, T>{lhs, rhs};
+    return Condition<Function<Type, ArgTypes...>, Operator::greater_equal, Value<T>>{lhs, Value<T>{rhs}};
+}
+
+// Comparison operators for CastFunction types
+template <class TargetType, class ExprType, class T>
+constexpr auto operator==(const CastFunction<TargetType, ExprType>& lhs, const T& rhs) {
+    return Condition<CastFunction<TargetType, ExprType>, Operator::equal, Value<T>>{lhs, Value<T>{rhs}};
+}
+
+template <class TargetType, class ExprType, class T>
+constexpr auto operator!=(const CastFunction<TargetType, ExprType>& lhs, const T& rhs) {
+    return Condition<CastFunction<TargetType, ExprType>, Operator::not_equal, Value<T>>{lhs, Value<T>{rhs}};
+}
+
+template <class TargetType, class ExprType, class T>
+constexpr auto operator<(const CastFunction<TargetType, ExprType>& lhs, const T& rhs) {
+    return Condition<CastFunction<TargetType, ExprType>, Operator::less_than, Value<T>>{lhs, Value<T>{rhs}};
+}
+
+template <class TargetType, class ExprType, class T>
+constexpr auto operator<=(const CastFunction<TargetType, ExprType>& lhs, const T& rhs) {
+    return Condition<CastFunction<TargetType, ExprType>, Operator::less_equal, Value<T>>{lhs, Value<T>{rhs}};
+}
+
+template <class TargetType, class ExprType, class T>
+constexpr auto operator>(const CastFunction<TargetType, ExprType>& lhs, const T& rhs) {
+    return Condition<CastFunction<TargetType, ExprType>, Operator::greater_than, Value<T>>{lhs, Value<T>{rhs}};
+}
+
+template <class TargetType, class ExprType, class T>
+constexpr auto operator>=(const CastFunction<TargetType, ExprType>& lhs, const T& rhs) {
+    return Condition<CastFunction<TargetType, ExprType>, Operator::greater_equal, Value<T>>{lhs, Value<T>{rhs}};
 }
 
 } // namespace glz_sqlgen::transpilation

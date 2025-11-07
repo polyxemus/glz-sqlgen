@@ -1,3 +1,4 @@
+#include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
 #include <glz_sqlgen/select_from.hpp>
 #include <glz_sqlgen/functions.hpp>
@@ -57,7 +58,7 @@ struct glz::meta<Timestamps> {
 TEST(DateFunctionsTest, YearColumn) {
     auto query = select_from<Events>(year("event_date"_c));
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT CAST(strftime('%Y', \"event_date\") AS INTEGER) FROM \"events\"");
 }
 
@@ -65,7 +66,7 @@ TEST(DateFunctionsTest, YearInWhere) {
     auto query = select_from<Events>()
         | where(year("event_date"_c) == 2024);
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"events\" WHERE CAST(strftime('%Y', \"event_date\") AS INTEGER) = 2024");
 }
 
@@ -73,7 +74,7 @@ TEST(DateFunctionsTest, YearWithOrderBy) {
     auto query = select_from<Events>()
         | order_by(year("event_date"_c));
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"events\" ORDER BY CAST(strftime('%Y', \"event_date\") AS INTEGER)");
 }
 
@@ -82,7 +83,7 @@ TEST(DateFunctionsTest, YearWithOrderBy) {
 TEST(DateFunctionsTest, MonthColumn) {
     auto query = select_from<Events>(month("event_date"_c));
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT CAST(strftime('%m', \"event_date\") AS INTEGER) FROM \"events\"");
 }
 
@@ -90,7 +91,7 @@ TEST(DateFunctionsTest, MonthInWhere) {
     auto query = select_from<Events>()
         | where(month("event_date"_c) == 12);
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"events\" WHERE CAST(strftime('%m', \"event_date\") AS INTEGER) = 12");
 }
 
@@ -98,7 +99,7 @@ TEST(DateFunctionsTest, MonthRange) {
     auto query = select_from<Events>()
         | where(month("event_date"_c) >= 6 && month("event_date"_c) <= 8);
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"events\" WHERE CAST(strftime('%m', \"event_date\") AS INTEGER) >= 6 AND CAST(strftime('%m', \"event_date\") AS INTEGER) <= 8");
 }
 
@@ -107,7 +108,7 @@ TEST(DateFunctionsTest, MonthRange) {
 TEST(DateFunctionsTest, DayColumn) {
     auto query = select_from<Events>(day("event_date"_c));
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT CAST(strftime('%d', \"event_date\") AS INTEGER) FROM \"events\"");
 }
 
@@ -115,7 +116,7 @@ TEST(DateFunctionsTest, DayInWhere) {
     auto query = select_from<Events>()
         | where(day("event_date"_c) == 15);
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"events\" WHERE CAST(strftime('%d', \"event_date\") AS INTEGER) = 15");
 }
 
@@ -124,7 +125,7 @@ TEST(DateFunctionsTest, DayInWhere) {
 TEST(DateFunctionsTest, HourColumn) {
     auto query = select_from<Timestamps>(hour("datetime_field"_c));
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT CAST(strftime('%H', \"datetime_field\") AS INTEGER) FROM \"timestamps\"");
 }
 
@@ -132,7 +133,7 @@ TEST(DateFunctionsTest, HourInWhere) {
     auto query = select_from<Timestamps>()
         | where(hour("datetime_field"_c) >= 9 && hour("datetime_field"_c) <= 17);
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"timestamps\" WHERE CAST(strftime('%H', \"datetime_field\") AS INTEGER) >= 9 AND CAST(strftime('%H', \"datetime_field\") AS INTEGER) <= 17");
 }
 
@@ -141,7 +142,7 @@ TEST(DateFunctionsTest, HourInWhere) {
 TEST(DateFunctionsTest, MinuteColumn) {
     auto query = select_from<Timestamps>(minute("datetime_field"_c));
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT CAST(strftime('%M', \"datetime_field\") AS INTEGER) FROM \"timestamps\"");
 }
 
@@ -149,7 +150,7 @@ TEST(DateFunctionsTest, MinuteInWhere) {
     auto query = select_from<Timestamps>()
         | where(minute("datetime_field"_c) == 30);
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"timestamps\" WHERE CAST(strftime('%M', \"datetime_field\") AS INTEGER) = 30");
 }
 
@@ -158,7 +159,7 @@ TEST(DateFunctionsTest, MinuteInWhere) {
 TEST(DateFunctionsTest, SecondColumn) {
     auto query = select_from<Timestamps>(second("datetime_field"_c));
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT CAST(strftime('%S', \"datetime_field\") AS INTEGER) FROM \"timestamps\"");
 }
 
@@ -166,7 +167,7 @@ TEST(DateFunctionsTest, SecondInWhere) {
     auto query = select_from<Timestamps>()
         | where(second("datetime_field"_c) < 30);
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"timestamps\" WHERE CAST(strftime('%S', \"datetime_field\") AS INTEGER) < 30");
 }
 
@@ -175,7 +176,7 @@ TEST(DateFunctionsTest, SecondInWhere) {
 TEST(DateFunctionsTest, WeekdayColumn) {
     auto query = select_from<Events>(weekday("event_date"_c));
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT CAST(strftime('%w', \"event_date\") AS INTEGER) FROM \"events\"");
 }
 
@@ -183,7 +184,7 @@ TEST(DateFunctionsTest, WeekdayInWhere) {
     auto query = select_from<Events>()
         | where(weekday("event_date"_c) >= 1 && weekday("event_date"_c) <= 5);
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"events\" WHERE CAST(strftime('%w', \"event_date\") AS INTEGER) >= 1 AND CAST(strftime('%w', \"event_date\") AS INTEGER) <= 5");
 }
 
@@ -194,7 +195,7 @@ TEST(DateFunctionsTest, DaysBetweenColumns) {
         days_between("event_date"_c, "created_at"_c)
     );
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT (julianday(\"created_at\") - julianday(\"event_date\")) FROM \"events\"");
 }
 
@@ -202,7 +203,7 @@ TEST(DateFunctionsTest, DaysBetweenInWhere) {
     auto query = select_from<Events>()
         | where(days_between("event_date"_c, "created_at"_c) > 30);
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"events\" WHERE (julianday(\"created_at\") - julianday(\"event_date\")) > 30");
 }
 
@@ -210,7 +211,7 @@ TEST(DateFunctionsTest, DaysBetweenWithValue) {
     auto query = select_from<Events>()
         | where(days_between("event_date"_c, "2024-12-31") <= 90);
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"events\" WHERE (julianday('2024-12-31') - julianday(\"event_date\")) <= 90");
 }
 
@@ -219,7 +220,7 @@ TEST(DateFunctionsTest, DaysBetweenWithValue) {
 TEST(DateFunctionsTest, UnixepochColumn) {
     auto query = select_from<Timestamps>(unixepoch("datetime_field"_c));
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT unixepoch(\"datetime_field\") FROM \"timestamps\"");
 }
 
@@ -227,7 +228,7 @@ TEST(DateFunctionsTest, UnixepochInWhere) {
     auto query = select_from<Timestamps>()
         | where(unixepoch("datetime_field"_c) > 1700000000);
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"timestamps\" WHERE unixepoch(\"datetime_field\") > 1700000000");
 }
 
@@ -240,7 +241,7 @@ TEST(DateFunctionsTest, MultipleDateExtractors) {
         day("event_date"_c)
     );
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT CAST(strftime('%Y', \"event_date\") AS INTEGER), CAST(strftime('%m', \"event_date\") AS INTEGER), CAST(strftime('%d', \"event_date\") AS INTEGER) FROM \"events\"");
 }
 
@@ -252,7 +253,7 @@ TEST(DateFunctionsTest, DateFilterComplex) {
             weekday("event_date"_c) != 0  // Not Sunday
         );
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"events\" WHERE CAST(strftime('%Y', \"event_date\") AS INTEGER) = 2024 AND CAST(strftime('%m', \"event_date\") AS INTEGER) >= 6 AND CAST(strftime('%w', \"event_date\") AS INTEGER) != 0");
 }
 
@@ -264,7 +265,7 @@ TEST(DateFunctionsTest, TimeRangeQuery) {
             minute("datetime_field"_c) >= 0
         );
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"timestamps\" WHERE CAST(strftime('%H', \"datetime_field\") AS INTEGER) >= 9 AND CAST(strftime('%H', \"datetime_field\") AS INTEGER) < 17 AND CAST(strftime('%M', \"datetime_field\") AS INTEGER) >= 0");
 }
 
@@ -273,21 +274,21 @@ TEST(DateFunctionsTest, TimeRangeQuery) {
 TEST(UtilityFunctionsTest, CastToInteger) {
     auto query = select_from<Events>(cast<int>("id"_c));
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT CAST(\"id\" AS INTEGER) FROM \"events\"");
 }
 
 TEST(UtilityFunctionsTest, CastToReal) {
     auto query = select_from<Events>(cast<double>("id"_c));
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT CAST(\"id\" AS REAL) FROM \"events\"");
 }
 
 TEST(UtilityFunctionsTest, CastToText) {
     auto query = select_from<Events>(cast<std::string>("id"_c));
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT CAST(\"id\" AS TEXT) FROM \"events\"");
 }
 
@@ -295,7 +296,7 @@ TEST(UtilityFunctionsTest, CastInWhere) {
     auto query = select_from<Events>()
         | where(cast<int>("id"_c) > 100);
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"events\" WHERE CAST(\"id\" AS INTEGER) > 100");
 }
 
@@ -304,7 +305,7 @@ TEST(UtilityFunctionsTest, CastInWhere) {
 TEST(UtilityFunctionsTest, CoalesceTwoColumns) {
     auto query = select_from<Events>(coalesce("name"_c, "Unknown"));
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT COALESCE(\"name\", 'Unknown') FROM \"events\"");
 }
 
@@ -313,7 +314,7 @@ TEST(UtilityFunctionsTest, CoalesceMultipleValues) {
         coalesce("name"_c, "event_date"_c, "N/A")
     );
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT COALESCE(\"name\", \"event_date\", 'N/A') FROM \"events\"");
 }
 
@@ -321,7 +322,7 @@ TEST(UtilityFunctionsTest, CoalesceInWhere) {
     auto query = select_from<Events>()
         | where(coalesce("name"_c, "") != "");
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"events\" WHERE COALESCE(\"name\", '') != ''");
 }
 
@@ -330,6 +331,6 @@ TEST(UtilityFunctionsTest, CoalesceWithCast) {
         cast<std::string>(coalesce("id"_c, 0))
     );
 
-    auto sql = query.build();
+    auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT CAST(COALESCE(\"id\", 0) AS TEXT) FROM \"events\"");
 }
