@@ -1,4 +1,4 @@
-#include "glz_sqlgen/query_builder.hpp"
+#include "glz_sqlgen/core.hpp"
 #include <sstream>
 #include <algorithm>
 

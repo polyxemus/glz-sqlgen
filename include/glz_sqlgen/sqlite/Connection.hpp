@@ -3,7 +3,7 @@
 #include <sqlite3.h>
 #include <memory>
 #include <string>
-#include "../Result.hpp"
+#include "../core.hpp"
 #include "Iterator.hpp"
 
 namespace glz_sqlgen::sqlite {

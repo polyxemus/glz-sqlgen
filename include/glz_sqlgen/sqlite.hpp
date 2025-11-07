@@ -2,7 +2,7 @@
 
 #include "sqlite/Connection.hpp"
 #include "sqlite/Iterator.hpp"
-#include "Result.hpp"
+#include "core.hpp"
 
 namespace glz_sqlgen::sqlite {
 

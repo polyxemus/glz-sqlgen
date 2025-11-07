@@ -1,10 +1,9 @@
 #include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
-#include <glz_sqlgen/select_from.hpp>
+#include <glz_sqlgen/core.hpp>
+#include <glz_sqlgen/query_builders.hpp>
+#include <glz_sqlgen/query_clauses.hpp>
 #include <glz_sqlgen/functions.hpp>
-#include <glz_sqlgen/where.hpp>
-#include <glz_sqlgen/order_by.hpp>
-#include <glz_sqlgen/literals.hpp>
 
 namespace {
 

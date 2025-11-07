@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "glz_sqlgen/query_builder.hpp"
+#include "glz_sqlgen/core.hpp"
 
 using namespace glz_sqlgen;
 

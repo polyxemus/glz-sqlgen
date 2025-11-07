@@ -1,6 +1,8 @@
 #include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
-#include "glz_sqlgen/literals.hpp"
+#include <glz_sqlgen/core.hpp>
+#include <glz_sqlgen/query_builders.hpp>
+#include <glz_sqlgen/query_clauses.hpp>
 #include "glz_sqlgen/transpilation/to_sql_string.hpp"
 #include "glz_sqlgen/transpilation/where_clause.hpp"
 

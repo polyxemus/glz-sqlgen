@@ -1,11 +1,9 @@
 #include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
+#include <glz_sqlgen/core.hpp>
+#include <glz_sqlgen/query_builders.hpp>
+#include <glz_sqlgen/query_clauses.hpp>
 #include <optional>
-#include "glz_sqlgen/literals.hpp"
-#include "glz_sqlgen/select_from.hpp"
-#include "glz_sqlgen/where.hpp"
-#include "glz_sqlgen/order_by.hpp"
-#include "glz_sqlgen/limit.hpp"
 
 using namespace glz_sqlgen::literals;
 using namespace glz_sqlgen;

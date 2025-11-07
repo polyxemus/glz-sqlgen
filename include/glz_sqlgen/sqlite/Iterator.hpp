@@ -5,7 +5,7 @@
 #include <optional>
 #include <string>
 #include <vector>
-#include "../Result.hpp"
+#include "../core.hpp"
 
 namespace glz_sqlgen::sqlite {
 
