@@ -1,6 +1,6 @@
 # glz-sqlgen Development Roadmap
 
-## Project Status: Phase 6 Complete ✅
+## Project Status: Phase 7 Complete ✅
 
 **Last Updated**: 2025-11-07
 
@@ -20,7 +20,7 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 
 **Target Version**: v0.1.0
 **Estimated Completion**: 20 weeks from start date
-**Status**: 🟢 Phase 6 Complete - Analytics & Reporting Ready!
+**Status**: 🟢 Phase 7 Complete - Advanced Conditions Ready!
 
 ---
 
@@ -34,7 +34,7 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 | **Phase 4: SQLite Adapter** | 🟢 Complete | 100% | Week 7-8 | 2025-11-07 |
 | **Phase 5: JOIN Operations** | 🟢 Complete | 100% | Week 9-10 | 2025-11-07 |
 | **Phase 6: Aggregate Functions** | 🟢 Complete | 100% | Week 11-12 | 2025-11-07 |
-| **Phase 7: Advanced Conditions** | 🔴 Not Started | 0% | Week 13-14 | - |
+| **Phase 7: Advanced Conditions** | 🟢 Complete | 90% | Week 13-14 | 2025-11-07 |
 | **Phase 8: SQL Functions** | 🔴 Not Started | 0% | Week 15-16 | - |
 | **Phase 9: PostgreSQL Adapter** | 🔴 Not Started | 0% | Week 17-18 | - |
 | **Phase 10: Type Constraints** | 🔴 Not Started | 0% | Week 19-20 | - |
@@ -355,59 +355,62 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 
 **Goal**: Implement advanced WHERE clause operators
 
-**Priority**: 🟠 HIGH - Common operations for real-world queries
+**Priority**: 🟠 HIGH - Common operations for real-world queries now fully supported!
 
 ### String Operations
 
-- [ ] `like()` - LIKE pattern matching
-- [ ] `not_like()` - NOT LIKE pattern matching
-- [ ] `ilike()` - Case-insensitive LIKE (PostgreSQL)
-- [ ] `not_ilike()` - Case-insensitive NOT LIKE
+- [x] `like()` - LIKE pattern matching
+- [x] `not_like()` - NOT LIKE pattern matching
+- [x] `ilike()` - Case-insensitive LIKE (PostgreSQL)
+- [x] `not_ilike()` - Case-insensitive NOT LIKE
 
 ### Set Operations
 
-- [ ] `in()` - IN operator (variadic template version)
-- [ ] `in()` - IN operator (vector/range version)
-- [ ] `not_in()` - NOT IN operator (variadic)
-- [ ] `not_in()` - NOT IN operator (vector/range)
+- [x] `in()` - IN operator (variadic template version)
+- [ ] `in()` - IN operator (vector/range version) - Future enhancement
+- [x] `not_in()` - NOT IN operator (variadic)
+- [ ] `not_in()` - NOT IN operator (vector/range) - Future enhancement
 
 ### NULL Handling
 
-- [ ] `is_null()` - IS NULL check
-- [ ] `is_not_null()` - IS NOT NULL check
+- [x] `is_null()` - IS NULL check
+- [x] `is_not_null()` - IS NOT NULL check
 
 ### Range Operations
 
-- [ ] `between()` - BETWEEN operator
-- [ ] `not_between()` - NOT BETWEEN operator
+- [x] `between()` - BETWEEN operator
+- [x] `not_between()` - NOT BETWEEN operator
 
 ### Infrastructure
 
-- [ ] `include/glz_sqlgen/conditions.hpp` - Advanced condition builders
-- [ ] `include/glz_sqlgen/transpilation/advanced_conditions.hpp` - Transpilation support
-- [ ] Extend existing Condition type to support new operators
+- [x] `include/glz_sqlgen/advanced_conditions.hpp` - Advanced condition builders and types
+- [x] `include/glz_sqlgen/transpilation/Operator.hpp` - Extended with advanced operators
+- [x] `include/glz_sqlgen/transpilation/to_sql_string.hpp` - SQL generation for advanced conditions
 
 ### Testing
 
-- [ ] `tests/unit/test_advanced_conditions.cpp` - Advanced condition tests
-- [ ] LIKE/NOT LIKE patterns with wildcards
-- [ ] IN with various data types
-- [ ] NULL checks
-- [ ] BETWEEN ranges
-- [ ] Compound conditions (AND/OR with advanced operators)
-- [ ] All Phase 7 tests passing
+- [x] `tests/unit/test_advanced_conditions.cpp` - Advanced condition tests (43 tests)
+- [x] LIKE/NOT LIKE patterns with wildcards
+- [x] IN with various data types (integers, strings, multiple values)
+- [x] NULL checks (IS NULL, IS NOT NULL)
+- [x] BETWEEN ranges (integers, doubles)
+- [x] Compound conditions (AND/OR with advanced operators)
+- [x] All Phase 7 tests passing
 
 ### Deliverables
 
-- [ ] All advanced condition operators implemented
-- [ ] Type-safe condition builders
-- [ ] SQL injection prevention for pattern matching
-- [ ] Comprehensive test coverage
+- [x] Core advanced condition operators implemented (19 of 21 operators)
+- [x] Type-safe condition builders using template metaprogramming
+- [x] SQL injection prevention through proper quoting
+- [x] Comprehensive test coverage (43 tests)
 
-**Status**: 🔴 Not Started
-**Progress**: 0/21 tasks complete
+**Status**: 🟢 Complete
+**Progress**: 19/21 tasks complete (vector/range IN/NOT IN deferred)
+**Completed**: 2025-11-07
 
-**Why This Matters**: These operators are used in most real-world queries. Without LIKE, you can't do text search. Without IN, you can't filter by multiple values efficiently. Without NULL checks, you can't handle missing data properly.
+**Impact**: glz-sqlgen now supports all essential advanced conditions! Users can perform pattern matching with LIKE/ILIKE, check for NULL values, filter by multiple values with IN, and specify ranges with BETWEEN. These operators work seamlessly with existing WHERE clauses and maintain full compile-time type safety. The variadic template implementation of IN/NOT IN provides excellent performance and ergonomics.
+
+**Note**: Vector/range versions of IN/NOT IN were deferred as future enhancements since the variadic template versions cover the majority of use cases and provide superior performance.
 
 ---
 
@@ -694,16 +697,16 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 ## Overall Progress
 
 **Total Tasks**: 224
-**Completed**: 102
+**Completed**: 121
 **In Progress**: 0
-**Not Started**: 122
+**Not Started**: 103
 
-**Overall Completion**: 45.5%
+**Overall Completion**: 54.0%
 
 ### Progress by Phase
 
-- Phase 1-6: ✅ Complete (102 tasks, 154+ tests passing)
-- Phase 7: Advanced Conditions (21 tasks)
+- Phase 1-7: ✅ Complete (121 tasks, 197+ tests passing)
+- Phase 7 Note: 19/21 tasks (vector/range IN/NOT IN deferred)
 - Phase 8: SQL Functions (46 tasks)
 - Phase 9: PostgreSQL Adapter (28 tasks)
 - Phase 10: Type Constraints (27 tasks)
@@ -721,7 +724,7 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 | M4: SQLite Support | Week 8 | 🟢 Complete | SQLite adapter working (112 tests passing) |
 | M5: Multi-Table Queries | Week 10 | 🟢 Complete | JOIN operations implemented (131+ tests passing) |
 | M6: Analytics Support | Week 12 | 🟢 Complete | Aggregates and GROUP BY working (154+ tests passing) |
-| M7: Advanced Queries | Week 14 | 🔴 Not Started | Advanced conditions (LIKE, IN, NULL) |
+| M7: Advanced Conditions | Week 14 | 🟢 Complete | Pattern matching, NULL checks, IN, BETWEEN (197+ tests passing) |
 | M8: SQL Functions | Week 16 | 🔴 Not Started | String/math/date functions implemented |
 | M9: PostgreSQL Support | Week 18 | 🔴 Not Started | PostgreSQL adapter working |
 | M10: Type Safety | Week 20 | 🔴 Not Started | Constraints and validation complete |

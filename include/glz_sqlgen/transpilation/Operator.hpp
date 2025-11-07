@@ -26,7 +26,25 @@ enum class Operator {
     // Logical (for combining conditions)
     logical_and,
     logical_or,
-    logical_not
+    logical_not,
+
+    // Pattern matching
+    like,
+    not_like,
+    ilike,           // Case-insensitive LIKE (PostgreSQL)
+    not_ilike,
+
+    // Set operations
+    in,
+    not_in,
+
+    // NULL checks
+    is_null,
+    is_not_null,
+
+    // Range
+    between,
+    not_between
 };
 
 } // namespace glz_sqlgen::transpilation

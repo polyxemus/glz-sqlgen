@@ -329,8 +329,8 @@ struct SelectFrom {
             .fields_ = s.fields_,
             .joins_ = s.joins_,
             .where_ = w.condition,
-                .group_by_ = s.group_by_,
-                .having_ = s.having_,
+            .group_by_ = s.group_by_,
+            .having_ = s.having_,
             .order_by_ = s.order_by_,
             .limit_ = s.limit_
         };
@@ -395,8 +395,8 @@ struct SelectFrom {
             .fields_ = s.fields_,
             .joins_ = s.joins_,
             .where_ = s.where_,
-                .group_by_ = s.group_by_,
-                .having_ = s.having_,
+            .group_by_ = s.group_by_,
+            .having_ = s.having_,
             .order_by_ = o,
             .limit_ = s.limit_
         };
@@ -411,8 +411,8 @@ struct SelectFrom {
             .fields_ = s.fields_,
             .joins_ = s.joins_,
             .where_ = s.where_,
-                .group_by_ = s.group_by_,
-                .having_ = s.having_,
+            .group_by_ = s.group_by_,
+            .having_ = s.having_,
             .order_by_ = s.order_by_,
             .limit_ = l
         };
@@ -441,8 +441,8 @@ auto select_from(const FieldTypes&... fields) {
         .fields_ = std::make_tuple(fields...),
         .joins_ = Nothing{},
         .where_ = Nothing{},
-                .group_by_ = s.group_by_,
-                .having_ = s.having_,
+        .group_by_ = Nothing{},
+        .having_ = Nothing{},
         .order_by_ = Nothing{},
         .limit_ = Nothing{}
     };
