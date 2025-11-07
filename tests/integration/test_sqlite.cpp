@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
-#include "glz_sqlgen/sqlite.hpp"
-#include "glz_sqlgen/query_builders.hpp"
-#include "glz_sqlgen/query_clauses.hpp"
+#include "sqlgen/sqlite.hpp"
+#include "sqlgen/query_builders.hpp"
+#include "sqlgen/query_clauses.hpp"
 
-namespace glz_sqlgen::test {
+namespace sqlgen::test {
 
 // Test table schema
 struct User {
@@ -204,4 +204,4 @@ TEST_F(SQLiteTest, MoveSemantics) {
     ASSERT_TRUE(conn2.execute(std::string("CREATE TABLE test (id INTEGER)")).has_value());
 }
 
-} // namespace glz_sqlgen::test
+} // namespace sqlgen::test

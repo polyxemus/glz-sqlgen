@@ -1,13 +1,13 @@
 #include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
-#include <glz_sqlgen/core.hpp>
-#include <glz_sqlgen/query_builders.hpp>
-#include <glz_sqlgen/query_clauses.hpp>
+#include <sqlgen/core.hpp>
+#include <sqlgen/query_builders.hpp>
+#include <sqlgen/query_clauses.hpp>
 
-namespace {
+using namespace sqlgen;
+using namespace sqlgen::literals;
 
-using namespace glz_sqlgen;
-using namespace glz_sqlgen::literals;
+namespace test_aggregates {
 
 // Test tables
 struct Sales {
@@ -25,11 +25,14 @@ struct Employees {
     double salary;
 };
 
-} // namespace
+} // namespace test_aggregates
+
+using test_aggregates::Sales;
+using test_aggregates::Employees;
 
 // Glaze metadata
 template <>
-struct glz::meta<Sales> {
+struct glz::meta<test_aggregates::Sales> {
     using T = Sales;
     static constexpr std::string_view name = "sales";
     [[maybe_unused]] static constexpr auto value = glz::object(
@@ -42,7 +45,7 @@ struct glz::meta<Sales> {
 };
 
 template <>
-struct glz::meta<Employees> {
+struct glz::meta<test_aggregates::Employees> {
     using T = Employees;
     static constexpr std::string_view name = "employees";
     [[maybe_unused]] static constexpr auto value = glz::object(

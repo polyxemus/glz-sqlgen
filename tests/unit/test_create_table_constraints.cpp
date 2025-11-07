@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
-#include <glz_sqlgen/constraints.hpp>
-#include <glz_sqlgen/transpilation/table_info.hpp>
+#include <sqlgen/constraints.hpp>
+#include "sqlgen/transpilation_advanced.hpp"
 
-using namespace glz_sqlgen;
-using namespace glz_sqlgen::transpilation;
+using namespace sqlgen;
+using namespace sqlgen::transpilation;
 
 // ============================================================================
 // Test Structs

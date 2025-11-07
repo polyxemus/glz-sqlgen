@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include "glz_sqlgen/core.hpp"
+#include "sqlgen/core.hpp"
 
-using namespace glz_sqlgen;
+using namespace sqlgen;
 
 class QueryBuilderTest : public ::testing::Test {
 protected:

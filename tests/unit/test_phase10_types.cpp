@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
-#include <glz_sqlgen/constraints.hpp>
+#include <sqlgen/constraints.hpp>
 #include <stdexcept>
 
-using namespace glz_sqlgen;
+using namespace sqlgen;
 
 // ============================================================================
 // Foreign Key Tests

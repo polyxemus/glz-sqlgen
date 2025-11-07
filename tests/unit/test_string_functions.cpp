@@ -1,14 +1,14 @@
 #include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
-#include <glz_sqlgen/core.hpp>
-#include <glz_sqlgen/query_builders.hpp>
-#include <glz_sqlgen/query_clauses.hpp>
-#include <glz_sqlgen/functions.hpp>
+#include <sqlgen/core.hpp>
+#include <sqlgen/query_builders.hpp>
+#include <sqlgen/query_clauses.hpp>
+#include <sqlgen/functions.hpp>
 
-namespace {
+using namespace sqlgen;
+using namespace sqlgen::literals;
 
-using namespace glz_sqlgen;
-using namespace glz_sqlgen::literals;
+namespace test_string_functions {
 
 // Test table
 struct Users {
@@ -19,11 +19,13 @@ struct Users {
     std::string city;
 };
 
-} // namespace
+} // namespace test_string_functions
+
+using test_string_functions::Users;
 
 // Glaze metadata
 template <>
-struct glz::meta<Users> {
+struct glz::meta<test_string_functions::Users> {
     using T = Users;
     static constexpr std::string_view name = "users";
     [[maybe_unused]] static constexpr auto value = glz::object(

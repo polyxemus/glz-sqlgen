@@ -9,7 +9,6 @@ project('glz-sqlgen', 'cpp',
 
 # Dependencies
 glaze_dep = dependency('glaze', fallback: ['glaze', 'glaze_glaze_dep'])
-sqlgen_dep = dependency('sqlgen', fallback: ['sqlgen', 'sqlgen_dep'])
 sqlite3_dep = dependency('sqlite3')
 gtest_dep = dependency('gtest', fallback: ['gtest', 'gtest_dep'], required: false)
 gtest_main_dep = dependency('gtest_main', fallback: ['gtest', 'gtest_main_dep'], required: false)
@@ -19,7 +18,6 @@ inc_dir = include_directories('include')
 
 # Library sources
 sources = files(
-  'src/query_builder.cpp',
   'src/sqlite/Connection.cpp',
   'src/sqlite/Iterator.cpp',
 )
@@ -28,7 +26,7 @@ sources = files(
 glz_sqlgen_lib = library('glz-sqlgen',
   sources: sources,
   include_directories: inc_dir,
-  dependencies: [glaze_dep, sqlgen_dep, sqlite3_dep],
+  dependencies: [glaze_dep, sqlite3_dep],
   install: true,
 )
 
@@ -36,7 +34,7 @@ glz_sqlgen_lib = library('glz-sqlgen',
 glz_sqlgen_dep = declare_dependency(
   include_directories: inc_dir,
   link_with: glz_sqlgen_lib,
-  dependencies: [glaze_dep, sqlgen_dep, sqlite3_dep],
+  dependencies: [glaze_dep, sqlite3_dep],
 )
 
 # Tests

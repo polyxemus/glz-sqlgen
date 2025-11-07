@@ -12,7 +12,7 @@
 #include <iomanip>
 #include <glaze/glaze.hpp>
 
-namespace glz_sqlgen {
+namespace sqlgen {
 
 // ============================================================================
 // SPECIALIZED DATABASE TYPES
@@ -609,4 +609,4 @@ private:
     }
 };
 
-} // namespace glz_sqlgen
+} // namespace sqlgen

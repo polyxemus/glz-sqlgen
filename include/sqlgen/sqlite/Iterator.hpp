@@ -7,7 +7,7 @@
 #include <vector>
 #include "../core.hpp"
 
-namespace glz_sqlgen::sqlite {
+namespace sqlgen::sqlite {
 
 /// Iterator over SQL query results
 /// Returns rows as vectors of optional strings (NULL -> std::nullopt)
@@ -38,4 +38,4 @@ private:
     std::shared_ptr<sqlite3> conn_;  // Keep connection alive
 };
 
-} // namespace glz_sqlgen::sqlite
+} // namespace sqlgen::sqlite

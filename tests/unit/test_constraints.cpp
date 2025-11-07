@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include <glz_sqlgen/constraints.hpp>
+#include <sqlgen/constraints.hpp>
 
-using namespace glz_sqlgen;
+using namespace sqlgen;
 
 // ============================================================================
 // PrimaryKey Tests
@@ -17,6 +17,7 @@ TEST(ConstraintsTest, PrimaryKeyBasic) {
 
 TEST(ConstraintsTest, PrimaryKeyAutoIncrement) {
     PrimaryKey<int, true> pk;
+    (void)pk; // Suppress unused variable warning
     EXPECT_TRUE((PrimaryKey<int, true>::is_auto_increment));
     EXPECT_TRUE((PrimaryKey<int, true>::is_primary_key));
 }

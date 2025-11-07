@@ -1,15 +1,14 @@
 #include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
-#include <glz_sqlgen/core.hpp>
-#include <glz_sqlgen/query_builders.hpp>
-#include <glz_sqlgen/query_clauses.hpp>
-#include <glz_sqlgen/advanced_conditions.hpp>
+#include <sqlgen/core.hpp>
+#include <sqlgen/query_builders.hpp>
+#include <sqlgen/query_clauses.hpp>
+#include <sqlgen/advanced_conditions.hpp>
 
-namespace {
+using namespace sqlgen;
+using namespace sqlgen::literals;
 
-using namespace glz_sqlgen;
-using namespace glz_sqlgen::literals;
-using namespace glz_sqlgen::advanced;
+namespace test_advanced_conditions {
 
 // Test tables
 struct Users {
@@ -28,11 +27,14 @@ struct Products {
     std::string category;
 };
 
-} // namespace
+} // namespace test_advanced_conditions
+
+using test_advanced_conditions::Users;
+using test_advanced_conditions::Products;
 
 // Glaze metadata
 template <>
-struct glz::meta<Users> {
+struct glz::meta<test_advanced_conditions::Users> {
     using T = Users;
     static constexpr std::string_view name = "users";
     [[maybe_unused]] static constexpr auto value = glz::object(
@@ -45,7 +47,7 @@ struct glz::meta<Users> {
 };
 
 template <>
-struct glz::meta<Products> {
+struct glz::meta<test_advanced_conditions::Products> {
     using T = Products;
     static constexpr std::string_view name = "products";
     [[maybe_unused]] static constexpr auto value = glz::object(

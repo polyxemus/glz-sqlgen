@@ -1,14 +1,14 @@
 #include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
-#include <glz_sqlgen/core.hpp>
-#include <glz_sqlgen/query_builders.hpp>
-#include <glz_sqlgen/query_clauses.hpp>
-#include <glz_sqlgen/functions.hpp>
+#include <sqlgen/core.hpp>
+#include <sqlgen/query_builders.hpp>
+#include <sqlgen/query_clauses.hpp>
+#include <sqlgen/functions.hpp>
 
-namespace {
+using namespace sqlgen;
+using namespace sqlgen::literals;
 
-using namespace glz_sqlgen;
-using namespace glz_sqlgen::literals;
+namespace test_date_functions {
 
 // Test tables
 struct Events {
@@ -25,11 +25,14 @@ struct Timestamps {
     std::string time_field;
 };
 
-} // namespace
+} // namespace test_date_functions
+
+using test_date_functions::Events;
+using test_date_functions::Timestamps;
 
 // Glaze metadata
 template <>
-struct glz::meta<Events> {
+struct glz::meta<test_date_functions::Events> {
     using T = Events;
     static constexpr std::string_view name = "events";
     [[maybe_unused]] static constexpr auto value = glz::object(
@@ -41,7 +44,7 @@ struct glz::meta<Events> {
 };
 
 template <>
-struct glz::meta<Timestamps> {
+struct glz::meta<test_date_functions::Timestamps> {
     using T = Timestamps;
     static constexpr std::string_view name = "timestamps";
     [[maybe_unused]] static constexpr auto value = glz::object(

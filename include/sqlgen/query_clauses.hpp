@@ -6,11 +6,9 @@
 #include <optional>
 #include <glaze/util/string_literal.hpp>
 #include "core.hpp"
-#include "transpilation/Join.hpp"
-#include "transpilation/Aggregate.hpp"
-#include "transpilation/Col.hpp"
+#include "transpilation_advanced.hpp"
 
-namespace glz_sqlgen {
+namespace sqlgen {
 
 // ============================================================================
 // WHERE Clause
@@ -256,4 +254,4 @@ constexpr auto max(const ExprType& expr) {
     return transpilation::Aggregate<transpilation::AggregateType::max, std::remove_cvref_t<ExprType>>{expr};
 }
 
-} // namespace glz_sqlgen
+} // namespace sqlgen

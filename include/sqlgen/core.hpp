@@ -5,15 +5,11 @@
 #include <vector>
 #include <expected>
 #include <concepts>
+#include <sstream>
 #include <glaze/util/string_literal.hpp>
-#include "transpilation/Col.hpp"
-#include "transpilation/As.hpp"
-#include "transpilation/Desc.hpp"
-#include "transpilation/Condition.hpp"
-#include "transpilation/Operation.hpp"
-#include "transpilation/Value.hpp"
+#include "transpilation_core.hpp"
 
-namespace glz_sqlgen {
+namespace sqlgen {
 
 // ============================================================================
 // Common Types
@@ -330,19 +326,57 @@ public:
     QueryBuilder() = default;
 
     /// Add a SELECT clause
-    QueryBuilder& select(const std::vector<std::string>& columns);
+    QueryBuilder& select(const std::vector<std::string>& columns) {
+        columns_ = columns;
+        return *this;
+    }
 
     /// Add a FROM clause
-    QueryBuilder& from(const std::string& table);
+    QueryBuilder& from(const std::string& table) {
+        table_ = table;
+        return *this;
+    }
 
     /// Add a WHERE clause
-    QueryBuilder& where(const std::string& condition);
+    QueryBuilder& where(const std::string& condition) {
+        where_clause_ = condition;
+        return *this;
+    }
 
     /// Build and return the SQL query string
-    [[nodiscard]] std::string build() const;
+    [[nodiscard]] std::string build() const {
+        std::ostringstream query;
+
+        // SELECT clause
+        query << "SELECT ";
+        if (columns_.empty()) {
+            query << "*";
+        } else {
+            for (size_t i = 0; i < columns_.size(); ++i) {
+                if (i > 0) query << ", ";
+                query << columns_[i];
+            }
+        }
+
+        // FROM clause
+        if (!table_.empty()) {
+            query << " FROM " << table_;
+        }
+
+        // WHERE clause
+        if (!where_clause_.empty()) {
+            query << " WHERE " << where_clause_;
+        }
+
+        return query.str();
+    }
 
     /// Reset the builder to empty state
-    void reset();
+    void reset() {
+        columns_.clear();
+        table_.clear();
+        where_clause_.clear();
+    }
 
 private:
     std::vector<std::string> columns_;
@@ -350,4 +384,4 @@ private:
     std::string where_clause_;
 };
 
-} // namespace glz_sqlgen
+} // namespace sqlgen

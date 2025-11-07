@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <glaze/util/string_literal.hpp>
 
-namespace glz_sqlgen {
+namespace sqlgen {
 
 // ============================================================================
 // Metadata Structures
@@ -620,4 +620,4 @@ private:
     }
 };
 
-} // namespace glz_sqlgen
+} // namespace sqlgen

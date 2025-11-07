@@ -1,7 +1,7 @@
-#include "glz_sqlgen/sqlite/Connection.hpp"
+#include "sqlgen/sqlite/Connection.hpp"
 #include <sstream>
 
-namespace glz_sqlgen::sqlite {
+namespace sqlgen::sqlite {
 
 Result<Connection> Connection::connect(const std::string& filename) {
     sqlite3* raw_conn = nullptr;
@@ -65,4 +65,4 @@ Result<Nothing> Connection::rollback() {
     return execute(std::string("ROLLBACK"));
 }
 
-} // namespace glz_sqlgen::sqlite
+} // namespace sqlgen::sqlite

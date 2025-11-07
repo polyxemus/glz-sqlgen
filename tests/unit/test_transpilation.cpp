@@ -1,16 +1,8 @@
 #include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
-#include "glz_sqlgen/transpilation/Col.hpp"
-#include "glz_sqlgen/transpilation/Value.hpp"
-#include "glz_sqlgen/transpilation/Operator.hpp"
-#include "glz_sqlgen/transpilation/Operation.hpp"
-#include "glz_sqlgen/transpilation/Condition.hpp"
-#include "glz_sqlgen/transpilation/As.hpp"
-#include "glz_sqlgen/transpilation/Desc.hpp"
-#include "glz_sqlgen/transpilation/to_sql_type.hpp"
-#include "glz_sqlgen/transpilation/quote.hpp"
+#include "sqlgen/transpilation_core.hpp"
 
-using namespace glz_sqlgen::transpilation;
+using namespace sqlgen::transpilation;
 
 TEST(TranspilationTest, ColBasic) {
     constexpr Col<"name"> col;

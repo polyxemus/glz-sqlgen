@@ -6,7 +6,7 @@
 #include "../core.hpp"
 #include "Iterator.hpp"
 
-namespace glz_sqlgen::sqlite {
+namespace sqlgen::sqlite {
 
 /// SQLite database connection
 class Connection {
@@ -61,4 +61,4 @@ private:
     std::shared_ptr<sqlite3> conn_;
 };
 
-} // namespace glz_sqlgen::sqlite
+} // namespace sqlgen::sqlite

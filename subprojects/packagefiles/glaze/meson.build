@@ -5,7 +5,7 @@ project('glaze', 'cpp',
   ],
 )
 
-glaze_inc = include_directories('include')
+glaze_inc = include_directories('include', is_system: true)
 
 glaze_glaze_dep = declare_dependency(
   include_directories: glaze_inc,

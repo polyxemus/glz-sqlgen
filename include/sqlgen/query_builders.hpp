@@ -7,18 +7,9 @@
 #include <ranges>
 #include "core.hpp"
 #include "query_clauses.hpp"
-#include "transpilation/field_list.hpp"
-#include "transpilation/table_info.hpp"
-#include "transpilation/where_clause.hpp"
-#include "transpilation/order_by_limit.hpp"
-#include "transpilation/join_clause.hpp"
-#include "transpilation/group_by_clause.hpp"
-#include "transpilation/having_clause.hpp"
-#include "transpilation/to_sql_string.hpp"
-#include "transpilation/Set.hpp"
-#include "transpilation/quote.hpp"
+#include "transpilation_sql_gen.hpp"
 
-namespace glz_sqlgen {
+namespace sqlgen {
 
 // ============================================================================
 // SELECT Query Builder
@@ -627,4 +618,4 @@ auto create_table(bool if_not_exists = false) {
     return CreateTable<TableType>{.if_not_exists_ = if_not_exists};
 }
 
-} // namespace glz_sqlgen
+} // namespace sqlgen

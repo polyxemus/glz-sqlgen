@@ -1,13 +1,12 @@
 #include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
-#include <glz_sqlgen/core.hpp>
-#include <glz_sqlgen/query_builders.hpp>
-#include <glz_sqlgen/query_clauses.hpp>
-#include "glz_sqlgen/transpilation/to_sql_string.hpp"
-#include "glz_sqlgen/transpilation/where_clause.hpp"
+#include <sqlgen/core.hpp>
+#include <sqlgen/query_builders.hpp>
+#include <sqlgen/query_clauses.hpp>
+#include "sqlgen/transpilation_sql_gen.hpp"
 
-using namespace glz_sqlgen::literals;
-namespace t = glz_sqlgen::transpilation;
+using namespace sqlgen::literals;
+namespace t = sqlgen::transpilation;
 
 TEST(SqlGenerationTest, ColumnToSql) {
     t::Col<"name"> col;

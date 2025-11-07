@@ -1,11 +1,10 @@
 #include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
-#include <glz_sqlgen/core.hpp>
-#include <glz_sqlgen/query_builders.hpp>
-#include <glz_sqlgen/query_clauses.hpp>
-#include "glz_sqlgen/transpilation/Col.hpp"
+#include <sqlgen/core.hpp>
+#include <sqlgen/query_builders.hpp>
+#include <sqlgen/query_clauses.hpp>
 
-using namespace glz_sqlgen;
+using namespace sqlgen;
 
 TEST(ColTest, BasicCreation) {
     constexpr Col<"name"> col;

@@ -6,7 +6,7 @@
 
 // Forward declare constraint types for traits
 // (actual definitions are in wrapper_types.hpp and domain_types.hpp)
-namespace glz_sqlgen {
+namespace sqlgen {
     // Wrapper types
     template <class T, bool AutoIncr> struct PrimaryKey;
     template <class T> struct Unique;
@@ -21,7 +21,7 @@ namespace glz_sqlgen {
     template <size_t N> struct Char;
 }
 
-namespace glz_sqlgen::constraints {
+namespace sqlgen::constraints {
 
 // ============================================================================
 // Primary Key Detection
@@ -79,8 +79,8 @@ inline constexpr bool is_not_null_v = is_not_null<std::remove_cvref_t<T>>::value
 template <class T>
 struct is_foreign_key : std::false_type {};
 
-template <class T, class RefTable, glz::string_literal column, glz_sqlgen::ReferentialAction OnDelete, glz_sqlgen::ReferentialAction OnUpdate>
-struct is_foreign_key<glz_sqlgen::ForeignKey<T, RefTable, column, OnDelete, OnUpdate>> : std::true_type {};
+template <class T, class RefTable, glz::string_literal column, sqlgen::ReferentialAction OnDelete, sqlgen::ReferentialAction OnUpdate>
+struct is_foreign_key<sqlgen::ForeignKey<T, RefTable, column, OnDelete, OnUpdate>> : std::true_type {};
 
 template <class T>
 inline constexpr bool is_foreign_key_v = is_foreign_key<std::remove_cvref_t<T>>::value;
@@ -92,8 +92,8 @@ struct foreign_key_info {
     static constexpr glz::string_literal referenced_column = "";
 };
 
-template <class T, class RefTable, glz::string_literal column, glz_sqlgen::ReferentialAction OnDelete, glz_sqlgen::ReferentialAction OnUpdate>
-struct foreign_key_info<glz_sqlgen::ForeignKey<T, RefTable, column, OnDelete, OnUpdate>> {
+template <class T, class RefTable, glz::string_literal column, sqlgen::ReferentialAction OnDelete, sqlgen::ReferentialAction OnUpdate>
+struct foreign_key_info<sqlgen::ForeignKey<T, RefTable, column, OnDelete, OnUpdate>> {
     using referenced_table = RefTable;
     static constexpr auto referenced_column = column;
     static constexpr auto on_delete = OnDelete;
@@ -108,7 +108,7 @@ template <class T>
 struct is_varchar : std::false_type {};
 
 template <size_t N>
-struct is_varchar<glz_sqlgen::Varchar<N>> : std::true_type {};
+struct is_varchar<sqlgen::Varchar<N>> : std::true_type {};
 
 template <class T>
 inline constexpr bool is_varchar_v = is_varchar<std::remove_cvref_t<T>>::value;
@@ -119,7 +119,7 @@ struct varchar_length {
 };
 
 template <size_t N>
-struct varchar_length<glz_sqlgen::Varchar<N>> {
+struct varchar_length<sqlgen::Varchar<N>> {
     static constexpr size_t value = N;
 };
 
@@ -134,7 +134,7 @@ template <class T>
 struct is_char : std::false_type {};
 
 template <size_t N>
-struct is_char<glz_sqlgen::Char<N>> : std::true_type {};
+struct is_char<sqlgen::Char<N>> : std::true_type {};
 
 template <class T>
 inline constexpr bool is_char_v = is_char<std::remove_cvref_t<T>>::value;
@@ -145,7 +145,7 @@ struct char_length {
 };
 
 template <size_t N>
-struct char_length<glz_sqlgen::Char<N>> {
+struct char_length<sqlgen::Char<N>> {
     static constexpr size_t value = N;
 };
 
@@ -176,18 +176,18 @@ struct underlying_type<NotNull<T>> {
     using type = T;
 };
 
-template <class T, class RefTable, glz::string_literal column, glz_sqlgen::ReferentialAction OnDelete, glz_sqlgen::ReferentialAction OnUpdate>
-struct underlying_type<glz_sqlgen::ForeignKey<T, RefTable, column, OnDelete, OnUpdate>> {
+template <class T, class RefTable, glz::string_literal column, sqlgen::ReferentialAction OnDelete, sqlgen::ReferentialAction OnUpdate>
+struct underlying_type<sqlgen::ForeignKey<T, RefTable, column, OnDelete, OnUpdate>> {
     using type = T;
 };
 
 template <size_t N>
-struct underlying_type<glz_sqlgen::Varchar<N>> {
+struct underlying_type<sqlgen::Varchar<N>> {
     using type = std::string;
 };
 
 template <size_t N>
-struct underlying_type<glz_sqlgen::Char<N>> {
+struct underlying_type<sqlgen::Char<N>> {
     using type = std::string;
 };
 
@@ -207,4 +207,4 @@ inline constexpr bool is_constraint_wrapper_v =
     is_varchar_v<T> ||
     is_char_v<T>;
 
-} // namespace glz_sqlgen::constraints
+} // namespace sqlgen::constraints

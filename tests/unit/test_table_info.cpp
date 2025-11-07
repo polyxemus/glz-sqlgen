@@ -1,10 +1,9 @@
 #include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
 #include <optional>
-#include "glz_sqlgen/transpilation/table_info.hpp"
-#include "glz_sqlgen/transpilation/field_list.hpp"
+#include "sqlgen/transpilation_advanced.hpp"
 
-using namespace glz_sqlgen::transpilation;
+using namespace sqlgen::transpilation;
 
 // Test structs
 struct Person {

@@ -3,12 +3,9 @@
 #include <string>
 #include <vector>
 #include <initializer_list>
-#include "transpilation/Condition.hpp"
-#include "transpilation/Operator.hpp"
-#include "transpilation/Col.hpp"
-#include "transpilation/Value.hpp"
+#include "transpilation_core.hpp"
 
-namespace glz_sqlgen {
+namespace sqlgen {
 
 // Forward declarations
 template <glz::string_literal Name, glz::string_literal Alias>
@@ -152,4 +149,4 @@ using advanced::not_in;
 using advanced::between;
 using advanced::not_between;
 
-} // namespace glz_sqlgen
+} // namespace sqlgen

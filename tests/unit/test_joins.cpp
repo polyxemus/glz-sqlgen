@@ -1,13 +1,11 @@
 #include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
-#include <glz_sqlgen/core.hpp>
-#include <glz_sqlgen/query_builders.hpp>
-#include <glz_sqlgen/query_clauses.hpp>
+#include <sqlgen/core.hpp>
+#include <sqlgen/query_builders.hpp>
+#include <sqlgen/query_clauses.hpp>
 
-namespace {
-
-using namespace glz_sqlgen;
-using namespace glz_sqlgen::literals;
+using namespace sqlgen;
+using namespace sqlgen::literals;
 
 // Test tables
 struct Users {
@@ -26,8 +24,6 @@ struct Projects {
     std::string name;
     int department_id;
 };
-
-} // namespace
 
 // Glaze metadata
 template <>

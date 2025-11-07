@@ -1,7 +1,7 @@
-#include "glz_sqlgen/sqlite/Iterator.hpp"
+#include "sqlgen/sqlite/Iterator.hpp"
 #include <cstring>
 
-namespace glz_sqlgen::sqlite {
+namespace sqlgen::sqlite {
 
 Iterator::Iterator(sqlite3_stmt* stmt, sqlite3* conn)
     : end_(false),
@@ -51,4 +51,4 @@ std::optional<Iterator::Row> Iterator::next() {
     return row;
 }
 
-} // namespace glz_sqlgen::sqlite
+} // namespace sqlgen::sqlite

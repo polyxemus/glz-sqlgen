@@ -1,11 +1,9 @@
 #pragma once
 
-#include "transpilation/Function.hpp"
-#include "transpilation/Value.hpp"
-#include "transpilation/to_transpilation_type.hpp"
+#include "transpilation_advanced.hpp"
 #include <type_traits>
 
-namespace glz_sqlgen {
+namespace sqlgen {
 
 // ============================================================================
 // STRING FUNCTIONS
@@ -270,4 +268,4 @@ auto coalesce(const ArgTypes&... args) {
     };
 }
 
-} // namespace glz_sqlgen
+} // namespace sqlgen
