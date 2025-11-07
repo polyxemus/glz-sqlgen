@@ -10,6 +10,7 @@
 #include "quote.hpp"
 #include "../constraints/metadata.hpp"
 #include "../constraints/traits.hpp"
+#include "../constraints/ForeignKey.hpp"
 
 namespace glz_sqlgen::transpilation {
 
@@ -107,6 +108,29 @@ std::vector<FieldInfo> get_fields() {
                 // Get SQL type from underlying type
                 using UnderlyingType = constraints::underlying_type_t<FieldType>;
                 info.sql_type = std::string(to_sql_type<UnderlyingType>());
+            }
+            else if constexpr (constraints::is_foreign_key_v<FieldType>) {
+                // Extract foreign key metadata
+                using FK = constraints::foreign_key_info<FieldType>;
+                constraints::ForeignKeyReference fk_info;
+                fk_info.table = std::string(transpilation::get_table_name<typename FK::referenced_table>());
+                fk_info.column = std::string(FK::referenced_column.sv());
+                fk_info.on_delete = std::string(referential_action_to_sql(FK::on_delete));
+                fk_info.on_update = std::string(referential_action_to_sql(FK::on_update));
+                info.constraints.foreign_key = fk_info;
+                // Get SQL type from underlying type
+                using UnderlyingType = constraints::underlying_type_t<FieldType>;
+                info.sql_type = std::string(to_sql_type<UnderlyingType>());
+            }
+            else if constexpr (constraints::is_varchar_v<FieldType>) {
+                // Varchar with length constraint
+                constexpr size_t length = constraints::varchar_length_v<FieldType>;
+                info.sql_type = "VARCHAR(" + std::to_string(length) + ")";
+            }
+            else if constexpr (constraints::is_char_v<FieldType>) {
+                // Char with fixed length
+                constexpr size_t length = constraints::char_length_v<FieldType>;
+                info.sql_type = "CHAR(" + std::to_string(length) + ")";
             }
             else {
                 // No constraint wrapper, use FieldType directly

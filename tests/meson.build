@@ -16,6 +16,7 @@ test_sources = files(
   'unit/test_date_functions.cpp',
   'unit/test_constraints.cpp',
   'unit/test_create_table_constraints.cpp',
+  'unit/test_phase10_types.cpp',
   'integration/test_sqlite.cpp',
 )
 

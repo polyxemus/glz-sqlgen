@@ -7,6 +7,21 @@
 #include "Unique.hpp"
 #include "NotNull.hpp"
 
+// Forward declare constraint types for traits
+namespace glz_sqlgen {
+    enum class ReferentialAction;  // Forward declare enum
+
+    template <class T, class RefTable, glz::string_literal column,
+              ReferentialAction OnDelete, ReferentialAction OnUpdate>
+    struct ForeignKey;
+
+    template <size_t N>
+    struct Varchar;
+
+    template <size_t N>
+    struct Char;
+}
+
 namespace glz_sqlgen::constraints {
 
 // ============================================================================
@@ -59,21 +74,42 @@ template <class T>
 inline constexpr bool is_not_null_v = is_not_null<std::remove_cvref_t<T>>::value;
 
 // ============================================================================
-// Foreign Key Detection (forward declaration, will be defined in ForeignKey.hpp)
+// Foreign Key Detection
 // ============================================================================
 
 template <class T>
 struct is_foreign_key : std::false_type {};
 
+template <class T, class RefTable, glz::string_literal column, glz_sqlgen::ReferentialAction OnDelete, glz_sqlgen::ReferentialAction OnUpdate>
+struct is_foreign_key<glz_sqlgen::ForeignKey<T, RefTable, column, OnDelete, OnUpdate>> : std::true_type {};
+
 template <class T>
 inline constexpr bool is_foreign_key_v = is_foreign_key<std::remove_cvref_t<T>>::value;
 
+// Extract foreign key metadata
+template <class T>
+struct foreign_key_info {
+    using referenced_table = void;
+    static constexpr glz::string_literal referenced_column = "";
+};
+
+template <class T, class RefTable, glz::string_literal column, glz_sqlgen::ReferentialAction OnDelete, glz_sqlgen::ReferentialAction OnUpdate>
+struct foreign_key_info<glz_sqlgen::ForeignKey<T, RefTable, column, OnDelete, OnUpdate>> {
+    using referenced_table = RefTable;
+    static constexpr auto referenced_column = column;
+    static constexpr auto on_delete = OnDelete;
+    static constexpr auto on_update = OnUpdate;
+};
+
 // ============================================================================
-// Varchar Detection (forward declaration, will be defined in Varchar.hpp)
+// Varchar Detection
 // ============================================================================
 
 template <class T>
 struct is_varchar : std::false_type {};
+
+template <size_t N>
+struct is_varchar<glz_sqlgen::Varchar<N>> : std::true_type {};
 
 template <class T>
 inline constexpr bool is_varchar_v = is_varchar<std::remove_cvref_t<T>>::value;
@@ -83,15 +119,23 @@ struct varchar_length {
     static constexpr size_t value = 0;
 };
 
+template <size_t N>
+struct varchar_length<glz_sqlgen::Varchar<N>> {
+    static constexpr size_t value = N;
+};
+
 template <class T>
 inline constexpr size_t varchar_length_v = varchar_length<std::remove_cvref_t<T>>::value;
 
 // ============================================================================
-// Char Detection (forward declaration)
+// Char Detection
 // ============================================================================
 
 template <class T>
 struct is_char : std::false_type {};
+
+template <size_t N>
+struct is_char<glz_sqlgen::Char<N>> : std::true_type {};
 
 template <class T>
 inline constexpr bool is_char_v = is_char<std::remove_cvref_t<T>>::value;
@@ -99,6 +143,11 @@ inline constexpr bool is_char_v = is_char<std::remove_cvref_t<T>>::value;
 template <class T>
 struct char_length {
     static constexpr size_t value = 0;
+};
+
+template <size_t N>
+struct char_length<glz_sqlgen::Char<N>> {
+    static constexpr size_t value = N;
 };
 
 template <class T>
@@ -126,6 +175,21 @@ struct underlying_type<Unique<T>> {
 template <class T>
 struct underlying_type<NotNull<T>> {
     using type = T;
+};
+
+template <class T, class RefTable, glz::string_literal column, glz_sqlgen::ReferentialAction OnDelete, glz_sqlgen::ReferentialAction OnUpdate>
+struct underlying_type<glz_sqlgen::ForeignKey<T, RefTable, column, OnDelete, OnUpdate>> {
+    using type = T;
+};
+
+template <size_t N>
+struct underlying_type<glz_sqlgen::Varchar<N>> {
+    using type = std::string;
+};
+
+template <size_t N>
+struct underlying_type<glz_sqlgen::Char<N>> {
+    using type = std::string;
 };
 
 template <class T>
