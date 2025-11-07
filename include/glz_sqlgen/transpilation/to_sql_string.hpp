@@ -10,6 +10,7 @@
 #include "Operator.hpp"
 #include "Desc.hpp"
 #include "Set.hpp"
+#include "Aggregate.hpp"
 #include "quote.hpp"
 
 // Forward declaration for user-facing Col
@@ -124,6 +125,29 @@ std::string to_sql(const Desc<Col>& desc) {
 template <class Col, class Value>
 std::string to_sql(const Set<Col, Value>& set) {
     return to_sql(set.column) + " = " + to_sql(set.value);
+}
+
+/// Convert an Aggregate function to SQL
+template <AggregateType Type, class ExprType>
+std::string to_sql(const Aggregate<Type, ExprType>& agg) {
+    std::string sql;
+    sql += aggregate_type_to_sql(Type);
+    sql += "(";
+
+    if constexpr (std::is_same_v<ExprType, CountStar>) {
+        // COUNT(*)
+        sql += "*";
+    } else {
+        // Add DISTINCT for COUNT(DISTINCT col)
+        if (agg.is_distinct()) {
+            sql += "DISTINCT ";
+        }
+        // Add expression
+        sql += to_sql(agg.expression);
+    }
+
+    sql += ")";
+    return sql;
 }
 
 } // namespace glz_sqlgen::transpilation

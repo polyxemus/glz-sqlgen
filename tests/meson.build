@@ -9,6 +9,7 @@ test_sources = files(
   'unit/test_select.cpp',
   'unit/test_insert_update_delete.cpp',
   'unit/test_joins.cpp',
+  'unit/test_aggregates.cpp',
   'integration/test_sqlite.cpp',
 )
 

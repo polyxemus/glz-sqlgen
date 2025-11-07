@@ -8,17 +8,22 @@
 #include "order_by.hpp"
 #include "limit.hpp"
 #include "join.hpp"
+#include "group_by.hpp"
+#include "having.hpp"
 #include "transpilation/field_list.hpp"
 #include "transpilation/table_info.hpp"
 #include "transpilation/where_clause.hpp"
 #include "transpilation/order_by_limit.hpp"
 #include "transpilation/join_clause.hpp"
+#include "transpilation/group_by_clause.hpp"
+#include "transpilation/having_clause.hpp"
 
 namespace glz_sqlgen {
 
 /// SELECT query builder
 template <class TableType, class FieldsTuple = Nothing, class JoinListType = Nothing,
-          class WhereType = Nothing, class OrderByType = Nothing, class LimitType = Nothing>
+          class WhereType = Nothing, class GroupByType = Nothing, class HavingType = Nothing,
+          class OrderByType = Nothing, class LimitType = Nothing>
 struct SelectFrom {
     /// Convert to SQL string
     std::string to_sql() const {
@@ -59,6 +64,18 @@ struct SelectFrom {
             sql += transpilation::where_clause(where_);
         }
 
+        // Add GROUP BY if specified
+        if constexpr (!std::is_same_v<GroupByType, Nothing>) {
+            sql += " ";
+            sql += transpilation::group_by_sql(group_by_.columns);
+        }
+
+        // Add HAVING if specified
+        if constexpr (!std::is_same_v<HavingType, Nothing>) {
+            sql += " ";
+            sql += transpilation::having_clause(having_);
+        }
+
         // Add ORDER BY if specified
         if constexpr (!std::is_same_v<OrderByType, Nothing>) {
             sql += " ";
@@ -79,6 +96,10 @@ struct SelectFrom {
     friend auto operator|(const SelectFrom& s, const InnerJoin<JoinTableType, JoinAlias, JoinConditionType>& j) {
         static_assert(std::is_same_v<WhereType, Nothing>,
                      "Cannot call join() after where()");
+        static_assert(std::is_same_v<GroupByType, Nothing>,
+                     "Cannot call join() after group_by()");
+        static_assert(std::is_same_v<HavingType, Nothing>,
+                     "Cannot call join() after having()");
         static_assert(std::is_same_v<OrderByType, Nothing>,
                      "Cannot call join() after order_by()");
         static_assert(std::is_same_v<LimitType, Nothing>,
@@ -88,10 +109,12 @@ struct SelectFrom {
         if constexpr (std::is_same_v<JoinListType, Nothing>) {
             // First JOIN
             using NewJoinListType = transpilation::JoinList<NewJoinType>;
-            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, OrderByType, LimitType>{
+            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, GroupByType, HavingType, OrderByType, LimitType>{
                 .fields_ = s.fields_,
                 .joins_ = NewJoinListType{j.join_clause},
                 .where_ = s.where_,
+                .group_by_ = s.group_by_,
+                .having_ = s.having_,
                 .order_by_ = s.order_by_,
                 .limit_ = s.limit_
             };
@@ -99,10 +122,12 @@ struct SelectFrom {
             // Append to existing JOINs
             auto new_joins = std::tuple_cat(s.joins_.joins, std::make_tuple(j.join_clause));
             using NewJoinListType = decltype(transpilation::JoinList{new_joins});
-            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, OrderByType, LimitType>{
+            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, GroupByType, HavingType, OrderByType, LimitType>{
                 .fields_ = s.fields_,
                 .joins_ = transpilation::JoinList{new_joins},
                 .where_ = s.where_,
+                .group_by_ = s.group_by_,
+                .having_ = s.having_,
                 .order_by_ = s.order_by_,
                 .limit_ = s.limit_
             };
@@ -114,6 +139,10 @@ struct SelectFrom {
     friend auto operator|(const SelectFrom& s, const LeftJoin<JoinTableType, JoinAlias, JoinConditionType>& j) {
         static_assert(std::is_same_v<WhereType, Nothing>,
                      "Cannot call join() after where()");
+        static_assert(std::is_same_v<GroupByType, Nothing>,
+                     "Cannot call join() after group_by()");
+        static_assert(std::is_same_v<HavingType, Nothing>,
+                     "Cannot call join() after having()");
         static_assert(std::is_same_v<OrderByType, Nothing>,
                      "Cannot call join() after order_by()");
         static_assert(std::is_same_v<LimitType, Nothing>,
@@ -122,20 +151,24 @@ struct SelectFrom {
         using NewJoinType = typename LeftJoin<JoinTableType, JoinAlias, JoinConditionType>::JoinType;
         if constexpr (std::is_same_v<JoinListType, Nothing>) {
             using NewJoinListType = transpilation::JoinList<NewJoinType>;
-            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, OrderByType, LimitType>{
+            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, GroupByType, HavingType, OrderByType, LimitType>{
                 .fields_ = s.fields_,
                 .joins_ = NewJoinListType{j.join_clause},
                 .where_ = s.where_,
+                .group_by_ = s.group_by_,
+                .having_ = s.having_,
                 .order_by_ = s.order_by_,
                 .limit_ = s.limit_
             };
         } else {
             auto new_joins = std::tuple_cat(s.joins_.joins, std::make_tuple(j.join_clause));
             using NewJoinListType = decltype(transpilation::JoinList{new_joins});
-            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, OrderByType, LimitType>{
+            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, GroupByType, HavingType, OrderByType, LimitType>{
                 .fields_ = s.fields_,
                 .joins_ = transpilation::JoinList{new_joins},
                 .where_ = s.where_,
+                .group_by_ = s.group_by_,
+                .having_ = s.having_,
                 .order_by_ = s.order_by_,
                 .limit_ = s.limit_
             };
@@ -147,6 +180,16 @@ struct SelectFrom {
     friend auto operator|(const SelectFrom& s, const RightJoin<JoinTableType, JoinAlias, JoinConditionType>& j) {
         static_assert(std::is_same_v<WhereType, Nothing>,
                      "Cannot call join() after where()");
+        static_assert(std::is_same_v<GroupByType, Nothing>,
+                     "Cannot call join() after group_by()");
+        static_assert(std::is_same_v<HavingType, Nothing>,
+                     "Cannot call join() after having()");
+        static_assert(std::is_same_v<OrderByType, Nothing>,
+                     "Cannot call join() after order_by()");
+        static_assert(std::is_same_v<LimitType, Nothing>,
+                     "Cannot call join() after limit()");
+
+                     "Cannot call join() after where()");
         static_assert(std::is_same_v<OrderByType, Nothing>,
                      "Cannot call join() after order_by()");
         static_assert(std::is_same_v<LimitType, Nothing>,
@@ -155,20 +198,24 @@ struct SelectFrom {
         using NewJoinType = typename RightJoin<JoinTableType, JoinAlias, JoinConditionType>::JoinType;
         if constexpr (std::is_same_v<JoinListType, Nothing>) {
             using NewJoinListType = transpilation::JoinList<NewJoinType>;
-            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, OrderByType, LimitType>{
+            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, GroupByType, HavingType, OrderByType, LimitType>{
                 .fields_ = s.fields_,
                 .joins_ = NewJoinListType{j.join_clause},
                 .where_ = s.where_,
+                .group_by_ = s.group_by_,
+                .having_ = s.having_,
                 .order_by_ = s.order_by_,
                 .limit_ = s.limit_
             };
         } else {
             auto new_joins = std::tuple_cat(s.joins_.joins, std::make_tuple(j.join_clause));
             using NewJoinListType = decltype(transpilation::JoinList{new_joins});
-            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, OrderByType, LimitType>{
+            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, GroupByType, HavingType, OrderByType, LimitType>{
                 .fields_ = s.fields_,
                 .joins_ = transpilation::JoinList{new_joins},
                 .where_ = s.where_,
+                .group_by_ = s.group_by_,
+                .having_ = s.having_,
                 .order_by_ = s.order_by_,
                 .limit_ = s.limit_
             };
@@ -180,6 +227,16 @@ struct SelectFrom {
     friend auto operator|(const SelectFrom& s, const FullJoin<JoinTableType, JoinAlias, JoinConditionType>& j) {
         static_assert(std::is_same_v<WhereType, Nothing>,
                      "Cannot call join() after where()");
+        static_assert(std::is_same_v<GroupByType, Nothing>,
+                     "Cannot call join() after group_by()");
+        static_assert(std::is_same_v<HavingType, Nothing>,
+                     "Cannot call join() after having()");
+        static_assert(std::is_same_v<OrderByType, Nothing>,
+                     "Cannot call join() after order_by()");
+        static_assert(std::is_same_v<LimitType, Nothing>,
+                     "Cannot call join() after limit()");
+
+                     "Cannot call join() after where()");
         static_assert(std::is_same_v<OrderByType, Nothing>,
                      "Cannot call join() after order_by()");
         static_assert(std::is_same_v<LimitType, Nothing>,
@@ -188,20 +245,24 @@ struct SelectFrom {
         using NewJoinType = typename FullJoin<JoinTableType, JoinAlias, JoinConditionType>::JoinType;
         if constexpr (std::is_same_v<JoinListType, Nothing>) {
             using NewJoinListType = transpilation::JoinList<NewJoinType>;
-            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, OrderByType, LimitType>{
+            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, GroupByType, HavingType, OrderByType, LimitType>{
                 .fields_ = s.fields_,
                 .joins_ = NewJoinListType{j.join_clause},
                 .where_ = s.where_,
+                .group_by_ = s.group_by_,
+                .having_ = s.having_,
                 .order_by_ = s.order_by_,
                 .limit_ = s.limit_
             };
         } else {
             auto new_joins = std::tuple_cat(s.joins_.joins, std::make_tuple(j.join_clause));
             using NewJoinListType = decltype(transpilation::JoinList{new_joins});
-            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, OrderByType, LimitType>{
+            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, GroupByType, HavingType, OrderByType, LimitType>{
                 .fields_ = s.fields_,
                 .joins_ = transpilation::JoinList{new_joins},
                 .where_ = s.where_,
+                .group_by_ = s.group_by_,
+                .having_ = s.having_,
                 .order_by_ = s.order_by_,
                 .limit_ = s.limit_
             };
@@ -213,6 +274,15 @@ struct SelectFrom {
     friend auto operator|(const SelectFrom& s, const CrossJoin<JoinTableType, JoinAlias>& j) {
         static_assert(std::is_same_v<WhereType, Nothing>,
                      "Cannot call join() after where()");
+        static_assert(std::is_same_v<GroupByType, Nothing>,
+                     "Cannot call join() after group_by()");
+        static_assert(std::is_same_v<HavingType, Nothing>,
+                     "Cannot call join() after having()");
+        static_assert(std::is_same_v<OrderByType, Nothing>,
+                     "Cannot call join() after order_by()");        static_assert(std::is_same_v<LimitType, Nothing>,
+                     "Cannot call join() after limit()");
+
+                     "Cannot call join() after where()");
         static_assert(std::is_same_v<OrderByType, Nothing>,
                      "Cannot call join() after order_by()");
         static_assert(std::is_same_v<LimitType, Nothing>,
@@ -221,20 +291,24 @@ struct SelectFrom {
         using NewJoinType = typename CrossJoin<JoinTableType, JoinAlias>::JoinType;
         if constexpr (std::is_same_v<JoinListType, Nothing>) {
             using NewJoinListType = transpilation::JoinList<NewJoinType>;
-            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, OrderByType, LimitType>{
+            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, GroupByType, HavingType, OrderByType, LimitType>{
                 .fields_ = s.fields_,
                 .joins_ = NewJoinListType{j.join_clause},
                 .where_ = s.where_,
+                .group_by_ = s.group_by_,
+                .having_ = s.having_,
                 .order_by_ = s.order_by_,
                 .limit_ = s.limit_
             };
         } else {
             auto new_joins = std::tuple_cat(s.joins_.joins, std::make_tuple(j.join_clause));
             using NewJoinListType = decltype(transpilation::JoinList{new_joins});
-            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, OrderByType, LimitType>{
+            return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, GroupByType, HavingType, OrderByType, LimitType>{
                 .fields_ = s.fields_,
                 .joins_ = transpilation::JoinList{new_joins},
                 .where_ = s.where_,
+                .group_by_ = s.group_by_,
+                .having_ = s.having_,
                 .order_by_ = s.order_by_,
                 .limit_ = s.limit_
             };
@@ -251,10 +325,59 @@ struct SelectFrom {
         static_assert(std::is_same_v<LimitType, Nothing>,
                      "Cannot call limit() before where()");
 
-        return SelectFrom<TableType, FieldsTuple, JoinListType, ConditionType, OrderByType, LimitType>{
+        return SelectFrom<TableType, FieldsTuple, JoinListType, ConditionType, GroupByType, HavingType, OrderByType, LimitType>{
             .fields_ = s.fields_,
             .joins_ = s.joins_,
             .where_ = w.condition,
+                .group_by_ = s.group_by_,
+                .having_ = s.having_,
+            .order_by_ = s.order_by_,
+            .limit_ = s.limit_
+        };
+    }
+
+
+    /// Pipe operator for GROUP BY clause
+    template <class... ColTypes>
+    friend auto operator|(const SelectFrom& s, const GroupBy<ColTypes...>& g) {
+        static_assert(std::is_same_v<GroupByType, Nothing>,
+                     "Cannot call group_by() twice");
+        static_assert(std::is_same_v<HavingType, Nothing>,
+                     "Cannot call having() before group_by()");
+        static_assert(std::is_same_v<OrderByType, Nothing>,
+                     "Cannot call order_by() before group_by()");
+        static_assert(std::is_same_v<LimitType, Nothing>,
+                     "Cannot call limit() before group_by()");
+
+        return SelectFrom<TableType, FieldsTuple, JoinListType, WhereType, GroupBy<ColTypes...>, HavingType, OrderByType, LimitType>{
+            .fields_ = s.fields_,
+            .joins_ = s.joins_,
+            .where_ = s.where_,
+            .group_by_ = g,
+            .having_ = s.having_,
+            .order_by_ = s.order_by_,
+            .limit_ = s.limit_
+        };
+    }
+
+    /// Pipe operator for HAVING clause
+    template <class ConditionType>
+    friend auto operator|(const SelectFrom& s, const Having<ConditionType>& h) {
+        static_assert(!std::is_same_v<GroupByType, Nothing>,
+                     "Cannot call having() without group_by()");
+        static_assert(std::is_same_v<HavingType, Nothing>,
+                     "Cannot call having() twice");
+        static_assert(std::is_same_v<OrderByType, Nothing>,
+                     "Cannot call order_by() before having()");
+        static_assert(std::is_same_v<LimitType, Nothing>,
+                     "Cannot call limit() before having()");
+
+        return SelectFrom<TableType, FieldsTuple, JoinListType, WhereType, GroupByType, ConditionType, OrderByType, LimitType>{
+            .fields_ = s.fields_,
+            .joins_ = s.joins_,
+            .where_ = s.where_,
+            .group_by_ = s.group_by_,
+            .having_ = h.condition,
             .order_by_ = s.order_by_,
             .limit_ = s.limit_
         };
@@ -268,10 +391,12 @@ struct SelectFrom {
         static_assert(std::is_same_v<LimitType, Nothing>,
                      "Cannot call limit() before order_by()");
 
-        return SelectFrom<TableType, FieldsTuple, JoinListType, WhereType, OrderBy<ColTypes...>, LimitType>{
+        return SelectFrom<TableType, FieldsTuple, JoinListType, WhereType, GroupByType, HavingType, OrderBy<ColTypes...>, LimitType>{
             .fields_ = s.fields_,
             .joins_ = s.joins_,
             .where_ = s.where_,
+                .group_by_ = s.group_by_,
+                .having_ = s.having_,
             .order_by_ = o,
             .limit_ = s.limit_
         };
@@ -282,10 +407,12 @@ struct SelectFrom {
         static_assert(std::is_same_v<LimitType, Nothing>,
                      "Cannot call limit() twice");
 
-        return SelectFrom<TableType, FieldsTuple, JoinListType, WhereType, OrderByType, Limit>{
+        return SelectFrom<TableType, FieldsTuple, JoinListType, WhereType, GroupByType, HavingType, OrderByType, Limit>{
             .fields_ = s.fields_,
             .joins_ = s.joins_,
             .where_ = s.where_,
+                .group_by_ = s.group_by_,
+                .having_ = s.having_,
             .order_by_ = s.order_by_,
             .limit_ = l
         };
@@ -294,6 +421,8 @@ struct SelectFrom {
     FieldsTuple fields_;
     JoinListType joins_;
     WhereType where_;
+    GroupByType group_by_;
+    HavingType having_;
     OrderByType order_by_;
     LimitType limit_;
 };
@@ -312,6 +441,8 @@ auto select_from(const FieldTypes&... fields) {
         .fields_ = std::make_tuple(fields...),
         .joins_ = Nothing{},
         .where_ = Nothing{},
+                .group_by_ = s.group_by_,
+                .having_ = s.having_,
         .order_by_ = Nothing{},
         .limit_ = Nothing{}
     };

@@ -1,6 +1,6 @@
 # glz-sqlgen Development Roadmap
 
-## Project Status: Phase 5 Complete ✅
+## Project Status: Phase 6 Complete ✅
 
 **Last Updated**: 2025-11-07
 
@@ -20,7 +20,7 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 
 **Target Version**: v0.1.0
 **Estimated Completion**: 20 weeks from start date
-**Status**: 🟢 Phase 5 Complete - Multi-Table Queries Enabled!
+**Status**: 🟢 Phase 6 Complete - Analytics & Reporting Ready!
 
 ---
 
@@ -33,7 +33,7 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 | **Phase 3: Query Builders** | 🟢 Complete | 100% | Week 5-6 | 2025-11-07 |
 | **Phase 4: SQLite Adapter** | 🟢 Complete | 100% | Week 7-8 | 2025-11-07 |
 | **Phase 5: JOIN Operations** | 🟢 Complete | 100% | Week 9-10 | 2025-11-07 |
-| **Phase 6: Aggregate Functions** | 🔴 Not Started | 0% | Week 11-12 | - |
+| **Phase 6: Aggregate Functions** | 🟢 Complete | 100% | Week 11-12 | 2025-11-07 |
 | **Phase 7: Advanced Conditions** | 🔴 Not Started | 0% | Week 13-14 | - |
 | **Phase 8: SQL Functions** | 🔴 Not Started | 0% | Week 15-16 | - |
 | **Phase 9: PostgreSQL Adapter** | 🔴 Not Started | 0% | Week 17-18 | - |
@@ -293,60 +293,61 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 
 **Goal**: Enable analytics and reporting queries
 
-**Priority**: 🔴 CRITICAL - Required for any analytics or reporting functionality
+**Priority**: 🔴 CRITICAL - Analytics and reporting now fully supported!
 
 ### Aggregate Functions
 
-- [ ] `count()` - COUNT(*) and COUNT(column)
-- [ ] `count_distinct()` - COUNT(DISTINCT column)
-- [ ] `sum()` - SUM(column)
-- [ ] `avg()` - AVG(column)
-- [ ] `min()` - MIN(column)
-- [ ] `max()` - MAX(column)
+- [x] `count()` - COUNT(*) and COUNT(column)
+- [x] `count_distinct()` - COUNT(DISTINCT column)
+- [x] `sum()` - SUM(column)
+- [x] `avg()` - AVG(column)
+- [x] `min()` - MIN(column)
+- [x] `max()` - MAX(column)
 
 ### GROUP BY Support
 
-- [ ] `group_by()` - GROUP BY clause builder
-- [ ] `include/glz_sqlgen/group_by.hpp` - GROUP BY implementation
-- [ ] `include/glz_sqlgen/transpilation/group_by_clause.hpp` - GROUP BY SQL generation
-- [ ] Support grouping by multiple columns
-- [ ] Support grouping by expressions
+- [x] `group_by()` - GROUP BY clause builder
+- [x] `include/glz_sqlgen/group_by.hpp` - GROUP BY implementation
+- [x] `include/glz_sqlgen/transpilation/group_by_clause.hpp` - GROUP BY SQL generation
+- [x] Support grouping by multiple columns
+- [x] Support grouping by expressions
 
 ### HAVING Support
 
-- [ ] `having()` - HAVING clause builder
-- [ ] `include/glz_sqlgen/having.hpp` - HAVING implementation
-- [ ] HAVING conditions on aggregate results
-- [ ] Complex HAVING expressions
+- [x] `having()` - HAVING clause builder
+- [x] `include/glz_sqlgen/having.hpp` - HAVING implementation
+- [x] HAVING conditions on aggregate results
+- [x] Complex HAVING expressions
 
 ### Query Builder Integration
 
-- [ ] Integrate aggregates into SELECT
-- [ ] Integrate GROUP BY into query chain
-- [ ] Integrate HAVING after GROUP BY
-- [ ] Correct SQL clause ordering (SELECT → FROM → JOIN → WHERE → GROUP BY → HAVING → ORDER BY → LIMIT)
+- [x] Integrate aggregates into SELECT
+- [x] Integrate GROUP BY into query chain
+- [x] Integrate HAVING after GROUP BY
+- [x] Correct SQL clause ordering (SELECT → FROM → JOIN → WHERE → GROUP BY → HAVING → ORDER BY → LIMIT)
 
 ### Testing
 
-- [ ] `tests/unit/test_aggregates.cpp` - Aggregate function tests
-- [ ] Simple aggregates (COUNT, SUM, AVG, MIN, MAX)
-- [ ] GROUP BY single column
-- [ ] GROUP BY multiple columns
-- [ ] HAVING clauses
-- [ ] Aggregates with JOINs
-- [ ] All Phase 6 tests passing
+- [x] `tests/unit/test_aggregates.cpp` - Aggregate function tests (23 tests)
+- [x] Simple aggregates (COUNT, SUM, AVG, MIN, MAX)
+- [x] GROUP BY single column
+- [x] GROUP BY multiple columns
+- [x] HAVING clauses
+- [x] Aggregates with JOINs
+- [x] All Phase 6 tests passing
 
 ### Deliverables
 
-- [ ] All 6 aggregate functions implemented
-- [ ] GROUP BY and HAVING support
-- [ ] Integration with existing query builders
-- [ ] Comprehensive test coverage
+- [x] All 6 aggregate functions implemented
+- [x] GROUP BY and HAVING support
+- [x] Integration with existing query builders
+- [x] Comprehensive test coverage (23 tests)
 
-**Status**: 🔴 Not Started
-**Progress**: 0/24 tasks complete
+**Status**: 🟢 Complete
+**Progress**: 24/24 tasks complete
+**Completed**: 2025-11-07
 
-**Why This Matters**: Without aggregates and GROUP BY, it's impossible to perform analytics, generate reports, or compute summary statistics - essential features for most applications.
+**Impact**: glz-sqlgen now supports full analytics and reporting capabilities! Users can compute aggregate statistics (COUNT, SUM, AVG, MIN, MAX), group results with GROUP BY, filter groups with HAVING, and build complex analytical queries combining all SQL clauses with compile-time type safety.
 
 ---
 
@@ -693,16 +694,15 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 ## Overall Progress
 
 **Total Tasks**: 224
-**Completed**: 78
+**Completed**: 102
 **In Progress**: 0
-**Not Started**: 146
+**Not Started**: 122
 
-**Overall Completion**: 34.8%
+**Overall Completion**: 45.5%
 
 ### Progress by Phase
 
-- Phase 1-5: ✅ Complete (78 tasks, 131+ tests passing)
-- Phase 6: Aggregate Functions (24 tasks)
+- Phase 1-6: ✅ Complete (102 tasks, 154+ tests passing)
 - Phase 7: Advanced Conditions (21 tasks)
 - Phase 8: SQL Functions (46 tasks)
 - Phase 9: PostgreSQL Adapter (28 tasks)
@@ -720,7 +720,7 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 | M3: Query API Complete | Week 6 | 🟢 Complete | Core query builders implemented (99 tests passing) |
 | M4: SQLite Support | Week 8 | 🟢 Complete | SQLite adapter working (112 tests passing) |
 | M5: Multi-Table Queries | Week 10 | 🟢 Complete | JOIN operations implemented (131+ tests passing) |
-| M6: Analytics Support | Week 12 | 🔴 Not Started | Aggregates and GROUP BY working |
+| M6: Analytics Support | Week 12 | 🟢 Complete | Aggregates and GROUP BY working (154+ tests passing) |
 | M7: Advanced Queries | Week 14 | 🔴 Not Started | Advanced conditions (LIKE, IN, NULL) |
 | M8: SQL Functions | Week 16 | 🔴 Not Started | String/math/date functions implemented |
 | M9: PostgreSQL Support | Week 18 | 🔴 Not Started | PostgreSQL adapter working |
@@ -762,16 +762,16 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 ## Next Actions
 
 ### Immediate (This Week)
-1. ✅ Phase 1-5 complete! (131+ tests passing)
-2. Begin Phase 6: Aggregate Functions & GROUP BY
-3. Implement count(), sum(), avg(), min(), max()
-4. Add GROUP BY and HAVING clause support
+1. ✅ Phase 1-6 complete! (154+ tests passing)
+2. Begin Phase 7: Advanced Conditions
+3. Implement LIKE, IN, NULL checks
+4. Add BETWEEN operator support
 
 ### Short Term (Next 2-4 Weeks)
-1. ✅ Phase 5: JOIN Operations complete
-2. Complete Phase 6: Aggregate Functions & GROUP BY
-3. Complete Phase 7: Advanced Conditions
-4. Enable analytics/reporting queries
+1. ✅ Phase 5-6: JOIN & Aggregates complete
+2. Complete Phase 7: Advanced Conditions
+3. Complete Phase 8: SQL Functions
+4. Achieve full SQL query feature parity
 
 ### Medium Term (Weeks 5-10)
 1. Complete Phase 7: Advanced Conditions (LIKE, IN, NULL)
@@ -791,6 +791,7 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 
 | Version | Date | Notes |
 |---------|------|-------|
+| 0.0.7 | 2025-11-07 | Phase 6 complete - Aggregate functions & GROUP BY/HAVING with 154+ tests |
 | 0.0.6 | 2025-11-07 | Phase 5 complete - JOIN operations (INNER, LEFT, RIGHT, FULL, CROSS) with 131+ tests |
 | 0.0.5 | 2025-11-07 | Roadmap updated with detailed Phase 5-11 breakdown based on sqlgen analysis |
 | 0.0.4 | 2025-11-07 | Phase 4 complete - SQLite adapter with transactions (112 tests passing) |
