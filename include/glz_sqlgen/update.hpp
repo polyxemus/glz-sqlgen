@@ -67,7 +67,8 @@ auto update(const SetTypes&... sets) {
     static_assert(sizeof...(sets) > 0, "Must update at least one column");
     using SetsTuple = std::tuple<SetTypes...>;
     return Update<TableType, SetsTuple>{
-        .sets_ = std::make_tuple(sets...)
+        .sets_ = std::make_tuple(sets...),
+        .where_ = Nothing{}
     };
 }
 

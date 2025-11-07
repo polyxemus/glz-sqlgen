@@ -16,6 +16,7 @@ test_exe = executable(
   sources: test_sources,
   include_directories: inc_dir,
   dependencies: [gtest_dep, gtest_main_dep, glz_sqlgen_dep],
+  cpp_args: ['-Wno-sign-compare'],  # Suppress warnings from googletest headers
 )
 
 # Register test with meson

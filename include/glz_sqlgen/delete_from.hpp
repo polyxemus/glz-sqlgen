@@ -30,7 +30,7 @@ struct DeleteFrom {
 
     /// Pipe operator for WHERE clause
     template <class ConditionType>
-    friend auto operator|(const DeleteFrom& d, const Where<ConditionType>& w) {
+    friend auto operator|(const DeleteFrom& /*unused*/, const Where<ConditionType>& w) {
         static_assert(std::is_same_v<WhereType, Nothing>,
                      "Cannot call where() twice");
 

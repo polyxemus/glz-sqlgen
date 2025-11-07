@@ -130,7 +130,10 @@ template <class TableType, class... FieldTypes>
 auto select_from(const FieldTypes&... fields) {
     using FieldsTuple = std::tuple<FieldTypes...>;
     return SelectFrom<TableType, FieldsTuple>{
-        .fields_ = std::make_tuple(fields...)
+        .fields_ = std::make_tuple(fields...),
+        .where_ = Nothing{},
+        .order_by_ = Nothing{},
+        .limit_ = Nothing{}
     };
 }
 
