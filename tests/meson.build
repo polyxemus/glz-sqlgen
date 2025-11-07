@@ -6,6 +6,8 @@ test_sources = files(
   'unit/test_transpilation.cpp',
   'unit/test_sql_generation.cpp',
   'unit/test_table_info.cpp',
+  'unit/test_select.cpp',
+  'unit/test_insert_update_delete.cpp',
 )
 
 # Test executable
