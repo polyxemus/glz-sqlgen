@@ -245,26 +245,28 @@ inline std::string to_sql(const glz_sqlgen::advanced::NotBetweenCondition<ColTyp
            to_sql(Value{cond.lower}) + " AND " +
            to_sql(Value{cond.upper});
 }
-/// Helper to check if we need parentheses for logical operators
+/// Helper to check if a Condition contains a logical operator
 template <class T>
-constexpr bool needs_parentheses_for_logic = false;
+constexpr bool is_logical_condition = false;
 
-// Specialize for Condition types (which contain logical operators)
-template <class L, Operator Op, class R>
-constexpr bool needs_parentheses_for_logic<Condition<L, Op, R>> = true;
+// Specialize for Condition types with logical operators
+template <class L, class R>
+constexpr bool is_logical_condition<Condition<L, Operator::logical_and, R>> = true;
 
-template <class T>
-constexpr bool needs_parentheses_for_logic<ConditionWrapper<T>> = true;
+template <class L, class R>
+constexpr bool is_logical_condition<Condition<L, Operator::logical_or, R>> = true;
 
 /// Convert a condition to SQL
 template <class Left, Operator Op, class Right>
 std::string to_sql(const Condition<Left, Op, Right>& condition) {
     std::string result;
 
-    // Add parentheses around operands if this is a logical operator (AND/OR)
+    // Add parentheses around operands only if:
+    // 1. This is a logical operator (AND/OR), AND
+    // 2. The operand itself contains a logical operator
     constexpr bool is_logical = (Op == Operator::logical_and || Op == Operator::logical_or);
 
-    if constexpr (is_logical && needs_parentheses_for_logic<std::decay_t<Left>>) {
+    if constexpr (is_logical && is_logical_condition<std::decay_t<Left>>) {
         result = "(" + to_sql(condition.left) + ")";
     } else {
         result = to_sql(condition.left);
@@ -272,7 +274,7 @@ std::string to_sql(const Condition<Left, Op, Right>& condition) {
 
     result += operator_to_sql(Op);
 
-    if constexpr (is_logical && needs_parentheses_for_logic<std::decay_t<Right>>) {
+    if constexpr (is_logical && is_logical_condition<std::decay_t<Right>>) {
         result += "(" + to_sql(condition.right) + ")";
     } else {
         result += to_sql(condition.right);
