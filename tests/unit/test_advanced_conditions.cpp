@@ -212,7 +212,7 @@ TEST(AdvancedConditionsTest, BetweenDoubles) {
         | where(between("price"_c, 10.0, 100.0));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"stock\", \"category\" FROM \"products\" WHERE \"price\" BETWEEN 10.000000 AND 100.000000");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"stock\", \"category\" FROM \"products\" WHERE \"price\" BETWEEN 10 AND 100");
 }
 
 TEST(AdvancedConditionsTest, NotBetweenIntegers) {
@@ -228,7 +228,7 @@ TEST(AdvancedConditionsTest, NotBetweenDoubles) {
         | where(not_between("price"_c, 0.0, 10.0));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"stock\", \"category\" FROM \"products\" WHERE \"price\" NOT BETWEEN 0.000000 AND 10.000000");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"stock\", \"category\" FROM \"products\" WHERE \"price\" NOT BETWEEN 0 AND 10");
 }
 
 // Complex Combinations
@@ -266,7 +266,7 @@ TEST(AdvancedConditionsTest, ComplexConditionWithMultipleAdvanced) {
         );
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"stock\", \"category\" FROM \"products\" WHERE \"price\" BETWEEN 10.000000 AND 100.000000 AND \"category\" NOT IN ('Clearance', 'Discontinued') AND \"stock\" IS NOT NULL");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"stock\", \"category\" FROM \"products\" WHERE \"price\" BETWEEN 10 AND 100 AND \"category\" NOT IN ('Clearance', 'Discontinued') AND \"stock\" IS NOT NULL");
 }
 
 TEST(AdvancedConditionsTest, NestedConditionsWithAdvanced) {
@@ -326,7 +326,7 @@ TEST(AdvancedConditionsTest, AdvancedConditionsWithOrderByLimit) {
         | limit(20);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"stock\", \"category\" FROM \"products\" WHERE \"price\" BETWEEN 50.000000 AND 200.000000 AND \"category\" IN ('Electronics', 'Computers') ORDER BY \"price\" LIMIT 20");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"stock\", \"category\" FROM \"products\" WHERE \"price\" BETWEEN 50 AND 200 AND \"category\" IN ('Electronics', 'Computers') ORDER BY \"price\" LIMIT 20");
 }
 
 TEST(AdvancedConditionsTest, IsNullWithDescendingOrder) {
@@ -387,7 +387,7 @@ TEST(AdvancedConditionsTest, ProductFilterQuery) {
         | order_by("price"_c.desc());
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"stock\", \"category\" FROM \"products\" WHERE \"category\" IN ('Electronics', 'Computers', 'Gaming') AND \"price\" BETWEEN 100.000000 AND 1000.000000 AND \"name\" NOT IN ('Refurbished', 'Used') AND \"stock\" IS NOT NULL ORDER BY \"price\" DESC");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"stock\", \"category\" FROM \"products\" WHERE \"category\" IN ('Electronics', 'Computers', 'Gaming') AND \"price\" BETWEEN 100 AND 1000 AND \"name\" NOT IN ('Refurbished', 'Used') AND \"stock\" IS NOT NULL ORDER BY \"price\" DESC");
 }
 
 TEST(AdvancedConditionsTest, NullableFieldsQuery) {

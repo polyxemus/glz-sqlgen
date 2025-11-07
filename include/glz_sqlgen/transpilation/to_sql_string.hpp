@@ -105,11 +105,20 @@ inline std::string to_sql(uint64_t value) {
 }
 
 inline std::string to_sql(double value) {
-    return std::to_string(value);
+    std::string str = std::to_string(value);
+    // Remove trailing zeros after decimal point
+    if (str.find('.') != std::string::npos) {
+        str.erase(str.find_last_not_of('0') + 1, std::string::npos);
+        // Remove trailing decimal point if no fractional part
+        if (str.back() == '.') {
+            str.pop_back();
+        }
+    }
+    return str;
 }
 
 inline std::string to_sql(float value) {
-    return std::to_string(value);
+    return to_sql(static_cast<double>(value));
 }
 
 inline std::string to_sql(bool value) {
@@ -130,12 +139,11 @@ std::string to_sql(const Value<T>& value) {
     if constexpr (std::is_same_v<T, std::string>) {
         return quote_string(value.get());
     } else if constexpr (std::is_same_v<T, int> || std::is_same_v<T, int64_t> ||
-                         std::is_same_v<T, uint32_t> || std::is_same_v<T, uint64_t>) {
-        return std::to_string(value.get());
-    } else if constexpr (std::is_same_v<T, double> || std::is_same_v<T, float>) {
-        return std::to_string(value.get());
-    } else if constexpr (std::is_same_v<T, bool>) {
-        return value.get() ? "1" : "0";
+                         std::is_same_v<T, uint32_t> || std::is_same_v<T, uint64_t> ||
+                         std::is_same_v<T, double> || std::is_same_v<T, float> ||
+                         std::is_same_v<T, bool>) {
+        // Use the standalone to_sql functions for proper formatting
+        return to_sql(value.get());
     } else {
         // For Col, Operation, and other transpilation types, recursively call to_sql
         return to_sql(value.get());
@@ -245,6 +253,17 @@ inline std::string to_sql(const glz_sqlgen::advanced::NotBetweenCondition<ColTyp
            to_sql(Value{cond.lower}) + " AND " +
            to_sql(Value{cond.upper});
 }
+/// Helper to extract operator from a Condition type
+template <class T>
+struct GetOperator {
+    static constexpr Operator value = Operator::equal; // Default, won't be used
+};
+
+template <class L, Operator Op, class R>
+struct GetOperator<Condition<L, Op, R>> {
+    static constexpr Operator value = Op;
+};
+
 /// Helper to check if a Condition contains a logical operator
 template <class T>
 constexpr bool is_logical_condition = false;
@@ -263,11 +282,17 @@ std::string to_sql(const Condition<Left, Op, Right>& condition) {
 
     // Add parentheses around operands only if:
     // 1. This is a logical operator (AND/OR), AND
-    // 2. The operand itself contains a logical operator
+    // 2. The operand contains a DIFFERENT logical operator (to preserve precedence)
     constexpr bool is_logical = (Op == Operator::logical_and || Op == Operator::logical_or);
 
     if constexpr (is_logical && is_logical_condition<std::decay_t<Left>>) {
-        result = "(" + to_sql(condition.left) + ")";
+        constexpr Operator left_op = GetOperator<std::decay_t<Left>>::value;
+        // Only add parentheses if operators differ (mixing AND and OR)
+        if constexpr (left_op != Op) {
+            result = "(" + to_sql(condition.left) + ")";
+        } else {
+            result = to_sql(condition.left);
+        }
     } else {
         result = to_sql(condition.left);
     }
@@ -275,6 +300,8 @@ std::string to_sql(const Condition<Left, Op, Right>& condition) {
     result += operator_to_sql(Op);
 
     if constexpr (is_logical && is_logical_condition<std::decay_t<Right>>) {
+        // Always add parentheses to right operands that are logical conditions
+        // This preserves grouping and improves readability
         result += "(" + to_sql(condition.right) + ")";
     } else {
         result += to_sql(condition.right);

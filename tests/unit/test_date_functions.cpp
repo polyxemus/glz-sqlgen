@@ -67,7 +67,7 @@ TEST(DateFunctionsTest, YearInWhere) {
         | where(year("event_date"_c) == 2024);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\",  \"created_at\" FROM \"events\" WHERE CAST(strftime('%Y', \"event_date\") AS INTEGER) = 2024");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\", \"created_at\" FROM \"events\" WHERE CAST(strftime('%Y', \"event_date\") AS INTEGER) = 2024");
 }
 
 TEST(DateFunctionsTest, YearWithOrderBy) {
@@ -75,7 +75,7 @@ TEST(DateFunctionsTest, YearWithOrderBy) {
         | order_by(year("event_date"_c));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\",  \"created_at\" FROM \"events\" ORDER BY CAST(strftime('%Y', \"event_date\") AS INTEGER)");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\", \"created_at\" FROM \"events\" ORDER BY CAST(strftime('%Y', \"event_date\") AS INTEGER)");
 }
 
 // MONTH Tests
@@ -92,7 +92,7 @@ TEST(DateFunctionsTest, MonthInWhere) {
         | where(month("event_date"_c) == 12);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\",  \"created_at\" FROM \"events\" WHERE CAST(strftime('%m', \"event_date\") AS INTEGER) = 12");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\", \"created_at\" FROM \"events\" WHERE CAST(strftime('%m', \"event_date\") AS INTEGER) = 12");
 }
 
 TEST(DateFunctionsTest, MonthRange) {
@@ -100,7 +100,7 @@ TEST(DateFunctionsTest, MonthRange) {
         | where(month("event_date"_c) >= 6 && month("event_date"_c) <= 8);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\",  \"created_at\" FROM \"events\" WHERE CAST(strftime('%m', \"event_date\") AS INTEGER) >= 6 AND CAST(strftime('%m', \"event_date\") AS INTEGER) <= 8");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\", \"created_at\" FROM \"events\" WHERE CAST(strftime('%m', \"event_date\") AS INTEGER) >= 6 AND CAST(strftime('%m', \"event_date\") AS INTEGER) <= 8");
 }
 
 // DAY Tests
@@ -117,7 +117,7 @@ TEST(DateFunctionsTest, DayInWhere) {
         | where(day("event_date"_c) == 15);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\",  \"created_at\" FROM \"events\" WHERE CAST(strftime('%d', \"event_date\") AS INTEGER) = 15");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\", \"created_at\" FROM \"events\" WHERE CAST(strftime('%d', \"event_date\") AS INTEGER) = 15");
 }
 
 // HOUR Tests
@@ -134,7 +134,7 @@ TEST(DateFunctionsTest, HourInWhere) {
         | where(hour("datetime_field"_c) >= 9 && hour("datetime_field"_c) <= 17);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"timestamps\" WHERE CAST(strftime('%H', \"datetime_field\") AS INTEGER) >= 9 AND CAST(strftime('%H', \"datetime_field\") AS INTEGER) <= 17");
+    EXPECT_EQ(sql, "SELECT \"id\", \"datetime_field\", \"date_field\", \"time_field\" FROM \"timestamps\" WHERE CAST(strftime('%H', \"datetime_field\") AS INTEGER) >= 9 AND CAST(strftime('%H', \"datetime_field\") AS INTEGER) <= 17");
 }
 
 // MINUTE Tests
@@ -151,7 +151,7 @@ TEST(DateFunctionsTest, MinuteInWhere) {
         | where(minute("datetime_field"_c) == 30);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"timestamps\" WHERE CAST(strftime('%M', \"datetime_field\") AS INTEGER) = 30");
+    EXPECT_EQ(sql, "SELECT \"id\", \"datetime_field\", \"date_field\", \"time_field\" FROM \"timestamps\" WHERE CAST(strftime('%M', \"datetime_field\") AS INTEGER) = 30");
 }
 
 // SECOND Tests
@@ -168,7 +168,7 @@ TEST(DateFunctionsTest, SecondInWhere) {
         | where(second("datetime_field"_c) < 30);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"timestamps\" WHERE CAST(strftime('%S', \"datetime_field\") AS INTEGER) < 30");
+    EXPECT_EQ(sql, "SELECT \"id\", \"datetime_field\", \"date_field\", \"time_field\" FROM \"timestamps\" WHERE CAST(strftime('%S', \"datetime_field\") AS INTEGER) < 30");
 }
 
 // WEEKDAY Tests
@@ -185,7 +185,7 @@ TEST(DateFunctionsTest, WeekdayInWhere) {
         | where(weekday("event_date"_c) >= 1 && weekday("event_date"_c) <= 5);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\",  \"created_at\" FROM \"events\" WHERE CAST(strftime('%w', \"event_date\") AS INTEGER) >= 1 AND CAST(strftime('%w', \"event_date\") AS INTEGER) <= 5");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\", \"created_at\" FROM \"events\" WHERE CAST(strftime('%w', \"event_date\") AS INTEGER) >= 1 AND CAST(strftime('%w', \"event_date\") AS INTEGER) <= 5");
 }
 
 // DAYS_BETWEEN Tests
@@ -204,7 +204,7 @@ TEST(DateFunctionsTest, DaysBetweenInWhere) {
         | where(days_between("event_date"_c, "created_at"_c) > 30);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\",  \"created_at\" FROM \"events\" WHERE (julianday(\"created_at\") - julianday(\"event_date\")) > 30");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\", \"created_at\" FROM \"events\" WHERE (julianday(\"created_at\") - julianday(\"event_date\")) > 30");
 }
 
 TEST(DateFunctionsTest, DaysBetweenWithValue) {
@@ -212,7 +212,7 @@ TEST(DateFunctionsTest, DaysBetweenWithValue) {
         | where(days_between("event_date"_c, "2024-12-31") <= 90);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\",  \"created_at\" FROM \"events\" WHERE (julianday('2024-12-31') - julianday(\"event_date\")) <= 90");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\", \"created_at\" FROM \"events\" WHERE (julianday('2024-12-31') - julianday(\"event_date\")) <= 90");
 }
 
 // UNIXEPOCH Tests
@@ -229,7 +229,7 @@ TEST(DateFunctionsTest, UnixepochInWhere) {
         | where(unixepoch("datetime_field"_c) > 1700000000);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"timestamps\" WHERE unixepoch(\"datetime_field\") > 1700000000");
+    EXPECT_EQ(sql, "SELECT \"id\", \"datetime_field\", \"date_field\", \"time_field\" FROM \"timestamps\" WHERE unixepoch(\"datetime_field\") > 1700000000");
 }
 
 // COMBINED DATE FUNCTIONS
@@ -254,7 +254,7 @@ TEST(DateFunctionsTest, DateFilterComplex) {
         );
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\",  \"created_at\" FROM \"events\" WHERE CAST(strftime('%Y', \"event_date\") AS INTEGER) = 2024 AND CAST(strftime('%m', \"event_date\") AS INTEGER) >= 6 AND CAST(strftime('%w', \"event_date\") AS INTEGER) != 0");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\", \"created_at\" FROM \"events\" WHERE CAST(strftime('%Y', \"event_date\") AS INTEGER) = 2024 AND CAST(strftime('%m', \"event_date\") AS INTEGER) >= 6 AND CAST(strftime('%w', \"event_date\") AS INTEGER) != 0");
 }
 
 TEST(DateFunctionsTest, TimeRangeQuery) {
@@ -266,7 +266,7 @@ TEST(DateFunctionsTest, TimeRangeQuery) {
         );
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"timestamps\" WHERE CAST(strftime('%H', \"datetime_field\") AS INTEGER) >= 9 AND CAST(strftime('%H', \"datetime_field\") AS INTEGER) < 17 AND CAST(strftime('%M', \"datetime_field\") AS INTEGER) >= 0");
+    EXPECT_EQ(sql, "SELECT \"id\", \"datetime_field\", \"date_field\", \"time_field\" FROM \"timestamps\" WHERE CAST(strftime('%H', \"datetime_field\") AS INTEGER) >= 9 AND CAST(strftime('%H', \"datetime_field\") AS INTEGER) < 17 AND CAST(strftime('%M', \"datetime_field\") AS INTEGER) >= 0");
 }
 
 // UTILITY FUNCTIONS - CAST
@@ -297,7 +297,7 @@ TEST(UtilityFunctionsTest, CastInWhere) {
         | where(cast<int>("id"_c) > 100);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\",  \"created_at\" FROM \"events\" WHERE CAST(\"id\" AS INTEGER) > 100");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\", \"created_at\" FROM \"events\" WHERE CAST(\"id\" AS INTEGER) > 100");
 }
 
 // UTILITY FUNCTIONS - COALESCE
@@ -323,7 +323,7 @@ TEST(UtilityFunctionsTest, CoalesceInWhere) {
         | where(coalesce("name"_c, "") != "");
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\",  \"created_at\" FROM \"events\" WHERE COALESCE(\"name\", '') != ''");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"event_date\", \"created_at\" FROM \"events\" WHERE COALESCE(\"name\", '') != ''");
 }
 
 TEST(UtilityFunctionsTest, CoalesceWithCast) {

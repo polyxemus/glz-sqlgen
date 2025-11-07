@@ -31,8 +31,12 @@ struct SelectFrom {
 
         // Add fields
         if constexpr (std::is_same_v<FieldsTuple, Nothing>) {
-            // SELECT *
-            sql += transpilation::select_field_list<TableType>();
+            // SELECT * - use table prefix if there are JOINs
+            if constexpr (!std::is_same_v<JoinListType, Nothing>) {
+                sql += transpilation::select_field_list<TableType>(transpilation::get_table_name<TableType>());
+            } else {
+                sql += transpilation::select_field_list<TableType>();
+            }
         } else {
             // SELECT specified fields
             bool first = true;

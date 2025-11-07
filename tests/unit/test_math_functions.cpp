@@ -71,7 +71,7 @@ TEST(MathFunctionsTest, AbsInWhere) {
         | where(abs("value"_c) > 10.0);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE ABS(\"value\") > 10.000000");
+    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE ABS(\"value\") > 10");
 }
 
 TEST(MathFunctionsTest, AbsExpression) {
@@ -95,7 +95,7 @@ TEST(MathFunctionsTest, CeilInWhere) {
         | where(ceil("price"_c) >= 100);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"products\" WHERE CEIL(\"price\") >= 100");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"cost\", \"quantity\" FROM \"products\" WHERE CEIL(\"price\") >= 100");
 }
 
 // FLOOR Tests
@@ -112,7 +112,7 @@ TEST(MathFunctionsTest, FloorInWhere) {
         | where(floor("price"_c) <= 50);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"products\" WHERE FLOOR(\"price\") <= 50");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"cost\", \"quantity\" FROM \"products\" WHERE FLOOR(\"price\") <= 50");
 }
 
 // ROUND Tests
@@ -136,7 +136,7 @@ TEST(MathFunctionsTest, RoundInWhere) {
         | where(round("price"_c, 0) == 100);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"products\" WHERE ROUND(\"price\", 0) = 100");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"cost\", \"quantity\" FROM \"products\" WHERE ROUND(\"price\", 0) = 100");
 }
 
 // SQRT Tests
@@ -153,7 +153,7 @@ TEST(MathFunctionsTest, SqrtInWhere) {
         | where(sqrt("value"_c) > 5.0);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE SQRT(\"value\") > 5.000000");
+    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE SQRT(\"value\") > 5");
 }
 
 TEST(MathFunctionsTest, SqrtExpression) {
@@ -188,7 +188,7 @@ TEST(MathFunctionsTest, LnInWhere) {
         | where(ln("value"_c) > 2.0);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE LN(\"value\") > 2.000000");
+    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE LN(\"value\") > 2");
 }
 
 // LOG2 Tests
@@ -230,7 +230,7 @@ TEST(MathFunctionsTest, PowInWhere) {
         | where(pow("x"_c, 2) > 100.0);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE POW(\"x\", 2) > 100.000000");
+    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE POW(\"x\", 2) > 100");
 }
 
 // TRIGONOMETRIC FUNCTIONS
@@ -282,7 +282,7 @@ TEST(MathFunctionsTest, TrigInWhere) {
         | where(sin("angle"_c) > 0.5);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE SIN(\"angle\") > 0.500000");
+    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE SIN(\"angle\") > 0.5");
 }
 
 // COMBINED MATH FUNCTIONS
@@ -320,7 +320,7 @@ TEST(MathFunctionsTest, MathFunctionsWithOrderBy) {
         | order_by(round("price"_c, 0));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"products\" WHERE ABS((\"price\" - \"cost\")) > 10.000000 ORDER BY ROUND(\"price\", 0)");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"cost\", \"quantity\" FROM \"products\" WHERE ABS((\"price\" - \"cost\")) > 10 ORDER BY ROUND(\"price\", 0)");
 }
 
 TEST(MathFunctionsTest, PythagoreanTheorem) {
@@ -328,5 +328,5 @@ TEST(MathFunctionsTest, PythagoreanTheorem) {
         | where(sqrt(pow("x"_c, 2) + pow("y"_c, 2)) < 10.0);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE SQRT((POW(\"x\", 2) + POW(\"y\", 2))) < 10.000000");
+    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE SQRT((POW(\"x\", 2) + POW(\"y\", 2))) < 10");
 }
