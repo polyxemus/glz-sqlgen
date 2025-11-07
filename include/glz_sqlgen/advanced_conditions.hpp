@@ -18,30 +18,30 @@ namespace advanced {
 
 /// LIKE pattern matching
 template <class ColType, class PatternType>
-constexpr auto like(const ColType& col, const PatternType& pattern) {
+auto like(const ColType& col, const PatternType& pattern) {
     return transpilation::make_condition_wrapper(
-        transpilation::make_condition<transpilation::Operator::like>(col, pattern));
+        transpilation::make_condition<transpilation::Operator::like>(col, transpilation::Value<PatternType>{pattern}));
 }
 
 /// NOT LIKE pattern matching
 template <class ColType, class PatternType>
-constexpr auto not_like(const ColType& col, const PatternType& pattern) {
+auto not_like(const ColType& col, const PatternType& pattern) {
     return transpilation::make_condition_wrapper(
-        transpilation::make_condition<transpilation::Operator::not_like>(col, pattern));
+        transpilation::make_condition<transpilation::Operator::not_like>(col, transpilation::Value<PatternType>{pattern}));
 }
 
 /// ILIKE case-insensitive pattern matching (PostgreSQL)
 template <class ColType, class PatternType>
-constexpr auto ilike(const ColType& col, const PatternType& pattern) {
+auto ilike(const ColType& col, const PatternType& pattern) {
     return transpilation::make_condition_wrapper(
-        transpilation::make_condition<transpilation::Operator::ilike>(col, pattern));
+        transpilation::make_condition<transpilation::Operator::ilike>(col, transpilation::Value<PatternType>{pattern}));
 }
 
 /// NOT ILIKE case-insensitive pattern matching
 template <class ColType, class PatternType>
-constexpr auto not_ilike(const ColType& col, const PatternType& pattern) {
+auto not_ilike(const ColType& col, const PatternType& pattern) {
     return transpilation::make_condition_wrapper(
-        transpilation::make_condition<transpilation::Operator::not_ilike>(col, pattern));
+        transpilation::make_condition<transpilation::Operator::not_ilike>(col, transpilation::Value<PatternType>{pattern}));
 }
 
 /// IS NULL check

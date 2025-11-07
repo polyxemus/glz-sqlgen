@@ -114,7 +114,13 @@ struct Function {
     static constexpr FunctionType function_type = Type;
     std::tuple<ArgTypes...> arguments;
 
+    // Constructor for multiple arguments
     constexpr Function(const ArgTypes&... args) : arguments(std::make_tuple(args...)) {}
+
+    // Constructor for single argument (including tuple)
+    template <class T>
+    requires (sizeof...(ArgTypes) == 1)
+    constexpr Function(T&& arg) : arguments(std::make_tuple(std::forward<T>(arg))) {}
 };
 
 /// Marker type for CAST target type

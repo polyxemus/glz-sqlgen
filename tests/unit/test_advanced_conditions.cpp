@@ -148,7 +148,7 @@ TEST(AdvancedConditionsTest, IsNotNullWithOrderBy) {
     auto query = select_from<Users>()
         | where(is_not_null("age"_c))
         | order_by("age"_c)
-        | limit(10_limit);
+        | limit(10);
 
     auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"age\" IS NOT NULL ORDER BY \"age\" LIMIT 10");
@@ -322,7 +322,7 @@ TEST(AdvancedConditionsTest, AdvancedConditionsWithOrderByLimit) {
             in("category"_c, "Electronics", "Computers")
         )
         | order_by("price"_c)
-        | limit(20_limit);
+        | limit(20);
 
     auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"products\" WHERE \"price\" BETWEEN 50.000000 AND 200.000000 AND \"category\" IN ('Electronics', 'Computers') ORDER BY \"price\" LIMIT 20");
@@ -331,7 +331,7 @@ TEST(AdvancedConditionsTest, AdvancedConditionsWithOrderByLimit) {
 TEST(AdvancedConditionsTest, IsNullWithDescendingOrder) {
     auto query = select_from<Users>()
         | where(is_null("city"_c))
-        | order_by(desc("name"_c));
+        | order_by("name"_c.desc());
 
     auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"city\" IS NULL ORDER BY \"name\" DESC");
@@ -369,7 +369,7 @@ TEST(AdvancedConditionsTest, UserSearchQuery) {
             is_not_null("city"_c)
         )
         | order_by("name"_c)
-        | limit(50_limit);
+        | limit(50);
 
     auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE (\"name\" LIKE '%Smith%' OR \"email\" LIKE '%smith%') AND \"age\" BETWEEN 18 AND 100 AND \"city\" IS NOT NULL ORDER BY \"name\" LIMIT 50");
@@ -383,7 +383,7 @@ TEST(AdvancedConditionsTest, ProductFilterQuery) {
             not_in("name"_c, "Refurbished", "Used") &&
             is_not_null("stock"_c)
         )
-        | order_by(desc("price"_c));
+        | order_by("price"_c.desc());
 
     auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT * FROM \"products\" WHERE \"category\" IN ('Electronics', 'Computers', 'Gaming') AND \"price\" BETWEEN 100.000000 AND 1000.000000 AND \"name\" NOT IN ('Refurbished', 'Used') AND \"stock\" IS NOT NULL ORDER BY \"price\" DESC");

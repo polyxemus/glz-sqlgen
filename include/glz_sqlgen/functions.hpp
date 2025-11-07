@@ -2,6 +2,7 @@
 
 #include "transpilation/Function.hpp"
 #include "transpilation/Value.hpp"
+#include "transpilation/to_transpilation_type.hpp"
 #include <type_traits>
 
 namespace glz_sqlgen {
@@ -12,9 +13,10 @@ namespace glz_sqlgen {
 
 /// CONCAT - Concatenate strings
 template <class... ArgTypes>
-constexpr auto concat(const ArgTypes&... args) {
-    return transpilation::Function<transpilation::FunctionType::concat, std::add_const_t<std::decay_t<ArgTypes>>...>{
-        args...
+auto concat(const ArgTypes&... args) {
+    using Type = std::tuple<typename transpilation::ToTranspilationType<std::remove_cvref_t<ArgTypes>>::Type...>;
+    return transpilation::Function<transpilation::FunctionType::concat, Type>{
+        std::make_tuple(transpilation::to_transpilation_type(args)...)
     };
 }
 
@@ -56,12 +58,14 @@ constexpr auto rtrim(const ArgType& arg) {
 
 /// REPLACE - Replace substring
 template <class StrType, class FromType, class ToType>
-constexpr auto replace(const StrType& str, const FromType& from, const ToType& to) {
-    return transpilation::Function<transpilation::FunctionType::replace,
-        std::decay_t<StrType>, std::decay_t<FromType>, std::decay_t<ToType>>{
-        str,
-        from,
-        to
+auto replace(const StrType& str, const FromType& from, const ToType& to) {
+    using Type1 = typename transpilation::ToTranspilationType<std::remove_cvref_t<StrType>>::Type;
+    using Type2 = typename transpilation::ToTranspilationType<std::remove_cvref_t<FromType>>::Type;
+    using Type3 = typename transpilation::ToTranspilationType<std::remove_cvref_t<ToType>>::Type;
+    return transpilation::Function<transpilation::FunctionType::replace, Type1, Type2, Type3>{
+        transpilation::to_transpilation_type(str),
+        transpilation::to_transpilation_type(from),
+        transpilation::to_transpilation_type(to)
     };
 }
 
@@ -232,11 +236,12 @@ constexpr auto weekday(const ArgType& arg) {
 
 /// DAYS_BETWEEN - Days between two dates
 template <class Date1Type, class Date2Type>
-constexpr auto days_between(const Date1Type& date1, const Date2Type& date2) {
-    return transpilation::Function<transpilation::FunctionType::days_between,
-        std::decay_t<Date1Type>, std::decay_t<Date2Type>>{
-        date1,
-        date2
+auto days_between(const Date1Type& date1, const Date2Type& date2) {
+    using Type1 = typename transpilation::ToTranspilationType<std::remove_cvref_t<Date1Type>>::Type;
+    using Type2 = typename transpilation::ToTranspilationType<std::remove_cvref_t<Date2Type>>::Type;
+    return transpilation::Function<transpilation::FunctionType::days_between, Type1, Type2>{
+        transpilation::to_transpilation_type(date1),
+        transpilation::to_transpilation_type(date2)
     };
 }
 
@@ -258,9 +263,10 @@ constexpr auto cast(const ExprType& expr) {
 
 /// COALESCE - Return first non-NULL value
 template <class... ArgTypes>
-constexpr auto coalesce(const ArgTypes&... args) {
-    return transpilation::Function<transpilation::FunctionType::coalesce, std::add_const_t<std::decay_t<ArgTypes>>...>{
-        args...
+auto coalesce(const ArgTypes&... args) {
+    using Type = std::tuple<typename transpilation::ToTranspilationType<std::remove_cvref_t<ArgTypes>>::Type...>;
+    return transpilation::Function<transpilation::FunctionType::coalesce, Type>{
+        std::make_tuple(transpilation::to_transpilation_type(args)...)
     };
 }
 
