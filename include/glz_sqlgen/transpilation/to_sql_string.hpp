@@ -12,6 +12,12 @@
 #include "Set.hpp"
 #include "quote.hpp"
 
+// Forward declaration for user-facing Col
+namespace glz_sqlgen {
+template <glz::string_literal Name, glz::string_literal Alias>
+struct Col;
+}
+
 namespace glz_sqlgen::transpilation {
 
 /// Convert an operator to SQL string
