@@ -1,0 +1,9 @@
+[wrap-file]
+directory = sqlgen-0.4.0
+source_url = https://github.com/getml/sqlgen/archive/refs/tags/v0.4.0.tar.gz
+source_filename = sqlgen-v0.4.0.tar.gz
+source_hash = 4db5316042b911ceeed5a5cd145b3259f9cd204e6db9faf92731be3c45602e63
+patch_directory = sqlgen
+
+[provide]
+sqlgen = sqlgen_dep

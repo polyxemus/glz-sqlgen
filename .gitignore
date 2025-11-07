@@ -1,3 +1,6 @@
+subprojects/.wraplock
+subprojects/packagecache
+subprojects/*-*
 # Prerequisites
 *.d
 
@@ -39,3 +42,29 @@
 
 # debug information files
 *.dwo
+
+# Meson build directory
+build/
+builddir/
+
+# Python virtual environment
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# UV cache
+.uv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Test artifacts
+*.log

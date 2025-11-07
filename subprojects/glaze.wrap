@@ -1,0 +1,9 @@
+[wrap-file]
+directory = glaze-6.0.2
+source_url = https://github.com/stephenberry/glaze/archive/refs/tags/v6.0.2.tar.gz
+source_filename = glaze-v6.0.2.tar.gz
+source_hash = 639e058ba7b3be7acb709baf9330a1409383966b86513b33c27df6598053eb9d
+patch_directory = glaze
+
+[provide]
+glaze = glaze_glaze_dep
