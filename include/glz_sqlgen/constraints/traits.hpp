@@ -3,23 +3,22 @@
 #include <type_traits>
 #include <string>
 #include <glaze/util/string_literal.hpp>
-#include "PrimaryKey.hpp"
-#include "Unique.hpp"
-#include "NotNull.hpp"
 
 // Forward declare constraint types for traits
+// (actual definitions are in wrapper_types.hpp and domain_types.hpp)
 namespace glz_sqlgen {
-    enum class ReferentialAction;  // Forward declare enum
+    // Wrapper types
+    template <class T, bool AutoIncr> struct PrimaryKey;
+    template <class T> struct Unique;
+    template <class T> struct NotNull;
 
+    enum class ReferentialAction;
     template <class T, class RefTable, glz::string_literal column,
               ReferentialAction OnDelete, ReferentialAction OnUpdate>
     struct ForeignKey;
 
-    template <size_t N>
-    struct Varchar;
-
-    template <size_t N>
-    struct Char;
+    template <size_t N> struct Varchar;
+    template <size_t N> struct Char;
 }
 
 namespace glz_sqlgen::constraints {

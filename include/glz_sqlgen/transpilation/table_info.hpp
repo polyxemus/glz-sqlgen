@@ -8,9 +8,8 @@
 #include <glaze/core/meta.hpp>
 #include "to_sql_type.hpp"
 #include "quote.hpp"
-#include "../constraints/metadata.hpp"
+#include "../constraints/wrapper_types.hpp"
 #include "../constraints/traits.hpp"
-#include "../constraints/ForeignKey.hpp"
 
 namespace glz_sqlgen::transpilation {
 

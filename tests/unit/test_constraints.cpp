@@ -1,9 +1,5 @@
 #include <gtest/gtest.h>
 #include <glz_sqlgen/constraints.hpp>
-#include <glz_sqlgen/constraints/PrimaryKey.hpp>
-#include <glz_sqlgen/constraints/Unique.hpp>
-#include <glz_sqlgen/constraints/NotNull.hpp>
-#include <glz_sqlgen/constraints/traits.hpp>
 
 using namespace glz_sqlgen;
 

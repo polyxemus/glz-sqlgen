@@ -40,16 +40,9 @@
 /// };
 /// ```
 
-#include "constraints/metadata.hpp"
+#include "constraints/wrapper_types.hpp"
+#include "constraints/domain_types.hpp"
 #include "constraints/traits.hpp"
-#include "constraints/PrimaryKey.hpp"
-#include "constraints/Unique.hpp"
-#include "constraints/NotNull.hpp"
-#include "constraints/ForeignKey.hpp"
-#include "constraints/Varchar.hpp"
-#include "constraints/Char.hpp"
-#include "constraints/specialized_types.hpp"
-#include "constraints/validated_types.hpp"
 
-// Constraint types are already defined in glz_sqlgen namespace via their headers
+// All constraint types are already defined in glz_sqlgen namespace via their headers
 // No additional exports needed
