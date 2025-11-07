@@ -4,6 +4,8 @@ test_sources = files(
   'unit/test_col.cpp',
   'unit/test_literals.cpp',
   'unit/test_transpilation.cpp',
+  'unit/test_sql_generation.cpp',
+  'unit/test_table_info.cpp',
 )
 
 # Test executable

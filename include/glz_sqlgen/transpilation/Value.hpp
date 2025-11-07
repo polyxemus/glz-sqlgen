@@ -21,6 +21,17 @@ struct Value {
     T& get() noexcept { return val; }
 };
 
+/// Specialization for string literals (char arrays)
+template <size_t N>
+struct Value<char[N]> {
+    std::string val;
+
+    constexpr Value(const char (&str)[N]) : val(str) {}
+
+    const std::string& get() const noexcept { return val; }
+    std::string& get() noexcept { return val; }
+};
+
 // Common value types
 using IntValue = Value<int64_t>;
 using DoubleValue = Value<double>;

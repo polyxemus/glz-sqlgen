@@ -24,7 +24,7 @@ constexpr auto make_operation(T1&& op1, T2&& op2) {
         std::forward<T1>(op1), std::forward<T2>(op2)};
 }
 
-// Operators for chaining operations
+// Operators for chaining operations (arithmetic)
 template <Operator Op1, class O1, class O2, class T>
 constexpr auto operator+(const Operation<Op1, O1, O2>& lhs, const T& rhs) {
     return make_operation<Operator::plus>(lhs, Value<T>{rhs});
@@ -44,5 +44,24 @@ template <Operator Op1, class O1, class O2, class T>
 constexpr auto operator/(const Operation<Op1, O1, O2>& lhs, const T& rhs) {
     return make_operation<Operator::divides>(lhs, Value<T>{rhs});
 }
+
+// Comparison operators for operations (to create conditions)
+template <Operator Op, class O1, class O2, class T>
+constexpr auto operator==(const Operation<Op, O1, O2>& lhs, const T& rhs);
+
+template <Operator Op, class O1, class O2, class T>
+constexpr auto operator!=(const Operation<Op, O1, O2>& lhs, const T& rhs);
+
+template <Operator Op, class O1, class O2, class T>
+constexpr auto operator<(const Operation<Op, O1, O2>& lhs, const T& rhs);
+
+template <Operator Op, class O1, class O2, class T>
+constexpr auto operator<=(const Operation<Op, O1, O2>& lhs, const T& rhs);
+
+template <Operator Op, class O1, class O2, class T>
+constexpr auto operator>(const Operation<Op, O1, O2>& lhs, const T& rhs);
+
+template <Operator Op, class O1, class O2, class T>
+constexpr auto operator>=(const Operation<Op, O1, O2>& lhs, const T& rhs);
 
 } // namespace glz_sqlgen::transpilation

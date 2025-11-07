@@ -1,6 +1,6 @@
 # glz-sqlgen Development Roadmap
 
-## Project Status: Phase 1 Complete ✅
+## Project Status: Phase 2 Complete ✅
 
 **Last Updated**: 2025-11-07
 
@@ -20,7 +20,7 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 
 **Target Version**: v0.1.0
 **Estimated Completion**: 12 weeks from start date
-**Status**: 🟢 Phase 1 Complete - In Active Development
+**Status**: 🟢 Phase 2 Complete - In Active Development
 
 ---
 
@@ -29,7 +29,7 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 | Phase | Status | Progress | Target Date | Actual Date |
 |-------|--------|----------|-------------|-------------|
 | **Phase 1: Foundation** | 🟢 Complete | 100% | Week 1-2 | 2025-11-07 |
-| **Phase 2: Transpilation** | 🔴 Not Started | 0% | Week 3-4 | - |
+| **Phase 2: Transpilation** | 🟢 Complete | 100% | Week 3-4 | 2025-11-07 |
 | **Phase 3: Query Builders** | 🔴 Not Started | 0% | Week 5-6 | - |
 | **Phase 4: Database Adapters** | 🔴 Not Started | 0% | Week 7-8 | - |
 | **Phase 5: Advanced Features** | 🔴 Not Started | 0% | Week 9-10 | - |
@@ -98,38 +98,40 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 
 ### Transpilation Types (`include/glz_sqlgen/transpilation/`)
 
-- [ ] `Col.hpp` - Transpilation-level column
-- [ ] `Value.hpp` - Value wrappers
-- [ ] `Condition.hpp` - WHERE conditions
-- [ ] `Operation.hpp` - Arithmetic/logical operations
-- [ ] `Operator.hpp` - SQL operator enum
-- [ ] `As.hpp` - Column aliasing
-- [ ] `Desc.hpp` - Descending sort marker
-- [ ] `Set.hpp` - UPDATE SET clause
+- [x] `Col.hpp` - Transpilation-level column (completed in Phase 1)
+- [x] `Value.hpp` - Value wrappers (completed in Phase 1)
+- [x] `Condition.hpp` - WHERE conditions (completed in Phase 1)
+- [x] `Operation.hpp` - Arithmetic/logical operations (completed in Phase 1)
+- [x] `Operator.hpp` - SQL operator enum (completed in Phase 1)
+- [x] `As.hpp` - Column aliasing (completed in Phase 1)
+- [x] `Desc.hpp` - Descending sort marker (completed in Phase 1)
+- [ ] `Set.hpp` - UPDATE SET clause (deferred to Phase 3)
 
 ### SQL Generators
 
-- [ ] `to_sql_string.hpp` - Expression tree to SQL
-- [ ] `table_info.hpp` - Extract table metadata
-- [ ] `field_list.hpp` - Generate column lists
-- [ ] `where_clause.hpp` - WHERE conditions
-- [ ] `join_clause.hpp` - JOIN syntax
+- [x] `to_sql_string.hpp` - Expression tree to SQL
+- [x] `table_info.hpp` - Extract table metadata using glaze reflection
+- [x] `field_list.hpp` - Generate column lists for SELECT/INSERT
+- [x] `where_clause.hpp` - WHERE conditions
+- [ ] `join_clause.hpp` - JOIN syntax (deferred to Phase 3)
 
 ### Testing
 
-- [ ] `tests/unit/test_transpilation.cpp` - SQL generation tests
-- [ ] Verify SQL output correctness
-- [ ] Test escaping and quoting
-- [ ] All Phase 2 tests passing
+- [x] `tests/unit/test_sql_generation.cpp` - SQL generation tests (21 tests)
+- [x] `tests/unit/test_table_info.cpp` - Table introspection tests (14 tests)
+- [x] Verify SQL output correctness
+- [x] Test escaping and quoting
+- [x] All Phase 2 tests passing (70 total tests)
 
 ### Deliverables
 
-- [ ] Functional transpilation layer
-- [ ] Correct SQL string generation
-- [ ] Comprehensive test coverage
+- [x] Functional transpilation layer
+- [x] Correct SQL string generation
+- [x] Comprehensive test coverage
 
-**Status**: 🔴 Not Started
-**Progress**: 0/17 tasks complete
+**Status**: 🟢 Complete
+**Progress**: 15/17 tasks complete (2 deferred to Phase 3)
+**Completed**: 2025-11-07
 
 ---
 
@@ -352,11 +354,11 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 ## Overall Progress
 
 **Total Tasks**: 126
-**Completed**: 13
+**Completed**: 28
 **In Progress**: 0
-**Not Started**: 113
+**Not Started**: 98
 
-**Overall Completion**: 10.3%
+**Overall Completion**: 22.2%
 
 ---
 
@@ -365,7 +367,7 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 | Milestone | Target | Status | Notes |
 |-----------|--------|--------|-------|
 | M1: Reflection System Working | Week 2 | 🟢 Complete | Column system with glaze complete |
-| M2: SQL Generation Working | Week 4 | 🔴 Not Started | Can generate SQL strings |
+| M2: SQL Generation Working | Week 4 | 🟢 Complete | Can generate SQL strings from expressions |
 | M3: Query API Complete | Week 6 | 🔴 Not Started | All query builders implemented |
 | M4: Database Support | Week 8 | 🔴 Not Started | SQLite + PostgreSQL working |
 | M5: Feature Complete | Week 10 | 🔴 Not Started | All sqlgen features ported |
@@ -407,14 +409,16 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 
 ### Immediate (This Week)
 1. ✅ Phase 1 complete!
-2. Begin Phase 2: Transpilation Layer
-3. Implement SQL string generation
-4. Add support for table introspection
+2. ✅ Phase 2 complete!
+3. Begin Phase 3: Query Builders
+4. Implement SELECT query builder
+5. Implement INSERT/UPDATE/DELETE builders
 
 ### Short Term (Next 2 Weeks)
 1. ✅ Complete Phase 1 (Foundation)
-2. Complete Phase 2 (Transpilation)
-3. Begin Phase 3 (Query Builders)
+2. ✅ Complete Phase 2 (Transpilation)
+3. Complete Phase 3 (Query Builders)
+4. Begin Phase 4 (Database Adapters)
 
 ### Medium Term (Weeks 3-6)
 1. Complete Phases 2-3
@@ -427,6 +431,7 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 
 | Version | Date | Notes |
 |---------|------|-------|
+| 0.0.2 | 2025-11-07 | Phase 2 complete - SQL generation and table introspection (70 tests passing) |
 | 0.0.1 | 2025-11-07 | Phase 1 complete - Column system and transpilation types |
 | 0.0.0 | 2025-11-07 | Initial roadmap created, planning complete |
 
