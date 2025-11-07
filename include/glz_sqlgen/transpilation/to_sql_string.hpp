@@ -225,3 +225,167 @@ std::string to_sql(const glz_sqlgen::advanced::NotBetweenCondition<ColType, Lowe
            to_sql(transpilation::Value{cond.upper});
 }
 
+
+// SQL Functions - Include at the end
+#include "Function.hpp"
+
+namespace glz_sqlgen::transpilation {
+
+/// Helper to get SQL type name for CAST
+template <class T>
+constexpr std::string_view get_sql_type_name() {
+    if constexpr (std::is_same_v<T, int> || std::is_same_v<T, int64_t>) {
+        return "INTEGER";
+    } else if constexpr (std::is_same_v<T, double> || std::is_same_v<T, float>) {
+        return "REAL";
+    } else if constexpr (std::is_same_v<T, std::string>) {
+        return "TEXT";
+    } else if constexpr (std::is_same_v<T, bool>) {
+        return "INTEGER";
+    } else {
+        return "TEXT";
+    }
+}
+
+/// Convert a SQL function to SQL string
+template <FunctionType Type, class... ArgTypes>
+std::string to_sql(const Function<Type, ArgTypes...>& func) {
+    std::string sql;
+    
+    // Handle date/time functions specially (SQLite strftime format)
+    if constexpr (Type == FunctionType::year) {
+        sql = "CAST(strftime('%Y', ";
+        std::apply([&](const auto&... args) {
+            bool first = true;
+            (([&] {
+                if (!first) sql += ", ";
+                sql += to_sql(args);
+                first = false;
+            }()), ...);
+        }, func.arguments);
+        sql += ") AS INTEGER)";
+        return sql;
+    } else if constexpr (Type == FunctionType::month) {
+        sql = "CAST(strftime('%m', ";
+        std::apply([&](const auto&... args) {
+            bool first = true;
+            (([&] {
+                if (!first) sql += ", ";
+                sql += to_sql(args);
+                first = false;
+            }()), ...);
+        }, func.arguments);
+        sql += ") AS INTEGER)";
+        return sql;
+    } else if constexpr (Type == FunctionType::day) {
+        sql = "CAST(strftime('%d', ";
+        std::apply([&](const auto&... args) {
+            bool first = true;
+            (([&] {
+                if (!first) sql += ", ";
+                sql += to_sql(args);
+                first = false;
+            }()), ...);
+        }, func.arguments);
+        sql += ") AS INTEGER)";
+        return sql;
+    } else if constexpr (Type == FunctionType::hour) {
+        sql = "CAST(strftime('%H', ";
+        std::apply([&](const auto&... args) {
+            bool first = true;
+            (([&] {
+                if (!first) sql += ", ";
+                sql += to_sql(args);
+                first = false;
+            }()), ...);
+        }, func.arguments);
+        sql += ") AS INTEGER)";
+        return sql;
+    } else if constexpr (Type == FunctionType::minute) {
+        sql = "CAST(strftime('%M', ";
+        std::apply([&](const auto&... args) {
+            bool first = true;
+            (([&] {
+                if (!first) sql += ", ";
+                sql += to_sql(args);
+                first = false;
+            }()), ...);
+        }, func.arguments);
+        sql += ") AS INTEGER)";
+        return sql;
+    } else if constexpr (Type == FunctionType::second) {
+        sql = "CAST(strftime('%S', ";
+        std::apply([&](const auto&... args) {
+            bool first = true;
+            (([&] {
+                if (!first) sql += ", ";
+                sql += to_sql(args);
+                first = false;
+            }()), ...);
+        }, func.arguments);
+        sql += ") AS INTEGER)";
+        return sql;
+    } else if constexpr (Type == FunctionType::weekday) {
+        sql = "CAST(strftime('%w', ";
+        std::apply([&](const auto&... args) {
+            bool first = true;
+            (([&] {
+                if (!first) sql += ", ";
+                sql += to_sql(args);
+                first = false;
+            }()), ...);
+        }, func.arguments);
+        sql += ") AS INTEGER)";
+        return sql;
+    } else if constexpr (Type == FunctionType::days_between) {
+        sql = "(julianday(";
+        // Get first argument
+        sql += to_sql(std::get<1>(func.arguments));
+        sql += ") - julianday(";
+        sql += to_sql(std::get<0>(func.arguments));
+        sql += "))";
+        return sql;
+    } else if constexpr (Type == FunctionType::unixepoch) {
+        sql = "unixepoch(";
+        std::apply([&](const auto&... args) {
+            bool first = true;
+            (([&] {
+                if (!first) sql += ", ";
+                sql += to_sql(args);
+                first = false;
+            }()), ...);
+        }, func.arguments);
+        sql += ")";
+        return sql;
+    } else {
+        // Standard function call: FUNC_NAME(arg1, arg2, ...)
+        sql += function_type_to_sql(Type);
+        sql += "(";
+        
+        std::apply([&](const auto&... args) {
+            bool first = true;
+            (([&] {
+                if (!first) sql += ", ";
+                sql += to_sql(args);
+                first = false;
+            }()), ...);
+        }, func.arguments);
+        
+        sql += ")";
+    }
+    
+    return sql;
+}
+
+/// Convert a CAST function to SQL
+template <class TargetType, class ExprType>
+std::string to_sql(const CastFunction<TargetType, ExprType>& func) {
+    std::string sql = "CAST(";
+    sql += to_sql(func.expression);
+    sql += " AS ";
+    sql += get_sql_type_name<TargetType>();
+    sql += ")";
+    return sql;
+}
+
+} // namespace glz_sqlgen::transpilation

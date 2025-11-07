@@ -11,6 +11,9 @@ test_sources = files(
   'unit/test_joins.cpp',
   'unit/test_aggregates.cpp',
   'unit/test_advanced_conditions.cpp',
+  'unit/test_string_functions.cpp',
+  'unit/test_math_functions.cpp',
+  'unit/test_date_functions.cpp',
   'integration/test_sqlite.cpp',
 )
 
