@@ -11,6 +11,7 @@ namespace {
 
 using namespace glz_sqlgen;
 using namespace glz_sqlgen::literals;
+using namespace glz_sqlgen::advanced;
 
 // Test tables
 struct Users {
@@ -65,7 +66,7 @@ TEST(AdvancedConditionsTest, LikePattern) {
         | where(like("name"_c, "%John%"));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"name\" LIKE '%John%'");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"name\" LIKE '%John%'");
 }
 
 TEST(AdvancedConditionsTest, NotLikePattern) {
@@ -73,7 +74,7 @@ TEST(AdvancedConditionsTest, NotLikePattern) {
         | where(not_like("email"_c, "%@example.com"));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"email\" NOT LIKE '%@example.com'");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"email\" NOT LIKE '%@example.com'");
 }
 
 TEST(AdvancedConditionsTest, LikeWithPrefix) {
@@ -81,7 +82,7 @@ TEST(AdvancedConditionsTest, LikeWithPrefix) {
         | where(like("name"_c, "John%"));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"name\" LIKE 'John%'");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"name\" LIKE 'John%'");
 }
 
 TEST(AdvancedConditionsTest, LikeWithSuffix) {
@@ -89,7 +90,7 @@ TEST(AdvancedConditionsTest, LikeWithSuffix) {
         | where(like("name"_c, "%Smith"));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"name\" LIKE '%Smith'");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"name\" LIKE '%Smith'");
 }
 
 TEST(AdvancedConditionsTest, LikeWithSingleChar) {
@@ -97,7 +98,7 @@ TEST(AdvancedConditionsTest, LikeWithSingleChar) {
         | where(like("name"_c, "J_hn"));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"name\" LIKE 'J_hn'");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"name\" LIKE 'J_hn'");
 }
 
 // ILIKE Pattern Matching Tests (PostgreSQL)
@@ -107,7 +108,7 @@ TEST(AdvancedConditionsTest, IlikePattern) {
         | where(ilike("name"_c, "%john%"));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"name\" ILIKE '%john%'");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"name\" ILIKE '%john%'");
 }
 
 TEST(AdvancedConditionsTest, NotIlikePattern) {
@@ -115,7 +116,7 @@ TEST(AdvancedConditionsTest, NotIlikePattern) {
         | where(not_ilike("email"_c, "%@EXAMPLE.COM"));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"email\" NOT ILIKE '%@EXAMPLE.COM'");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"email\" NOT ILIKE '%@EXAMPLE.COM'");
 }
 
 // IS NULL / IS NOT NULL Tests
@@ -125,7 +126,7 @@ TEST(AdvancedConditionsTest, IsNull) {
         | where(is_null("email"_c));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"email\" IS NULL");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"email\" IS NULL");
 }
 
 TEST(AdvancedConditionsTest, IsNotNull) {
@@ -133,7 +134,7 @@ TEST(AdvancedConditionsTest, IsNotNull) {
         | where(is_not_null("email"_c));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"email\" IS NOT NULL");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"email\" IS NOT NULL");
 }
 
 TEST(AdvancedConditionsTest, IsNullMultipleColumns) {
@@ -141,7 +142,7 @@ TEST(AdvancedConditionsTest, IsNullMultipleColumns) {
         | where(is_null("email"_c) && is_null("city"_c));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"email\" IS NULL AND \"city\" IS NULL");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"email\" IS NULL AND \"city\" IS NULL");
 }
 
 TEST(AdvancedConditionsTest, IsNotNullWithOrderBy) {
@@ -151,7 +152,7 @@ TEST(AdvancedConditionsTest, IsNotNullWithOrderBy) {
         | limit(10);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"age\" IS NOT NULL ORDER BY \"age\" LIMIT 10");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"age\" IS NOT NULL ORDER BY \"age\" LIMIT 10");
 }
 
 // IN / NOT IN Tests
@@ -161,7 +162,7 @@ TEST(AdvancedConditionsTest, InSingleValue) {
         | where(in("id"_c, 1));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"id\" IN (1)");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"id\" IN (1)");
 }
 
 TEST(AdvancedConditionsTest, InMultipleIntegers) {
@@ -169,7 +170,7 @@ TEST(AdvancedConditionsTest, InMultipleIntegers) {
         | where(in("id"_c, 1, 2, 3, 4, 5));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"id\" IN (1, 2, 3, 4, 5)");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"id\" IN (1, 2, 3, 4, 5)");
 }
 
 TEST(AdvancedConditionsTest, InMultipleStrings) {
@@ -177,7 +178,7 @@ TEST(AdvancedConditionsTest, InMultipleStrings) {
         | where(in("city"_c, "New York", "Los Angeles", "Chicago"));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"city\" IN ('New York', 'Los Angeles', 'Chicago')");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"city\" IN ('New York', 'Los Angeles', 'Chicago')");
 }
 
 TEST(AdvancedConditionsTest, NotInMultipleValues) {
@@ -185,7 +186,7 @@ TEST(AdvancedConditionsTest, NotInMultipleValues) {
         | where(not_in("age"_c, 18, 19, 20));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"age\" NOT IN (18, 19, 20)");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"age\" NOT IN (18, 19, 20)");
 }
 
 TEST(AdvancedConditionsTest, NotInStrings) {
@@ -193,7 +194,7 @@ TEST(AdvancedConditionsTest, NotInStrings) {
         | where(not_in("category"_c, "Electronics", "Toys"));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"products\" WHERE \"category\" NOT IN ('Electronics', 'Toys')");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"stock\", \"category\" FROM \"products\" WHERE \"category\" NOT IN ('Electronics', 'Toys')");
 }
 
 // BETWEEN / NOT BETWEEN Tests
@@ -203,7 +204,7 @@ TEST(AdvancedConditionsTest, BetweenIntegers) {
         | where(between("age"_c, 18, 65));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"age\" BETWEEN 18 AND 65");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"age\" BETWEEN 18 AND 65");
 }
 
 TEST(AdvancedConditionsTest, BetweenDoubles) {
@@ -211,7 +212,7 @@ TEST(AdvancedConditionsTest, BetweenDoubles) {
         | where(between("price"_c, 10.0, 100.0));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"products\" WHERE \"price\" BETWEEN 10.000000 AND 100.000000");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"stock\", \"category\" FROM \"products\" WHERE \"price\" BETWEEN 10.000000 AND 100.000000");
 }
 
 TEST(AdvancedConditionsTest, NotBetweenIntegers) {
@@ -219,7 +220,7 @@ TEST(AdvancedConditionsTest, NotBetweenIntegers) {
         | where(not_between("age"_c, 0, 17));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"age\" NOT BETWEEN 0 AND 17");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"age\" NOT BETWEEN 0 AND 17");
 }
 
 TEST(AdvancedConditionsTest, NotBetweenDoubles) {
@@ -227,7 +228,7 @@ TEST(AdvancedConditionsTest, NotBetweenDoubles) {
         | where(not_between("price"_c, 0.0, 10.0));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"products\" WHERE \"price\" NOT BETWEEN 0.000000 AND 10.000000");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"stock\", \"category\" FROM \"products\" WHERE \"price\" NOT BETWEEN 0.000000 AND 10.000000");
 }
 
 // Complex Combinations
@@ -237,7 +238,7 @@ TEST(AdvancedConditionsTest, LikeAndIsNotNull) {
         | where(like("name"_c, "%John%") && is_not_null("email"_c));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"name\" LIKE '%John%' AND \"email\" IS NOT NULL");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"name\" LIKE '%John%' AND \"email\" IS NOT NULL");
 }
 
 TEST(AdvancedConditionsTest, InAndBetween) {
@@ -245,7 +246,7 @@ TEST(AdvancedConditionsTest, InAndBetween) {
         | where(in("city"_c, "New York", "Boston") && between("age"_c, 25, 40));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"city\" IN ('New York', 'Boston') AND \"age\" BETWEEN 25 AND 40");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"city\" IN ('New York', 'Boston') AND \"age\" BETWEEN 25 AND 40");
 }
 
 TEST(AdvancedConditionsTest, NotLikeOrIsNull) {
@@ -253,7 +254,7 @@ TEST(AdvancedConditionsTest, NotLikeOrIsNull) {
         | where(not_like("email"_c, "%@spam.com") || is_null("email"_c));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"email\" NOT LIKE '%@spam.com' OR \"email\" IS NULL");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"email\" NOT LIKE '%@spam.com' OR \"email\" IS NULL");
 }
 
 TEST(AdvancedConditionsTest, ComplexConditionWithMultipleAdvanced) {
@@ -265,7 +266,7 @@ TEST(AdvancedConditionsTest, ComplexConditionWithMultipleAdvanced) {
         );
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"products\" WHERE \"price\" BETWEEN 10.000000 AND 100.000000 AND \"category\" NOT IN ('Clearance', 'Discontinued') AND \"stock\" IS NOT NULL");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"stock\", \"category\" FROM \"products\" WHERE \"price\" BETWEEN 10.000000 AND 100.000000 AND \"category\" NOT IN ('Clearance', 'Discontinued') AND \"stock\" IS NOT NULL");
 }
 
 TEST(AdvancedConditionsTest, NestedConditionsWithAdvanced) {
@@ -276,7 +277,7 @@ TEST(AdvancedConditionsTest, NestedConditionsWithAdvanced) {
         );
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE (\"name\" LIKE 'J%' OR \"name\" LIKE 'M%') AND (\"age\" BETWEEN 20 AND 40 AND \"city\" IS NOT NULL)");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE (\"name\" LIKE 'J%' OR \"name\" LIKE 'M%') AND (\"age\" BETWEEN 20 AND 40 AND \"city\" IS NOT NULL)");
 }
 
 // Edge Cases
@@ -286,7 +287,7 @@ TEST(AdvancedConditionsTest, EmptyPattern) {
         | where(like("name"_c, ""));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"name\" LIKE ''");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"name\" LIKE ''");
 }
 
 TEST(AdvancedConditionsTest, InWithTwoValues) {
@@ -294,7 +295,7 @@ TEST(AdvancedConditionsTest, InWithTwoValues) {
         | where(in("id"_c, 1, 2));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"id\" IN (1, 2)");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"id\" IN (1, 2)");
 }
 
 TEST(AdvancedConditionsTest, NotInWithSingleValue) {
@@ -302,7 +303,7 @@ TEST(AdvancedConditionsTest, NotInWithSingleValue) {
         | where(not_in("id"_c, 999));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"id\" NOT IN (999)");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"id\" NOT IN (999)");
 }
 
 TEST(AdvancedConditionsTest, BetweenSameValues) {
@@ -310,7 +311,7 @@ TEST(AdvancedConditionsTest, BetweenSameValues) {
         | where(between("age"_c, 25, 25));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"age\" BETWEEN 25 AND 25");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"age\" BETWEEN 25 AND 25");
 }
 
 // Integration with ORDER BY and LIMIT
@@ -325,7 +326,7 @@ TEST(AdvancedConditionsTest, AdvancedConditionsWithOrderByLimit) {
         | limit(20);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"products\" WHERE \"price\" BETWEEN 50.000000 AND 200.000000 AND \"category\" IN ('Electronics', 'Computers') ORDER BY \"price\" LIMIT 20");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"stock\", \"category\" FROM \"products\" WHERE \"price\" BETWEEN 50.000000 AND 200.000000 AND \"category\" IN ('Electronics', 'Computers') ORDER BY \"price\" LIMIT 20");
 }
 
 TEST(AdvancedConditionsTest, IsNullWithDescendingOrder) {
@@ -334,7 +335,7 @@ TEST(AdvancedConditionsTest, IsNullWithDescendingOrder) {
         | order_by("name"_c.desc());
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"city\" IS NULL ORDER BY \"name\" DESC");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"city\" IS NULL ORDER BY \"name\" DESC");
 }
 
 // Pattern Matching Special Characters
@@ -344,7 +345,7 @@ TEST(AdvancedConditionsTest, LikeWithEscapableChars) {
         | where(like("email"_c, "%'test'%"));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"email\" LIKE '%''test''%'");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"email\" LIKE '%''test''%'");
 }
 
 TEST(AdvancedConditionsTest, MultiplePatternConditions) {
@@ -356,7 +357,7 @@ TEST(AdvancedConditionsTest, MultiplePatternConditions) {
         );
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"name\" LIKE 'John%' AND \"email\" NOT LIKE '%@test.com' AND \"city\" ILIKE '%NEW YORK%'");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"name\" LIKE 'John%' AND \"email\" NOT LIKE '%@test.com' AND \"city\" ILIKE '%NEW YORK%'");
 }
 
 // Realistic Query Scenarios
@@ -372,7 +373,7 @@ TEST(AdvancedConditionsTest, UserSearchQuery) {
         | limit(50);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE (\"name\" LIKE '%Smith%' OR \"email\" LIKE '%smith%') AND \"age\" BETWEEN 18 AND 100 AND \"city\" IS NOT NULL ORDER BY \"name\" LIMIT 50");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE (\"name\" LIKE '%Smith%' OR \"email\" LIKE '%smith%') AND \"age\" BETWEEN 18 AND 100 AND \"city\" IS NOT NULL ORDER BY \"name\" LIMIT 50");
 }
 
 TEST(AdvancedConditionsTest, ProductFilterQuery) {
@@ -386,7 +387,7 @@ TEST(AdvancedConditionsTest, ProductFilterQuery) {
         | order_by("price"_c.desc());
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"products\" WHERE \"category\" IN ('Electronics', 'Computers', 'Gaming') AND \"price\" BETWEEN 100.000000 AND 1000.000000 AND \"name\" NOT IN ('Refurbished', 'Used') AND \"stock\" IS NOT NULL ORDER BY \"price\" DESC");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"price\", \"stock\", \"category\" FROM \"products\" WHERE \"category\" IN ('Electronics', 'Computers', 'Gaming') AND \"price\" BETWEEN 100.000000 AND 1000.000000 AND \"name\" NOT IN ('Refurbished', 'Used') AND \"stock\" IS NOT NULL ORDER BY \"price\" DESC");
 }
 
 TEST(AdvancedConditionsTest, NullableFieldsQuery) {
@@ -399,5 +400,5 @@ TEST(AdvancedConditionsTest, NullableFieldsQuery) {
         );
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE \"email\" IS NOT NULL AND \"city\" IS NOT NULL AND \"age\" NOT IN (0) AND \"name\" LIKE '%_%'");
+    EXPECT_EQ(sql, "SELECT \"id\", \"name\", \"email\", \"age\", \"city\" FROM \"users\" WHERE \"email\" IS NOT NULL AND \"city\" IS NOT NULL AND \"age\" NOT IN (0) AND \"name\" LIKE '%_%'");
 }

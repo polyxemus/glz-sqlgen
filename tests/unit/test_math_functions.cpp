@@ -71,7 +71,7 @@ TEST(MathFunctionsTest, AbsInWhere) {
         | where(abs("value"_c) > 10.0);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"measurements\" WHERE ABS(\"value\") > 10.000000");
+    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE ABS(\"value\") > 10.000000");
 }
 
 TEST(MathFunctionsTest, AbsExpression) {
@@ -153,7 +153,7 @@ TEST(MathFunctionsTest, SqrtInWhere) {
         | where(sqrt("value"_c) > 5.0);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"measurements\" WHERE SQRT(\"value\") > 5.000000");
+    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE SQRT(\"value\") > 5.000000");
 }
 
 TEST(MathFunctionsTest, SqrtExpression) {
@@ -188,7 +188,7 @@ TEST(MathFunctionsTest, LnInWhere) {
         | where(ln("value"_c) > 2.0);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"measurements\" WHERE LN(\"value\") > 2.000000");
+    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE LN(\"value\") > 2.000000");
 }
 
 // LOG2 Tests
@@ -230,7 +230,7 @@ TEST(MathFunctionsTest, PowInWhere) {
         | where(pow("x"_c, 2) > 100.0);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"measurements\" WHERE POW(\"x\", 2) > 100.000000");
+    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE POW(\"x\", 2) > 100.000000");
 }
 
 // TRIGONOMETRIC FUNCTIONS
@@ -282,7 +282,7 @@ TEST(MathFunctionsTest, TrigInWhere) {
         | where(sin("angle"_c) > 0.5);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"measurements\" WHERE SIN(\"angle\") > 0.500000");
+    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE SIN(\"angle\") > 0.500000");
 }
 
 // COMBINED MATH FUNCTIONS
@@ -328,5 +328,5 @@ TEST(MathFunctionsTest, PythagoreanTheorem) {
         | where(sqrt(pow("x"_c, 2) + pow("y"_c, 2)) < 10.0);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"measurements\" WHERE SQRT((POW(\"x\", 2) + POW(\"y\", 2))) < 10.000000");
+    EXPECT_EQ(sql, "SELECT \"id\", \"x\", \"y\", \"angle\", \"value\" FROM \"measurements\" WHERE SQRT((POW(\"x\", 2) + POW(\"y\", 2))) < 10.000000");
 }

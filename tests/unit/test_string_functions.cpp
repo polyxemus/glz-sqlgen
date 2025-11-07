@@ -68,7 +68,7 @@ TEST(StringFunctionsTest, ConcatInWhere) {
         | where(concat("first_name"_c, "last_name"_c) == "JohnDoe");
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE CONCAT(\"first_name\", \"last_name\") = 'JohnDoe'");
+    EXPECT_EQ(sql, "SELECT \"id\", \"first_name\", \"last_name\", \"email\", \"city\" FROM \"users\" WHERE CONCAT(\"first_name\", \"last_name\") = 'JohnDoe'");
 }
 
 // LENGTH Tests
@@ -85,7 +85,7 @@ TEST(StringFunctionsTest, LengthInWhere) {
         | where(length("email"_c) > 20);
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE LENGTH(\"email\") > 20");
+    EXPECT_EQ(sql, "SELECT \"id\", \"first_name\", \"last_name\", \"email\", \"city\" FROM \"users\" WHERE LENGTH(\"email\") > 20");
 }
 
 TEST(StringFunctionsTest, LengthOrderBy) {
@@ -93,7 +93,7 @@ TEST(StringFunctionsTest, LengthOrderBy) {
         | order_by(length("email"_c));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" ORDER BY LENGTH(\"email\")");
+    EXPECT_EQ(sql, "SELECT \"id\", \"first_name\", \"last_name\", \"email\", \"city\" FROM \"users\" ORDER BY LENGTH(\"email\")");
 }
 
 // LOWER Tests
@@ -110,7 +110,7 @@ TEST(StringFunctionsTest, LowerInWhere) {
         | where(lower("email"_c) == "test@example.com");
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE LOWER(\"email\") = 'test@example.com'");
+    EXPECT_EQ(sql, "SELECT \"id\", \"first_name\", \"last_name\", \"email\", \"city\" FROM \"users\" WHERE LOWER(\"email\") = 'test@example.com'");
 }
 
 // UPPER Tests
@@ -127,7 +127,7 @@ TEST(StringFunctionsTest, UpperInWhere) {
         | where(upper("city"_c) == "NEW YORK");
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE UPPER(\"city\") = 'NEW YORK'");
+    EXPECT_EQ(sql, "SELECT \"id\", \"first_name\", \"last_name\", \"email\", \"city\" FROM \"users\" WHERE UPPER(\"city\") = 'NEW YORK'");
 }
 
 // TRIM Tests
@@ -144,7 +144,7 @@ TEST(StringFunctionsTest, TrimInWhere) {
         | where(trim("email"_c) == "test@example.com");
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE TRIM(\"email\") = 'test@example.com'");
+    EXPECT_EQ(sql, "SELECT \"id\", \"first_name\", \"last_name\", \"email\", \"city\" FROM \"users\" WHERE TRIM(\"email\") = 'test@example.com'");
 }
 
 // LTRIM Tests
@@ -181,7 +181,7 @@ TEST(StringFunctionsTest, ReplaceInWhere) {
         | where(replace("email"_c, "@", "#") == "test#example.com");
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE REPLACE(\"email\", '@', '#') = 'test#example.com'");
+    EXPECT_EQ(sql, "SELECT \"id\", \"first_name\", \"last_name\", \"email\", \"city\" FROM \"users\" WHERE REPLACE(\"email\", '@', '#') = 'test#example.com'");
 }
 
 // SUBSTRING Tests
@@ -198,7 +198,7 @@ TEST(StringFunctionsTest, SubstringInWhere) {
         | where(substring("email"_c, 1, 4) == "test");
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE SUBSTR(\"email\", 1, 4) = 'test'");
+    EXPECT_EQ(sql, "SELECT \"id\", \"first_name\", \"last_name\", \"email\", \"city\" FROM \"users\" WHERE SUBSTR(\"email\", 1, 4) = 'test'");
 }
 
 // Combined Tests
@@ -220,7 +220,7 @@ TEST(StringFunctionsTest, MultipleStringFunctionsInWhere) {
         );
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE LENGTH(TRIM(\"email\")) > 10 AND LOWER(\"city\") = 'new york'");
+    EXPECT_EQ(sql, "SELECT \"id\", \"first_name\", \"last_name\", \"email\", \"city\" FROM \"users\" WHERE LENGTH(TRIM(\"email\")) > 10 AND LOWER(\"city\") = 'new york'");
 }
 
 TEST(StringFunctionsTest, StringFunctionsWithOrderBy) {
@@ -229,7 +229,7 @@ TEST(StringFunctionsTest, StringFunctionsWithOrderBy) {
         | order_by(upper("last_name"_c));
 
     auto sql = query.to_sql();
-    EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE LENGTH(\"email\") > 10 ORDER BY UPPER(\"last_name\")");
+    EXPECT_EQ(sql, "SELECT \"id\", \"first_name\", \"last_name\", \"email\", \"city\" FROM \"users\" WHERE LENGTH(\"email\") > 10 ORDER BY UPPER(\"last_name\")");
 }
 
 TEST(StringFunctionsTest, NestedStringFunctions) {

@@ -7,6 +7,7 @@
 #include "Value.hpp"
 #include "Operation.hpp"
 #include "Condition.hpp"
+#include "../advanced_conditions.hpp"
 #include "Operator.hpp"
 #include "Desc.hpp"
 #include "Set.hpp"
@@ -152,6 +153,8 @@ std::string to_sql(const Operation<Op, Operand1, Operand2>& operation) {
     return result;
 }
 
+} // namespace glz_sqlgen::transpilation
+
 // Forward declarations for advanced condition types
 namespace glz_sqlgen::advanced {
     template <class ColType> struct IsNullCondition;
@@ -161,6 +164,8 @@ namespace glz_sqlgen::advanced {
     template <class ColType, class LowerType, class UpperType> struct BetweenCondition;
     template <class ColType, class LowerType, class UpperType> struct NotBetweenCondition;
 }
+
+namespace glz_sqlgen::transpilation {
 
 // Forward declarations for to_sql of advanced conditions
 template <class ColType>
@@ -181,12 +186,98 @@ inline std::string to_sql(const glz_sqlgen::advanced::BetweenCondition<ColType, 
 template <class ColType, class LowerType, class UpperType>
 inline std::string to_sql(const glz_sqlgen::advanced::NotBetweenCondition<ColType, LowerType, UpperType>& cond);
 
+
+template <class ColType>
+inline std::string to_sql(const glz_sqlgen::advanced::IsNullCondition<ColType>& cond) {
+    return to_sql(cond.column) + " IS NULL";
+}
+
+/// Convert IS NOT NULL condition to SQL
+template <class ColType>
+inline std::string to_sql(const glz_sqlgen::advanced::IsNotNullCondition<ColType>& cond) {
+    return to_sql(cond.column) + " IS NOT NULL";
+}
+
+/// Convert IN condition to SQL
+template <class ColType, class... ValueTypes>
+inline std::string to_sql(const glz_sqlgen::advanced::InCondition<ColType, ValueTypes...>& cond) {
+    std::string sql = to_sql(cond.column) + " IN (";
+    bool first = true;
+    std::apply([&](const auto&... values) {
+        (([&](const auto& val) {
+            if (!first) sql += ", ";
+            sql += to_sql(Value{val});
+            first = false;
+        }(values)), ...);
+    }, cond.values);
+    sql += ")";
+    return sql;
+}
+
+/// Convert NOT IN condition to SQL
+template <class ColType, class... ValueTypes>
+inline std::string to_sql(const glz_sqlgen::advanced::NotInCondition<ColType, ValueTypes...>& cond) {
+    std::string sql = to_sql(cond.column) + " NOT IN (";
+    bool first = true;
+    std::apply([&](const auto&... values) {
+        (([&](const auto& val) {
+            if (!first) sql += ", ";
+            sql += to_sql(Value{val});
+            first = false;
+        }(values)), ...);
+    }, cond.values);
+    sql += ")";
+    return sql;
+}
+
+/// Convert BETWEEN condition to SQL
+template <class ColType, class LowerType, class UpperType>
+inline std::string to_sql(const glz_sqlgen::advanced::BetweenCondition<ColType, LowerType, UpperType>& cond) {
+    return to_sql(cond.column) + " BETWEEN " +
+           to_sql(Value{cond.lower}) + " AND " +
+           to_sql(Value{cond.upper});
+}
+
+/// Convert NOT BETWEEN condition to SQL
+template <class ColType, class LowerType, class UpperType>
+inline std::string to_sql(const glz_sqlgen::advanced::NotBetweenCondition<ColType, LowerType, UpperType>& cond) {
+    return to_sql(cond.column) + " NOT BETWEEN " +
+           to_sql(Value{cond.lower}) + " AND " +
+           to_sql(Value{cond.upper});
+}
+/// Helper to check if we need parentheses for logical operators
+template <class T>
+constexpr bool needs_parentheses_for_logic = false;
+
+// Specialize for Condition types (which contain logical operators)
+template <class L, Operator Op, class R>
+constexpr bool needs_parentheses_for_logic<Condition<L, Op, R>> = true;
+
+template <class T>
+constexpr bool needs_parentheses_for_logic<ConditionWrapper<T>> = true;
+
 /// Convert a condition to SQL
 template <class Left, Operator Op, class Right>
 std::string to_sql(const Condition<Left, Op, Right>& condition) {
-    std::string result = to_sql(condition.left);
+    std::string result;
+
+    // Add parentheses around operands if this is a logical operator (AND/OR)
+    constexpr bool is_logical = (Op == Operator::logical_and || Op == Operator::logical_or);
+
+    if constexpr (is_logical && needs_parentheses_for_logic<std::decay_t<Left>>) {
+        result = "(" + to_sql(condition.left) + ")";
+    } else {
+        result = to_sql(condition.left);
+    }
+
     result += operator_to_sql(Op);
-    result += to_sql(condition.right);
+
+    if constexpr (is_logical && needs_parentheses_for_logic<std::decay_t<Right>>) {
+        result += "(" + to_sql(condition.right) + ")";
+    } else {
+        result += to_sql(condition.right);
+    }
+
     return result;
 }
 
@@ -233,68 +324,8 @@ std::string to_sql(const Aggregate<Type, ExprType>& agg) {
 
 } // namespace glz_sqlgen::transpilation
 
-// Include advanced conditions at the end
-#include "../advanced_conditions.hpp"
 
 /// Convert IS NULL condition to SQL
-template <class ColType>
-inline std::string to_sql(const glz_sqlgen::advanced::IsNullCondition<ColType>& cond) {
-    return to_sql(cond.column) + " IS NULL";
-}
-
-/// Convert IS NOT NULL condition to SQL
-template <class ColType>
-inline std::string to_sql(const glz_sqlgen::advanced::IsNotNullCondition<ColType>& cond) {
-    return to_sql(cond.column) + " IS NOT NULL";
-}
-
-/// Convert IN condition to SQL
-template <class ColType, class... ValueTypes>
-inline std::string to_sql(const glz_sqlgen::advanced::InCondition<ColType, ValueTypes...>& cond) {
-    std::string sql = to_sql(cond.column) + " IN (";
-    bool first = true;
-    std::apply([&](const auto&... values) {
-        (([&](const auto& val) {
-            if (!first) sql += ", ";
-            sql += to_sql(glz_sqlgen::transpilation::Value{val});
-            first = false;
-        }(values)), ...);
-    }, cond.values);
-    sql += ")";
-    return sql;
-}
-
-/// Convert NOT IN condition to SQL
-template <class ColType, class... ValueTypes>
-inline std::string to_sql(const glz_sqlgen::advanced::NotInCondition<ColType, ValueTypes...>& cond) {
-    std::string sql = to_sql(cond.column) + " NOT IN (";
-    bool first = true;
-    std::apply([&](const auto&... values) {
-        (([&](const auto& val) {
-            if (!first) sql += ", ";
-            sql += to_sql(glz_sqlgen::transpilation::Value{val});
-            first = false;
-        }(values)), ...);
-    }, cond.values);
-    sql += ")";
-    return sql;
-}
-
-/// Convert BETWEEN condition to SQL
-template <class ColType, class LowerType, class UpperType>
-inline std::string to_sql(const glz_sqlgen::advanced::BetweenCondition<ColType, LowerType, UpperType>& cond) {
-    return to_sql(cond.column) + " BETWEEN " +
-           to_sql(glz_sqlgen::transpilation::Value{cond.lower}) + " AND " +
-           to_sql(glz_sqlgen::transpilation::Value{cond.upper});
-}
-
-/// Convert NOT BETWEEN condition to SQL
-template <class ColType, class LowerType, class UpperType>
-inline std::string to_sql(const glz_sqlgen::advanced::NotBetweenCondition<ColType, LowerType, UpperType>& cond) {
-    return to_sql(cond.column) + " NOT BETWEEN " +
-           to_sql(glz_sqlgen::transpilation::Value{cond.lower}) + " AND " +
-           to_sql(glz_sqlgen::transpilation::Value{cond.upper});
-}
 
 
 // SQL Functions - Include at the end
