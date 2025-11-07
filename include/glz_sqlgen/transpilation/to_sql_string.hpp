@@ -38,18 +38,6 @@ constexpr std::string_view operator_to_sql(Operator op) {
 template <class T>
 std::string to_sql(const T& value);
 
-} // namespace glz_sqlgen::transpilation
-
-// Forward declare user-facing Col type
-#ifndef GLZ_SQLGEN_COL_HPP_INCLUDED
-namespace glz_sqlgen {
-template <glz::string_literal Name, glz::string_literal Alias>
-struct Col;
-}
-#endif
-
-namespace glz_sqlgen::transpilation {
-
 /// Convert a transpilation column to SQL
 template <glz::string_literal Name, glz::string_literal Alias>
 std::string to_sql(const Col<Name, Alias>& col) {
@@ -60,12 +48,19 @@ std::string to_sql(const Col<Name, Alias>& col) {
     return quote_identifier(std::string(col.name));
 }
 
-/// Convert user-facing Col to SQL (delegates to transpilation Col)
+} // namespace glz_sqlgen::transpilation
+
+// Overload for user-facing Col - must be declared before Set to_sql
+namespace glz_sqlgen::transpilation {
 template <glz::string_literal Name, glz::string_literal Alias>
-inline std::string to_sql(const glz_sqlgen::Col<Name, Alias>& /*col*/) {
-    // Delegate to transpilation Col
-    return to_sql(Col<Name, Alias>{});
+inline std::string to_sql(const glz_sqlgen::Col<Name, Alias>& col) {
+    // Use conversion operator to get transpilation::Col
+    typename glz_sqlgen::Col<Name, Alias>::ColType tcol = col;
+    return to_sql(tcol);
 }
+} // namespace glz_sqlgen::transpilation
+
+namespace glz_sqlgen::transpilation {
 
 /// Convert a value to SQL
 template <class T>
@@ -125,22 +120,4 @@ std::string to_sql(const Set<Col, Value>& set) {
     return to_sql(set.column) + " = " + to_sql(set.value);
 }
 
-} // namespace glz_sqlgen::transpilation
-
-// Overload for user-facing Col type
-// Forward declare if not yet included
-#ifndef GLZ_SQLGEN_COL_HPP_INCLUDED
-namespace glz_sqlgen {
-template <glz::string_literal Name, glz::string_literal Alias>
-struct Col;
-}
-#endif
-
-namespace glz_sqlgen::transpilation {
-/// Convert user-facing Col to SQL (delegates to transpilation Col)
-template <glz::string_literal Name, glz::string_literal Alias>
-inline std::string to_sql(const glz_sqlgen::Col<Name, Alias>& col) {
-    // Delegate to transpilation Col
-    return to_sql(Col<Name, Alias>{});
-}
 } // namespace glz_sqlgen::transpilation

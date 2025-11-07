@@ -22,6 +22,11 @@ struct Col {
 
     constexpr Col() = default;
 
+    /// Implicit conversion to transpilation Col for to_sql() calls
+    constexpr operator ColType() const noexcept {
+        return ColType{};
+    }
+
     /// Create an AS alias for this column
     template <glz::string_literal NewName>
     constexpr auto as() const noexcept {
