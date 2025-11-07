@@ -1,6 +1,6 @@
 # glz-sqlgen Development Roadmap
 
-## Project Status: Phase 3 Complete ✅
+## Project Status: Phase 4 Complete ✅
 
 **Last Updated**: 2025-11-07
 
@@ -19,8 +19,8 @@
 This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator using glaze reflection as an alternative to sqlgen's reflect-cpp dependency.
 
 **Target Version**: v0.1.0
-**Estimated Completion**: 12 weeks from start date
-**Status**: 🟢 Phase 3 Complete - In Active Development
+**Estimated Completion**: 20 weeks from start date
+**Status**: 🟢 Phase 4 Complete - In Active Development
 
 ---
 
@@ -31,9 +31,14 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 | **Phase 1: Foundation** | 🟢 Complete | 100% | Week 1-2 | 2025-11-07 |
 | **Phase 2: Transpilation** | 🟢 Complete | 100% | Week 3-4 | 2025-11-07 |
 | **Phase 3: Query Builders** | 🟢 Complete | 100% | Week 5-6 | 2025-11-07 |
-| **Phase 4: Database Adapters** | 🔴 Not Started | 0% | Week 7-8 | - |
-| **Phase 5: Advanced Features** | 🔴 Not Started | 0% | Week 9-10 | - |
-| **Phase 6: Documentation** | 🔴 Not Started | 0% | Week 11-12 | - |
+| **Phase 4: SQLite Adapter** | 🟢 Complete | 100% | Week 7-8 | 2025-11-07 |
+| **Phase 5: JOIN Operations** | 🔴 Not Started | 0% | Week 9-10 | - |
+| **Phase 6: Aggregate Functions** | 🔴 Not Started | 0% | Week 11-12 | - |
+| **Phase 7: Advanced Conditions** | 🔴 Not Started | 0% | Week 13-14 | - |
+| **Phase 8: SQL Functions** | 🔴 Not Started | 0% | Week 15-16 | - |
+| **Phase 9: PostgreSQL Adapter** | 🔴 Not Started | 0% | Week 17-18 | - |
+| **Phase 10: Type Constraints** | 🔴 Not Started | 0% | Week 19-20 | - |
+| **Phase 11: Documentation** | 🔴 Not Started | 0% | Week 21-22 | - |
 
 **Legend:**
 - 🔴 Not Started
@@ -190,19 +195,310 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 
 ---
 
-## Phase 4: Database Adapters (Week 7-8)
+## Phase 4: SQLite Database Adapter (Week 7-8)
 
-**Goal**: Implement database connectivity
+**Goal**: Implement SQLite database connectivity
 
 ### SQLite Adapter
 
-- [ ] `include/glz_sqlgen/sqlite/Connection.hpp`
-- [ ] `src/sqlite/Connection.cpp`
-- [ ] `include/glz_sqlgen/sqlite/Iterator.hpp`
-- [ ] `src/sqlite/Iterator.cpp`
-- [ ] `include/glz_sqlgen/sqlite/to_sql.hpp`
-- [ ] `src/sqlite/to_sql.cpp`
-- [ ] `include/glz_sqlgen/sqlite.hpp` - Main header with connect()
+- [x] `include/glz_sqlgen/sqlite/Connection.hpp`
+- [x] `src/sqlite/Connection.cpp`
+- [x] `include/glz_sqlgen/sqlite/Iterator.hpp`
+- [x] `src/sqlite/Iterator.cpp`
+- [x] `include/glz_sqlgen/sqlite.hpp` - Main header with connect()
+
+### Common Infrastructure
+
+- [x] Connection interface and implementation
+- [x] Result handling with std::expected
+- [x] Transaction support (begin_transaction, commit, rollback)
+- [x] Iterator pattern for query results
+- [x] Type conversion from SQLite to C++ types
+
+### Testing
+
+- [x] `tests/integration/test_sqlite.cpp` - SQLite integration tests (13 tests)
+- [x] End-to-end tests with real SQLite database
+- [x] Transaction tests
+- [x] All Phase 4 tests passing (112 total across all phases)
+
+### Deliverables
+
+- [x] Working SQLite adapter
+- [x] Transaction support
+- [x] Integration tests passing
+- [x] Complete CRUD operations with database
+
+**Status**: 🟢 Complete
+**Progress**: 13/13 tasks complete
+**Completed**: 2025-11-07
+
+---
+
+## Phase 5: JOIN Operations (Week 9-10)
+
+**Goal**: Enable multi-table queries with JOIN support
+
+**Priority**: 🔴 CRITICAL - Currently impossible to query multiple tables
+
+### JOIN Types
+
+- [ ] `inner_join()` - INNER JOIN implementation
+- [ ] `left_join()` - LEFT OUTER JOIN implementation
+- [ ] `right_join()` - RIGHT OUTER JOIN implementation
+- [ ] `full_join()` - FULL OUTER JOIN implementation
+- [ ] `cross_join()` - CROSS JOIN implementation
+
+### JOIN Infrastructure
+
+- [ ] `include/glz_sqlgen/join.hpp` - JOIN clause builders
+- [ ] `include/glz_sqlgen/transpilation/Join.hpp` - JOIN transpilation types
+- [ ] `include/glz_sqlgen/transpilation/join_clause.hpp` - JOIN SQL generation
+- [ ] Table aliasing support (already have `_t1` through `_t99` literals)
+- [ ] Multi-table column resolution
+- [ ] JOIN condition builders (ON clause)
+
+### Query Builder Integration
+
+- [ ] Integrate JOINs into `select_from` chain
+- [ ] Support multiple JOINs in single query
+- [ ] Type-safe JOIN conditions
+- [ ] Compile-time table relationship validation
+
+### Testing
+
+- [ ] `tests/unit/test_joins.cpp` - JOIN unit tests
+- [ ] Two-table JOIN scenarios
+- [ ] Three+ table JOIN scenarios
+- [ ] Mixed JOIN types in single query
+- [ ] JOIN with WHERE, ORDER BY, LIMIT
+- [ ] All Phase 5 tests passing
+
+### Deliverables
+
+- [ ] All 5 JOIN types implemented
+- [ ] Multi-table query support
+- [ ] Comprehensive test coverage
+- [ ] Documentation with examples
+
+**Status**: 🔴 Not Started
+**Progress**: 0/20 tasks complete
+
+**Why This Matters**: Currently, glz-sqlgen can only query single tables. JOINs are fundamental for relational database operations and are required for any real-world application.
+
+---
+
+## Phase 6: Aggregate Functions & GROUP BY (Week 11-12)
+
+**Goal**: Enable analytics and reporting queries
+
+**Priority**: 🔴 CRITICAL - Required for any analytics or reporting functionality
+
+### Aggregate Functions
+
+- [ ] `count()` - COUNT(*) and COUNT(column)
+- [ ] `count_distinct()` - COUNT(DISTINCT column)
+- [ ] `sum()` - SUM(column)
+- [ ] `avg()` - AVG(column)
+- [ ] `min()` - MIN(column)
+- [ ] `max()` - MAX(column)
+
+### GROUP BY Support
+
+- [ ] `group_by()` - GROUP BY clause builder
+- [ ] `include/glz_sqlgen/group_by.hpp` - GROUP BY implementation
+- [ ] `include/glz_sqlgen/transpilation/group_by_clause.hpp` - GROUP BY SQL generation
+- [ ] Support grouping by multiple columns
+- [ ] Support grouping by expressions
+
+### HAVING Support
+
+- [ ] `having()` - HAVING clause builder
+- [ ] `include/glz_sqlgen/having.hpp` - HAVING implementation
+- [ ] HAVING conditions on aggregate results
+- [ ] Complex HAVING expressions
+
+### Query Builder Integration
+
+- [ ] Integrate aggregates into SELECT
+- [ ] Integrate GROUP BY into query chain
+- [ ] Integrate HAVING after GROUP BY
+- [ ] Correct SQL clause ordering (SELECT → FROM → JOIN → WHERE → GROUP BY → HAVING → ORDER BY → LIMIT)
+
+### Testing
+
+- [ ] `tests/unit/test_aggregates.cpp` - Aggregate function tests
+- [ ] Simple aggregates (COUNT, SUM, AVG, MIN, MAX)
+- [ ] GROUP BY single column
+- [ ] GROUP BY multiple columns
+- [ ] HAVING clauses
+- [ ] Aggregates with JOINs
+- [ ] All Phase 6 tests passing
+
+### Deliverables
+
+- [ ] All 6 aggregate functions implemented
+- [ ] GROUP BY and HAVING support
+- [ ] Integration with existing query builders
+- [ ] Comprehensive test coverage
+
+**Status**: 🔴 Not Started
+**Progress**: 0/24 tasks complete
+
+**Why This Matters**: Without aggregates and GROUP BY, it's impossible to perform analytics, generate reports, or compute summary statistics - essential features for most applications.
+
+---
+
+## Phase 7: Advanced Conditions (Week 13-14)
+
+**Goal**: Implement advanced WHERE clause operators
+
+**Priority**: 🟠 HIGH - Common operations for real-world queries
+
+### String Operations
+
+- [ ] `like()` - LIKE pattern matching
+- [ ] `not_like()` - NOT LIKE pattern matching
+- [ ] `ilike()` - Case-insensitive LIKE (PostgreSQL)
+- [ ] `not_ilike()` - Case-insensitive NOT LIKE
+
+### Set Operations
+
+- [ ] `in()` - IN operator (variadic template version)
+- [ ] `in()` - IN operator (vector/range version)
+- [ ] `not_in()` - NOT IN operator (variadic)
+- [ ] `not_in()` - NOT IN operator (vector/range)
+
+### NULL Handling
+
+- [ ] `is_null()` - IS NULL check
+- [ ] `is_not_null()` - IS NOT NULL check
+
+### Range Operations
+
+- [ ] `between()` - BETWEEN operator
+- [ ] `not_between()` - NOT BETWEEN operator
+
+### Infrastructure
+
+- [ ] `include/glz_sqlgen/conditions.hpp` - Advanced condition builders
+- [ ] `include/glz_sqlgen/transpilation/advanced_conditions.hpp` - Transpilation support
+- [ ] Extend existing Condition type to support new operators
+
+### Testing
+
+- [ ] `tests/unit/test_advanced_conditions.cpp` - Advanced condition tests
+- [ ] LIKE/NOT LIKE patterns with wildcards
+- [ ] IN with various data types
+- [ ] NULL checks
+- [ ] BETWEEN ranges
+- [ ] Compound conditions (AND/OR with advanced operators)
+- [ ] All Phase 7 tests passing
+
+### Deliverables
+
+- [ ] All advanced condition operators implemented
+- [ ] Type-safe condition builders
+- [ ] SQL injection prevention for pattern matching
+- [ ] Comprehensive test coverage
+
+**Status**: 🔴 Not Started
+**Progress**: 0/21 tasks complete
+
+**Why This Matters**: These operators are used in most real-world queries. Without LIKE, you can't do text search. Without IN, you can't filter by multiple values efficiently. Without NULL checks, you can't handle missing data properly.
+
+---
+
+## Phase 8: SQL Functions (Week 15-16)
+
+**Goal**: Implement SQL standard functions
+
+**Priority**: 🟡 MEDIUM - Useful for data transformation and calculations
+
+### String Functions
+
+- [ ] `concat()` - String concatenation
+- [ ] `length()` - String length
+- [ ] `lower()` - Convert to lowercase
+- [ ] `upper()` - Convert to uppercase
+- [ ] `trim()` - Trim whitespace
+- [ ] `ltrim()` - Trim left whitespace
+- [ ] `rtrim()` - Trim right whitespace
+- [ ] `replace()` - Replace substring
+- [ ] `substring()` - Extract substring
+
+### Math Functions
+
+- [ ] `abs()` - Absolute value
+- [ ] `ceil()` - Ceiling
+- [ ] `floor()` - Floor
+- [ ] `round()` - Round to n decimal places
+- [ ] `sqrt()` - Square root
+- [ ] `exp()` - Exponential
+- [ ] `ln()` - Natural logarithm
+- [ ] `log2()` - Base-2 logarithm
+- [ ] `log10()` - Base-10 logarithm
+- [ ] `pow()` - Power function
+
+### Trigonometric Functions
+
+- [ ] `sin()` - Sine
+- [ ] `cos()` - Cosine
+- [ ] `tan()` - Tangent
+- [ ] `asin()` - Arcsine
+- [ ] `acos()` - Arccosine
+- [ ] `atan()` - Arctangent
+
+### Date/Time Functions
+
+- [ ] `year()` - Extract year
+- [ ] `month()` - Extract month
+- [ ] `day()` - Extract day
+- [ ] `hour()` - Extract hour
+- [ ] `minute()` - Extract minute
+- [ ] `second()` - Extract second
+- [ ] `weekday()` - Day of week
+- [ ] `days_between()` - Days between dates
+- [ ] `unixepoch()` - Unix timestamp
+
+### Other Functions
+
+- [ ] `cast<T>()` - Type casting
+- [ ] `coalesce()` - Return first non-NULL value
+
+### Infrastructure
+
+- [ ] `include/glz_sqlgen/functions.hpp` - SQL function builders
+- [ ] `include/glz_sqlgen/transpilation/functions.hpp` - Function transpilation
+- [ ] Type-safe function return types
+- [ ] Database-specific function mapping (SQLite vs PostgreSQL syntax)
+
+### Testing
+
+- [ ] `tests/unit/test_string_functions.cpp` - String function tests
+- [ ] `tests/unit/test_math_functions.cpp` - Math function tests
+- [ ] `tests/unit/test_date_functions.cpp` - Date/time function tests
+- [ ] All Phase 8 tests passing
+
+### Deliverables
+
+- [ ] 35+ SQL functions implemented
+- [ ] Type-safe function interface
+- [ ] Database adapter abstraction for syntax differences
+- [ ] Comprehensive test coverage
+
+**Status**: 🔴 Not Started
+**Progress**: 0/46 tasks complete
+
+**Why This Matters**: SQL functions enable data transformation within queries, reducing the need for post-processing in application code. Essential for reports, data cleaning, and complex calculations.
+
+---
+
+## Phase 9: PostgreSQL Adapter (Week 17-18)
+
+**Goal**: Add production-grade PostgreSQL support
+
+**Priority**: 🟡 MEDIUM - Required for production deployments
 
 ### PostgreSQL Adapter
 
@@ -210,94 +506,132 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 - [ ] `src/postgres/Connection.cpp`
 - [ ] `include/glz_sqlgen/postgres/Iterator.hpp`
 - [ ] `src/postgres/Iterator.cpp`
-- [ ] `include/glz_sqlgen/postgres/to_sql.hpp`
-- [ ] `src/postgres/to_sql.cpp`
 - [ ] `include/glz_sqlgen/postgres/Credentials.hpp`
 - [ ] `include/glz_sqlgen/postgres.hpp` - Main header with connect()
 
-### Common Infrastructure
+### PostgreSQL-Specific Features
 
-- [ ] `include/glz_sqlgen/Connection.hpp` - Base interface
-- [ ] `include/glz_sqlgen/Result.hpp` - Result/error handling
-- [ ] `include/glz_sqlgen/Transaction.hpp` - Transaction support
-- [ ] `include/glz_sqlgen/begin_transaction.hpp`
-- [ ] `include/glz_sqlgen/commit.hpp`
-- [ ] `include/glz_sqlgen/rollback.hpp`
+- [ ] Connection string parsing
+- [ ] libpq integration
+- [ ] SSL/TLS support
+- [ ] Connection pooling preparation
+- [ ] Prepared statement support
+- [ ] RETURNING clause support
+
+### Type Mapping
+
+- [ ] PostgreSQL to C++ type conversion
+- [ ] Handle PostgreSQL-specific types (UUID, JSONB, etc.)
+- [ ] Array type support
+- [ ] Custom type support
+
+### SQL Dialect Differences
+
+- [ ] Serial vs AUTOINCREMENT
+- [ ] Boolean handling (true/false vs 1/0)
+- [ ] String concatenation (|| vs CONCAT)
+- [ ] Date/time format differences
+- [ ] LIMIT/OFFSET syntax differences
 
 ### Testing
 
-- [ ] `tests/integration/test_sqlite.cpp` - SQLite tests
-- [ ] `tests/integration/test_postgres.cpp` - PostgreSQL tests
-- [ ] End-to-end tests with real databases
+- [ ] `tests/integration/test_postgres.cpp` - PostgreSQL integration tests
+- [ ] Connection and credential tests
+- [ ] CRUD operation tests
 - [ ] Transaction tests
-- [ ] All Phase 4 tests passing
+- [ ] PostgreSQL-specific feature tests
+- [ ] All Phase 9 tests passing
+
+### Build System
+
+- [ ] Meson subproject for libpq
+- [ ] Optional PostgreSQL support (compile-time flag)
+- [ ] Documentation for PostgreSQL setup
 
 ### Deliverables
 
-- [ ] Working SQLite adapter
 - [ ] Working PostgreSQL adapter
-- [ ] Transaction support
+- [ ] Feature parity with SQLite adapter
+- [ ] PostgreSQL-specific optimizations
 - [ ] Integration tests passing
 
 **Status**: 🔴 Not Started
-**Progress**: 0/26 tasks complete
+**Progress**: 0/28 tasks complete
+
+**Why This Matters**: PostgreSQL is the preferred database for production deployments. SQLite is great for development and testing, but most serious applications need PostgreSQL's robustness and features.
 
 ---
 
-## Phase 5: Advanced Features (Week 9-10)
+## Phase 10: Type Constraints (Week 19-20)
 
-**Goal**: Implement remaining sqlgen features
+**Goal**: Enhanced compile-time type safety
 
-### Advanced SQL Features
+**Priority**: 🟡 MEDIUM - Adds significant value for correctness
 
-- [ ] Subqueries
-- [ ] CTEs (Common Table Expressions)
-- [ ] UNION/INTERSECT/EXCEPT
-- [ ] Window functions
-- [ ] Nested joins
+### Primary Keys
 
-### Type Safety Features
+- [ ] `PrimaryKey<T, auto_incr>` - Primary key wrapper
+- [ ] Auto-increment support
+- [ ] Composite primary key support
+- [ ] Compile-time uniqueness validation
 
-- [ ] `PrimaryKey<T>` - Primary key wrapper
-- [ ] `ForeignKey<T>` - Foreign key references
-- [ ] `Unique<T>` - Unique constraint
-- [ ] `Varchar<N>` - String length constraint
+### Foreign Keys
+
+- [ ] `ForeignKey<T, Table, "column">` - Foreign key wrapper
+- [ ] Compile-time referential integrity checking
+- [ ] ON DELETE/ON UPDATE actions
+- [ ] Multi-column foreign keys
+
+### Unique Constraints
+
+- [ ] `Unique<T>` - Unique constraint wrapper
+- [ ] Composite unique constraints
+- [ ] Partial unique indexes
+
+### Length-Constrained Types
+
+- [ ] `Varchar<N>` - Length-validated strings
+- [ ] `Char<N>` - Fixed-length strings
+- [ ] Compile-time length checking
+
+### Specialized Types
+
+- [ ] `JSON<T>` - JSON field storage with glaze serialization
+- [ ] `Timestamp<"format">` - Timestamp with format
+- [ ] `Date` - Date-only type
+- [ ] `DateTime` - Date and time type
+- [ ] `UUID` - UUID type
+
+### SQL Injection Protection Patterns
+
 - [ ] `AlphaNumeric` - Alphanumeric validation
-- [ ] Other pattern types for SQL injection protection
-
-### Performance Features
-
-- [ ] `ConnectionPool` - Connection pooling
-- [ ] `cache.hpp` - Query result caching
-- [ ] Prepared statement support
-- [ ] Batch operations
-
-### Dynamic Queries (Optional)
-
-- [ ] Runtime query building
-- [ ] Dynamic column selection
-- [ ] Dynamic WHERE conditions
+- [ ] `Base64Encoded` - Base64 validation
+- [ ] `Email` - Email validation
+- [ ] `UUIDv1`, `UUIDv2`, `UUIDv3`, `UUIDv4` - UUID version validation
 
 ### Testing
 
-- [ ] `tests/unit/test_type_safety.cpp`
-- [ ] `tests/unit/test_advanced_queries.cpp`
-- [ ] `tests/benchmarks/test_performance.cpp`
-- [ ] `tests/unit/test_sql_injection.cpp`
-- [ ] All Phase 5 tests passing
+- [ ] `tests/unit/test_type_constraints.cpp` - Type constraint tests
+- [ ] `tests/unit/test_primary_keys.cpp` - Primary key tests
+- [ ] `tests/unit/test_foreign_keys.cpp` - Foreign key tests
+- [ ] `tests/unit/test_validation.cpp` - Validation pattern tests
+- [ ] All Phase 10 tests passing
 
 ### Deliverables
 
-- [ ] Feature parity with sqlgen
-- [ ] Performance optimizations
-- [ ] Security hardening
+- [ ] Type-safe constraint system
+- [ ] Compile-time validation where possible
+- [ ] Runtime validation for dynamic constraints
+- [ ] Integration with CREATE TABLE
 
 **Status**: 🔴 Not Started
-**Progress**: 0/23 tasks complete
+**Progress**: 0/27 tasks complete
+
+**Why This Matters**: Type constraints catch errors at compile time, prevent SQL injection, and encode database schema constraints in the type system. This makes code safer and more maintainable.
 
 ---
 
-## Phase 6: Documentation & Polish (Week 11-12)
+## Phase 11: Documentation & Polish (Week 21-22)
 
 **Goal**: Make the library production-ready
 
@@ -308,6 +642,7 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 - [ ] Migration guide from sqlgen
 - [ ] Performance comparison benchmarks
 - [ ] Contributing guidelines
+- [ ] Examples for all phases
 
 ### Code Quality
 
@@ -329,9 +664,10 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 
 - [ ] `examples/basic_crud.cpp`
 - [ ] `examples/complex_joins.cpp`
+- [ ] `examples/aggregates_groupby.cpp`
 - [ ] `examples/orm_style.cpp`
 - [ ] `examples/transactions.cpp`
-- [ ] `examples/connection_pooling.cpp`
+- [ ] `examples/type_safety.cpp`
 
 ### Release Preparation
 
@@ -349,18 +685,29 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 - [ ] v0.1.0 release
 
 **Status**: 🔴 Not Started
-**Progress**: 0/24 tasks complete
+**Progress**: 0/26 tasks complete
 
 ---
 
 ## Overall Progress
 
-**Total Tasks**: 126
-**Completed**: 45
+**Total Tasks**: 224
+**Completed**: 58
 **In Progress**: 0
-**Not Started**: 81
+**Not Started**: 166
 
-**Overall Completion**: 35.7%
+**Overall Completion**: 25.9%
+
+### Progress by Phase
+
+- Phase 1-4: ✅ Complete (58 tasks, 112 tests passing)
+- Phase 5: JOIN Operations (20 tasks)
+- Phase 6: Aggregate Functions (24 tasks)
+- Phase 7: Advanced Conditions (21 tasks)
+- Phase 8: SQL Functions (46 tasks)
+- Phase 9: PostgreSQL Adapter (28 tasks)
+- Phase 10: Type Constraints (27 tasks)
+- Phase 11: Documentation & Polish (26 tasks)
 
 ---
 
@@ -371,9 +718,14 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 | M1: Reflection System Working | Week 2 | 🟢 Complete | Column system with glaze complete |
 | M2: SQL Generation Working | Week 4 | 🟢 Complete | Can generate SQL strings from expressions |
 | M3: Query API Complete | Week 6 | 🟢 Complete | Core query builders implemented (99 tests passing) |
-| M4: Database Support | Week 8 | 🔴 Not Started | SQLite + PostgreSQL working |
-| M5: Feature Complete | Week 10 | 🔴 Not Started | All sqlgen features ported |
-| M6: v0.1.0 Release | Week 12 | 🔴 Not Started | Production-ready release |
+| M4: SQLite Support | Week 8 | 🟢 Complete | SQLite adapter working (112 tests passing) |
+| M5: Multi-Table Queries | Week 10 | 🔴 Not Started | JOIN operations implemented |
+| M6: Analytics Support | Week 12 | 🔴 Not Started | Aggregates and GROUP BY working |
+| M7: Advanced Queries | Week 14 | 🔴 Not Started | Advanced conditions (LIKE, IN, NULL) |
+| M8: SQL Functions | Week 16 | 🔴 Not Started | String/math/date functions implemented |
+| M9: PostgreSQL Support | Week 18 | 🔴 Not Started | PostgreSQL adapter working |
+| M10: Type Safety | Week 20 | 🔴 Not Started | Constraints and validation complete |
+| M11: v0.1.0 Release | Week 22 | 🔴 Not Started | Production-ready release |
 
 ---
 
@@ -410,23 +762,28 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 ## Next Actions
 
 ### Immediate (This Week)
-1. ✅ Phase 1 complete!
-2. ✅ Phase 2 complete!
-3. ✅ Phase 3 complete!
-4. Begin Phase 4: Database Adapters
-5. Implement SQLite connection and iterator
+1. ✅ Phase 1-4 complete! (112 tests passing)
+2. Begin Phase 5: JOIN Operations
+3. Design JOIN clause architecture
+4. Implement `inner_join()` and `left_join()`
 
-### Short Term (Next 2 Weeks)
-1. ✅ Complete Phase 1 (Foundation)
-2. ✅ Complete Phase 2 (Transpilation)
-3. ✅ Complete Phase 3 (Query Builders)
-4. Complete Phase 4 (Database Adapters)
-5. Begin Phase 5 (Advanced Features)
+### Short Term (Next 2-4 Weeks)
+1. Complete Phase 5: JOIN Operations
+2. Complete Phase 6: Aggregate Functions & GROUP BY
+3. Achieve multi-table query capability
+4. Enable analytics/reporting queries
 
-### Medium Term (Weeks 3-6)
-1. Complete Phases 2-3
-2. Have working query generation
-3. Begin database adapter work
+### Medium Term (Weeks 5-10)
+1. Complete Phase 7: Advanced Conditions (LIKE, IN, NULL)
+2. Complete Phase 8: SQL Functions
+3. Achieve feature parity for common SQL operations
+4. Begin Phase 9: PostgreSQL Adapter
+
+### Long Term (Weeks 11-22)
+1. Complete PostgreSQL support
+2. Implement type constraints and validation
+3. Documentation and polish
+4. v0.1.0 release
 
 ---
 
@@ -434,10 +791,66 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 
 | Version | Date | Notes |
 |---------|------|-------|
+| 0.0.5 | 2025-11-07 | Roadmap updated with detailed Phase 5-11 breakdown based on sqlgen analysis |
+| 0.0.4 | 2025-11-07 | Phase 4 complete - SQLite adapter with transactions (112 tests passing) |
 | 0.0.3 | 2025-11-07 | Phase 3 complete - Query builders with SELECT/INSERT/UPDATE/DELETE/CREATE (99 tests passing) |
 | 0.0.2 | 2025-11-07 | Phase 2 complete - SQL generation and table introspection (70 tests passing) |
 | 0.0.1 | 2025-11-07 | Phase 1 complete - Column system and transpilation types |
 | 0.0.0 | 2025-11-07 | Initial roadmap created, planning complete |
+
+---
+
+## Feature Comparison: glz-sqlgen vs sqlgen
+
+### ✅ Implemented (Phases 1-4)
+
+- Basic CRUD: SELECT, INSERT, UPDATE, DELETE, CREATE TABLE
+- WHERE, ORDER BY, LIMIT clauses
+- Basic operators: arithmetic (+, -, *, /), comparison (==, !=, <, >, <=, >=)
+- Column system with compile-time type safety
+- Transpilation layer (glaze reflection → SQL)
+- SQLite adapter with Connection, Iterator, transactions
+- 112 passing tests
+
+### ❌ Missing (Phases 5-10)
+
+**Phase 5 - Critical**: JOINs (can't query multiple tables)
+- inner_join(), left_join(), right_join(), full_join(), cross_join()
+
+**Phase 6 - Critical**: Aggregates (can't do analytics/reporting)
+- count(), count_distinct(), sum(), avg(), min(), max()
+- GROUP BY and HAVING clauses
+
+**Phase 7 - High Priority**: Advanced Conditions
+- like(), not_like(), in(), not_in()
+- is_null(), is_not_null(), between()
+
+**Phase 8 - Medium Priority**: SQL Functions (25+ functions)
+- String: concat(), length(), lower(), upper(), trim(), replace()
+- Math: abs(), ceil(), floor(), round(), sqrt(), exp(), ln()
+- Date/Time: year(), month(), day(), hour(), minute(), second()
+
+**Phase 9 - Medium Priority**: PostgreSQL Adapter
+- Complete adapter with libpq integration
+- PostgreSQL-specific features (RETURNING, etc.)
+
+**Phase 10 - Medium Priority**: Type Constraints
+- PrimaryKey<T>, ForeignKey<T>, Unique<T>
+- Varchar<N>, JSON<T>, Timestamp, Date, DateTime
+- SQL injection protection patterns
+
+### 🔮 Future Considerations (Not Planned for v0.1.0)
+
+- MySQL/MariaDB adapter
+- Dynamic query system (runtime query building)
+- Subqueries and CTEs
+- Window functions
+- Views and indexes
+- Connection pooling
+- Query result caching
+- Struct composition (Flatten<T>)
+
+**Status**: The original sqlgen is a mature library with ~3,858 lines of test code for SQLite alone. glz-sqlgen has solid foundations (112 tests) but is missing most advanced SQL capabilities. Phases 5-6 are critical for real-world use.
 
 ---
 
@@ -447,6 +860,7 @@ This roadmap tracks the development of glz-sqlgen, a C++23 SQL query generator u
 - Phase timelines are estimates and may be adjusted based on actual progress
 - Tasks marked with ⚠️ indicate potential blockers or areas needing attention
 - See [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md) for detailed technical specifications
+- The roadmap was significantly revised in v0.0.5 based on thorough analysis of the original sqlgen implementation
 
 ---
 
