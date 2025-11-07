@@ -26,7 +26,7 @@ template <>
 struct glz::meta<Users> {
     using T = Users;
     static constexpr std::string_view name = "users";
-    static constexpr auto value = object(
+    [[maybe_unused]] static constexpr auto value = glz::object(
         "id", &T::id,
         "first_name", &T::first_name,
         "last_name", &T::last_name,
@@ -38,7 +38,7 @@ struct glz::meta<Users> {
 // CONCAT Tests
 
 TEST(StringFunctionsTest, ConcatTwoColumns) {
-    auto query = select_from<Users>(concat("first_name"_col, "last_name"_col));
+    auto query = select_from<Users>(concat("first_name"_c, "last_name"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT CONCAT(\"first_name\", \"last_name\") FROM \"users\"");
@@ -46,7 +46,7 @@ TEST(StringFunctionsTest, ConcatTwoColumns) {
 
 TEST(StringFunctionsTest, ConcatThreeColumns) {
     auto query = select_from<Users>(
-        concat("first_name"_col, " "_v, "last_name"_col)
+        concat("first_name"_c, " ", "last_name"_c)
     );
 
     auto sql = query.build();
@@ -55,7 +55,7 @@ TEST(StringFunctionsTest, ConcatThreeColumns) {
 
 TEST(StringFunctionsTest, ConcatMultipleStrings) {
     auto query = select_from<Users>(
-        concat("first_name"_col, " "_v, "last_name"_col, " <"_v, "email"_col, ">"_v)
+        concat("first_name"_c, " ", "last_name"_c, " <", "email"_c, ">")
     );
 
     auto sql = query.build();
@@ -64,7 +64,7 @@ TEST(StringFunctionsTest, ConcatMultipleStrings) {
 
 TEST(StringFunctionsTest, ConcatInWhere) {
     auto query = select_from<Users>()
-        | where(concat("first_name"_col, "last_name"_col) == "JohnDoe"_v);
+        | where(concat("first_name"_c, "last_name"_c) == "JohnDoe");
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE CONCAT(\"first_name\", \"last_name\") = 'JohnDoe'");
@@ -73,7 +73,7 @@ TEST(StringFunctionsTest, ConcatInWhere) {
 // LENGTH Tests
 
 TEST(StringFunctionsTest, LengthColumn) {
-    auto query = select_from<Users>(length("email"_col));
+    auto query = select_from<Users>(length("email"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT LENGTH(\"email\") FROM \"users\"");
@@ -81,7 +81,7 @@ TEST(StringFunctionsTest, LengthColumn) {
 
 TEST(StringFunctionsTest, LengthInWhere) {
     auto query = select_from<Users>()
-        | where(length("email"_col) > 20_v);
+        | where(length("email"_c) > 20);
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE LENGTH(\"email\") > 20");
@@ -89,7 +89,7 @@ TEST(StringFunctionsTest, LengthInWhere) {
 
 TEST(StringFunctionsTest, LengthOrderBy) {
     auto query = select_from<Users>()
-        | order_by(length("email"_col));
+        | order_by(length("email"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"users\" ORDER BY LENGTH(\"email\")");
@@ -98,7 +98,7 @@ TEST(StringFunctionsTest, LengthOrderBy) {
 // LOWER Tests
 
 TEST(StringFunctionsTest, LowerColumn) {
-    auto query = select_from<Users>(lower("email"_col));
+    auto query = select_from<Users>(lower("email"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT LOWER(\"email\") FROM \"users\"");
@@ -106,7 +106,7 @@ TEST(StringFunctionsTest, LowerColumn) {
 
 TEST(StringFunctionsTest, LowerInWhere) {
     auto query = select_from<Users>()
-        | where(lower("email"_col) == "test@example.com"_v);
+        | where(lower("email"_c) == "test@example.com");
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE LOWER(\"email\") = 'test@example.com'");
@@ -115,7 +115,7 @@ TEST(StringFunctionsTest, LowerInWhere) {
 // UPPER Tests
 
 TEST(StringFunctionsTest, UpperColumn) {
-    auto query = select_from<Users>(upper("city"_col));
+    auto query = select_from<Users>(upper("city"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT UPPER(\"city\") FROM \"users\"");
@@ -123,7 +123,7 @@ TEST(StringFunctionsTest, UpperColumn) {
 
 TEST(StringFunctionsTest, UpperInWhere) {
     auto query = select_from<Users>()
-        | where(upper("city"_col) == "NEW YORK"_v);
+        | where(upper("city"_c) == "NEW YORK");
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE UPPER(\"city\") = 'NEW YORK'");
@@ -132,7 +132,7 @@ TEST(StringFunctionsTest, UpperInWhere) {
 // TRIM Tests
 
 TEST(StringFunctionsTest, TrimColumn) {
-    auto query = select_from<Users>(trim("email"_col));
+    auto query = select_from<Users>(trim("email"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT TRIM(\"email\") FROM \"users\"");
@@ -140,7 +140,7 @@ TEST(StringFunctionsTest, TrimColumn) {
 
 TEST(StringFunctionsTest, TrimInWhere) {
     auto query = select_from<Users>()
-        | where(trim("email"_col) == "test@example.com"_v);
+        | where(trim("email"_c) == "test@example.com");
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE TRIM(\"email\") = 'test@example.com'");
@@ -149,7 +149,7 @@ TEST(StringFunctionsTest, TrimInWhere) {
 // LTRIM Tests
 
 TEST(StringFunctionsTest, LtrimColumn) {
-    auto query = select_from<Users>(ltrim("email"_col));
+    auto query = select_from<Users>(ltrim("email"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT LTRIM(\"email\") FROM \"users\"");
@@ -158,7 +158,7 @@ TEST(StringFunctionsTest, LtrimColumn) {
 // RTRIM Tests
 
 TEST(StringFunctionsTest, RtrimColumn) {
-    auto query = select_from<Users>(rtrim("email"_col));
+    auto query = select_from<Users>(rtrim("email"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT RTRIM(\"email\") FROM \"users\"");
@@ -168,7 +168,7 @@ TEST(StringFunctionsTest, RtrimColumn) {
 
 TEST(StringFunctionsTest, ReplaceColumn) {
     auto query = select_from<Users>(
-        replace("email"_col, "@example.com"_v, "@test.com"_v)
+        replace("email"_c, "@example.com", "@test.com")
     );
 
     auto sql = query.build();
@@ -177,7 +177,7 @@ TEST(StringFunctionsTest, ReplaceColumn) {
 
 TEST(StringFunctionsTest, ReplaceInWhere) {
     auto query = select_from<Users>()
-        | where(replace("email"_col, "@"_v, "#"_v) == "test#example.com"_v);
+        | where(replace("email"_c, "@", "#") == "test#example.com");
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE REPLACE(\"email\", '@', '#') = 'test#example.com'");
@@ -186,7 +186,7 @@ TEST(StringFunctionsTest, ReplaceInWhere) {
 // SUBSTRING Tests
 
 TEST(StringFunctionsTest, SubstringColumn) {
-    auto query = select_from<Users>(substring("email"_col, 1_v, 10_v));
+    auto query = select_from<Users>(substring("email"_c, 1, 10));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT SUBSTR(\"email\", 1, 10) FROM \"users\"");
@@ -194,7 +194,7 @@ TEST(StringFunctionsTest, SubstringColumn) {
 
 TEST(StringFunctionsTest, SubstringInWhere) {
     auto query = select_from<Users>()
-        | where(substring("email"_col, 1_v, 4_v) == "test"_v);
+        | where(substring("email"_c, 1, 4) == "test");
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE SUBSTR(\"email\", 1, 4) = 'test'");
@@ -204,7 +204,7 @@ TEST(StringFunctionsTest, SubstringInWhere) {
 
 TEST(StringFunctionsTest, CombinedStringFunctions) {
     auto query = select_from<Users>(
-        lower(trim(concat("first_name"_col, " "_v, "last_name"_col)))
+        lower(trim(concat("first_name"_c, " ", "last_name"_c)))
     );
 
     auto sql = query.build();
@@ -214,8 +214,8 @@ TEST(StringFunctionsTest, CombinedStringFunctions) {
 TEST(StringFunctionsTest, MultipleStringFunctionsInWhere) {
     auto query = select_from<Users>()
         | where(
-            length(trim("email"_col)) > 10_v &&
-            lower("city"_col) == "new york"_v
+            length(trim("email"_c)) > 10 &&
+            lower("city"_c) == "new york"
         );
 
     auto sql = query.build();
@@ -224,8 +224,8 @@ TEST(StringFunctionsTest, MultipleStringFunctionsInWhere) {
 
 TEST(StringFunctionsTest, StringFunctionsWithOrderBy) {
     auto query = select_from<Users>()
-        | where(length("email"_col) > 10_v)
-        | order_by(upper("last_name"_col));
+        | where(length("email"_c) > 10)
+        | order_by(upper("last_name"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"users\" WHERE LENGTH(\"email\") > 10 ORDER BY UPPER(\"last_name\")");
@@ -233,7 +233,7 @@ TEST(StringFunctionsTest, StringFunctionsWithOrderBy) {
 
 TEST(StringFunctionsTest, NestedStringFunctions) {
     auto query = select_from<Users>(
-        upper(substring(trim("email"_col), 1_v, 5_v))
+        upper(substring(trim("email"_c), 1, 5))
     );
 
     auto sql = query.build();

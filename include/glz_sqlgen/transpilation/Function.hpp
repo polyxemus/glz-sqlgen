@@ -132,4 +132,68 @@ struct CastFunction {
     constexpr CastFunction(const ExprType& expr) : expression(expr) {}
 };
 
+// Forward declarations for operations
+enum class Operator;
+template <Operator Op, class Operand1, class Operand2>
+struct Operation;
+template <class Left, Operator Op, class Right>
+struct Condition;
+
+// Arithmetic operators for Function types
+template <FunctionType Type, class... ArgTypes, class T>
+constexpr auto operator+(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
+    return Operation<Operator::plus, Function<Type, ArgTypes...>, T>{lhs, rhs};
+}
+
+template <FunctionType Type, class... ArgTypes, class T>
+constexpr auto operator-(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
+    return Operation<Operator::minus, Function<Type, ArgTypes...>, T>{lhs, rhs};
+}
+
+template <FunctionType Type, class... ArgTypes, class T>
+constexpr auto operator*(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
+    return Operation<Operator::multiplies, Function<Type, ArgTypes...>, T>{lhs, rhs};
+}
+
+template <FunctionType Type, class... ArgTypes, class T>
+constexpr auto operator/(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
+    return Operation<Operator::divides, Function<Type, ArgTypes...>, T>{lhs, rhs};
+}
+
+template <FunctionType Type, class... ArgTypes, class T>
+constexpr auto operator%(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
+    return Operation<Operator::mod, Function<Type, ArgTypes...>, T>{lhs, rhs};
+}
+
+// Comparison operators for Function types
+template <FunctionType Type, class... ArgTypes, class T>
+constexpr auto operator==(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
+    return Condition<Function<Type, ArgTypes...>, Operator::equal, T>{lhs, rhs};
+}
+
+template <FunctionType Type, class... ArgTypes, class T>
+constexpr auto operator!=(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
+    return Condition<Function<Type, ArgTypes...>, Operator::not_equal, T>{lhs, rhs};
+}
+
+template <FunctionType Type, class... ArgTypes, class T>
+constexpr auto operator<(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
+    return Condition<Function<Type, ArgTypes...>, Operator::less_than, T>{lhs, rhs};
+}
+
+template <FunctionType Type, class... ArgTypes, class T>
+constexpr auto operator<=(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
+    return Condition<Function<Type, ArgTypes...>, Operator::less_equal, T>{lhs, rhs};
+}
+
+template <FunctionType Type, class... ArgTypes, class T>
+constexpr auto operator>(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
+    return Condition<Function<Type, ArgTypes...>, Operator::greater_than, T>{lhs, rhs};
+}
+
+template <FunctionType Type, class... ArgTypes, class T>
+constexpr auto operator>=(const Function<Type, ArgTypes...>& lhs, const T& rhs) {
+    return Condition<Function<Type, ArgTypes...>, Operator::greater_equal, T>{lhs, rhs};
+}
+
 } // namespace glz_sqlgen::transpilation

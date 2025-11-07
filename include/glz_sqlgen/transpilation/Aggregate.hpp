@@ -51,4 +51,39 @@ struct Aggregate {
     }
 };
 
+// Forward declaration for Condition
+template <class Left, Operator Op, class Right>
+struct Condition;
+
+// Comparison operators for Aggregate types
+template <AggregateType Type, class ExprType, class T>
+constexpr auto operator==(const Aggregate<Type, ExprType>& lhs, const T& rhs) {
+    return Condition<Aggregate<Type, ExprType>, Operator::equal, T>{lhs, rhs};
+}
+
+template <AggregateType Type, class ExprType, class T>
+constexpr auto operator!=(const Aggregate<Type, ExprType>& lhs, const T& rhs) {
+    return Condition<Aggregate<Type, ExprType>, Operator::not_equal, T>{lhs, rhs};
+}
+
+template <AggregateType Type, class ExprType, class T>
+constexpr auto operator<(const Aggregate<Type, ExprType>& lhs, const T& rhs) {
+    return Condition<Aggregate<Type, ExprType>, Operator::less_than, T>{lhs, rhs};
+}
+
+template <AggregateType Type, class ExprType, class T>
+constexpr auto operator<=(const Aggregate<Type, ExprType>& lhs, const T& rhs) {
+    return Condition<Aggregate<Type, ExprType>, Operator::less_equal, T>{lhs, rhs};
+}
+
+template <AggregateType Type, class ExprType, class T>
+constexpr auto operator>(const Aggregate<Type, ExprType>& lhs, const T& rhs) {
+    return Condition<Aggregate<Type, ExprType>, Operator::greater_than, T>{lhs, rhs};
+}
+
+template <AggregateType Type, class ExprType, class T>
+constexpr auto operator>=(const Aggregate<Type, ExprType>& lhs, const T& rhs) {
+    return Condition<Aggregate<Type, ExprType>, Operator::greater_equal, T>{lhs, rhs};
+}
+
 } // namespace glz_sqlgen::transpilation

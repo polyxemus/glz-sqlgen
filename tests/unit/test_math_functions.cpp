@@ -34,7 +34,7 @@ template <>
 struct glz::meta<Products> {
     using T = Products;
     static constexpr std::string_view name = "products";
-    static constexpr auto value = object(
+    [[maybe_unused]] static constexpr auto value = glz::object(
         "id", &T::id,
         "name", &T::name,
         "price", &T::price,
@@ -47,7 +47,7 @@ template <>
 struct glz::meta<Measurements> {
     using T = Measurements;
     static constexpr std::string_view name = "measurements";
-    static constexpr auto value = object(
+    [[maybe_unused]] static constexpr auto value = glz::object(
         "id", &T::id,
         "x", &T::x,
         "y", &T::y,
@@ -59,7 +59,7 @@ struct glz::meta<Measurements> {
 // ABS Tests
 
 TEST(MathFunctionsTest, AbsColumn) {
-    auto query = select_from<Measurements>(abs("value"_col));
+    auto query = select_from<Measurements>(abs("value"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT ABS(\"value\") FROM \"measurements\"");
@@ -67,14 +67,14 @@ TEST(MathFunctionsTest, AbsColumn) {
 
 TEST(MathFunctionsTest, AbsInWhere) {
     auto query = select_from<Measurements>()
-        | where(abs("value"_col) > 10.0_v);
+        | where(abs("value"_c) > 10.0);
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"measurements\" WHERE ABS(\"value\") > 10.000000");
 }
 
 TEST(MathFunctionsTest, AbsExpression) {
-    auto query = select_from<Products>(abs("price"_col - "cost"_col));
+    auto query = select_from<Products>(abs("price"_c - "cost"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT ABS((\"price\" - \"cost\")) FROM \"products\"");
@@ -83,7 +83,7 @@ TEST(MathFunctionsTest, AbsExpression) {
 // CEIL Tests
 
 TEST(MathFunctionsTest, CeilColumn) {
-    auto query = select_from<Products>(ceil("price"_col));
+    auto query = select_from<Products>(ceil("price"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT CEIL(\"price\") FROM \"products\"");
@@ -91,7 +91,7 @@ TEST(MathFunctionsTest, CeilColumn) {
 
 TEST(MathFunctionsTest, CeilInWhere) {
     auto query = select_from<Products>()
-        | where(ceil("price"_col) >= 100_v);
+        | where(ceil("price"_c) >= 100);
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"products\" WHERE CEIL(\"price\") >= 100");
@@ -100,7 +100,7 @@ TEST(MathFunctionsTest, CeilInWhere) {
 // FLOOR Tests
 
 TEST(MathFunctionsTest, FloorColumn) {
-    auto query = select_from<Products>(floor("price"_col));
+    auto query = select_from<Products>(floor("price"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT FLOOR(\"price\") FROM \"products\"");
@@ -108,7 +108,7 @@ TEST(MathFunctionsTest, FloorColumn) {
 
 TEST(MathFunctionsTest, FloorInWhere) {
     auto query = select_from<Products>()
-        | where(floor("price"_col) <= 50_v);
+        | where(floor("price"_c) <= 50);
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"products\" WHERE FLOOR(\"price\") <= 50");
@@ -117,14 +117,14 @@ TEST(MathFunctionsTest, FloorInWhere) {
 // ROUND Tests
 
 TEST(MathFunctionsTest, RoundNoDecimal) {
-    auto query = select_from<Products>(round("price"_col));
+    auto query = select_from<Products>(round("price"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT ROUND(\"price\") FROM \"products\"");
 }
 
 TEST(MathFunctionsTest, RoundWithPrecision) {
-    auto query = select_from<Products>(round("price"_col, 2_v));
+    auto query = select_from<Products>(round("price"_c, 2));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT ROUND(\"price\", 2) FROM \"products\"");
@@ -132,7 +132,7 @@ TEST(MathFunctionsTest, RoundWithPrecision) {
 
 TEST(MathFunctionsTest, RoundInWhere) {
     auto query = select_from<Products>()
-        | where(round("price"_col, 0_v) == 100_v);
+        | where(round("price"_c, 0) == 100);
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"products\" WHERE ROUND(\"price\", 0) = 100");
@@ -141,7 +141,7 @@ TEST(MathFunctionsTest, RoundInWhere) {
 // SQRT Tests
 
 TEST(MathFunctionsTest, SqrtColumn) {
-    auto query = select_from<Measurements>(sqrt("value"_col));
+    auto query = select_from<Measurements>(sqrt("value"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT SQRT(\"value\") FROM \"measurements\"");
@@ -149,7 +149,7 @@ TEST(MathFunctionsTest, SqrtColumn) {
 
 TEST(MathFunctionsTest, SqrtInWhere) {
     auto query = select_from<Measurements>()
-        | where(sqrt("value"_col) > 5.0_v);
+        | where(sqrt("value"_c) > 5.0);
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"measurements\" WHERE SQRT(\"value\") > 5.000000");
@@ -157,7 +157,7 @@ TEST(MathFunctionsTest, SqrtInWhere) {
 
 TEST(MathFunctionsTest, SqrtExpression) {
     auto query = select_from<Measurements>(
-        sqrt("x"_col * "x"_col + "y"_col * "y"_col)
+        sqrt("x"_c * "x"_c + "y"_c * "y"_c)
     );
 
     auto sql = query.build();
@@ -167,7 +167,7 @@ TEST(MathFunctionsTest, SqrtExpression) {
 // EXP Tests
 
 TEST(MathFunctionsTest, ExpColumn) {
-    auto query = select_from<Measurements>(exp("value"_col));
+    auto query = select_from<Measurements>(exp("value"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT EXP(\"value\") FROM \"measurements\"");
@@ -176,7 +176,7 @@ TEST(MathFunctionsTest, ExpColumn) {
 // LN Tests
 
 TEST(MathFunctionsTest, LnColumn) {
-    auto query = select_from<Measurements>(ln("value"_col));
+    auto query = select_from<Measurements>(ln("value"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT LN(\"value\") FROM \"measurements\"");
@@ -184,7 +184,7 @@ TEST(MathFunctionsTest, LnColumn) {
 
 TEST(MathFunctionsTest, LnInWhere) {
     auto query = select_from<Measurements>()
-        | where(ln("value"_col) > 2.0_v);
+        | where(ln("value"_c) > 2.0);
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"measurements\" WHERE LN(\"value\") > 2.000000");
@@ -193,7 +193,7 @@ TEST(MathFunctionsTest, LnInWhere) {
 // LOG2 Tests
 
 TEST(MathFunctionsTest, Log2Column) {
-    auto query = select_from<Measurements>(log2("value"_col));
+    auto query = select_from<Measurements>(log2("value"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT LOG2(\"value\") FROM \"measurements\"");
@@ -202,7 +202,7 @@ TEST(MathFunctionsTest, Log2Column) {
 // LOG10 Tests
 
 TEST(MathFunctionsTest, Log10Column) {
-    auto query = select_from<Measurements>(log10("value"_col));
+    auto query = select_from<Measurements>(log10("value"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT LOG10(\"value\") FROM \"measurements\"");
@@ -211,14 +211,14 @@ TEST(MathFunctionsTest, Log10Column) {
 // POW Tests
 
 TEST(MathFunctionsTest, PowColumn) {
-    auto query = select_from<Measurements>(pow("x"_col, 2_v));
+    auto query = select_from<Measurements>(pow("x"_c, 2));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT POW(\"x\", 2) FROM \"measurements\"");
 }
 
 TEST(MathFunctionsTest, PowTwoColumns) {
-    auto query = select_from<Measurements>(pow("x"_col, "y"_col));
+    auto query = select_from<Measurements>(pow("x"_c, "y"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT POW(\"x\", \"y\") FROM \"measurements\"");
@@ -226,7 +226,7 @@ TEST(MathFunctionsTest, PowTwoColumns) {
 
 TEST(MathFunctionsTest, PowInWhere) {
     auto query = select_from<Measurements>()
-        | where(pow("x"_col, 2_v) > 100.0_v);
+        | where(pow("x"_c, 2) > 100.0);
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"measurements\" WHERE POW(\"x\", 2) > 100.000000");
@@ -235,42 +235,42 @@ TEST(MathFunctionsTest, PowInWhere) {
 // TRIGONOMETRIC FUNCTIONS
 
 TEST(MathFunctionsTest, SinColumn) {
-    auto query = select_from<Measurements>(sin("angle"_col));
+    auto query = select_from<Measurements>(sin("angle"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT SIN(\"angle\") FROM \"measurements\"");
 }
 
 TEST(MathFunctionsTest, CosColumn) {
-    auto query = select_from<Measurements>(cos("angle"_col));
+    auto query = select_from<Measurements>(cos("angle"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT COS(\"angle\") FROM \"measurements\"");
 }
 
 TEST(MathFunctionsTest, TanColumn) {
-    auto query = select_from<Measurements>(tan("angle"_col));
+    auto query = select_from<Measurements>(tan("angle"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT TAN(\"angle\") FROM \"measurements\"");
 }
 
 TEST(MathFunctionsTest, AsinColumn) {
-    auto query = select_from<Measurements>(asin("value"_col));
+    auto query = select_from<Measurements>(asin("value"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT ASIN(\"value\") FROM \"measurements\"");
 }
 
 TEST(MathFunctionsTest, AcosColumn) {
-    auto query = select_from<Measurements>(acos("value"_col));
+    auto query = select_from<Measurements>(acos("value"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT ACOS(\"value\") FROM \"measurements\"");
 }
 
 TEST(MathFunctionsTest, AtanColumn) {
-    auto query = select_from<Measurements>(atan("value"_col));
+    auto query = select_from<Measurements>(atan("value"_c));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT ATAN(\"value\") FROM \"measurements\"");
@@ -278,7 +278,7 @@ TEST(MathFunctionsTest, AtanColumn) {
 
 TEST(MathFunctionsTest, TrigInWhere) {
     auto query = select_from<Measurements>()
-        | where(sin("angle"_col) > 0.5_v);
+        | where(sin("angle"_c) > 0.5);
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"measurements\" WHERE SIN(\"angle\") > 0.500000");
@@ -288,7 +288,7 @@ TEST(MathFunctionsTest, TrigInWhere) {
 
 TEST(MathFunctionsTest, CombinedMathFunctions) {
     auto query = select_from<Measurements>(
-        round(sqrt(pow("x"_col, 2_v) + pow("y"_col, 2_v)), 2_v)
+        round(sqrt(pow("x"_c, 2) + pow("y"_c, 2)), 2)
     );
 
     auto sql = query.build();
@@ -297,7 +297,7 @@ TEST(MathFunctionsTest, CombinedMathFunctions) {
 
 TEST(MathFunctionsTest, ComplexExpression) {
     auto query = select_from<Products>(
-        round(("price"_col - "cost"_col) / "price"_col * 100_v, 2_v)
+        round(("price"_c - "cost"_c) / "price"_c * 100, 2)
     );
 
     auto sql = query.build();
@@ -306,7 +306,7 @@ TEST(MathFunctionsTest, ComplexExpression) {
 
 TEST(MathFunctionsTest, NestedMathFunctions) {
     auto query = select_from<Measurements>(
-        abs(ceil(floor("value"_col)))
+        abs(ceil(floor("value"_c)))
     );
 
     auto sql = query.build();
@@ -315,8 +315,8 @@ TEST(MathFunctionsTest, NestedMathFunctions) {
 
 TEST(MathFunctionsTest, MathFunctionsWithOrderBy) {
     auto query = select_from<Products>()
-        | where(abs("price"_col - "cost"_col) > 10.0_v)
-        | order_by(round("price"_col, 0_v));
+        | where(abs("price"_c - "cost"_c) > 10.0)
+        | order_by(round("price"_c, 0));
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"products\" WHERE ABS((\"price\" - \"cost\")) > 10.000000 ORDER BY ROUND(\"price\", 0)");
@@ -324,7 +324,7 @@ TEST(MathFunctionsTest, MathFunctionsWithOrderBy) {
 
 TEST(MathFunctionsTest, PythagoreanTheorem) {
     auto query = select_from<Measurements>()
-        | where(sqrt(pow("x"_col, 2_v) + pow("y"_col, 2_v)) < 10.0_v);
+        | where(sqrt(pow("x"_c, 2) + pow("y"_c, 2)) < 10.0);
 
     auto sql = query.build();
     EXPECT_EQ(sql, "SELECT * FROM \"measurements\" WHERE SQRT((POW(\"x\", 2) + POW(\"y\", 2))) < 10.000000");

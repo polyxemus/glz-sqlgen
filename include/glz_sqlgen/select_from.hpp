@@ -189,12 +189,6 @@ struct SelectFrom {
         static_assert(std::is_same_v<LimitType, Nothing>,
                      "Cannot call join() after limit()");
 
-                     "Cannot call join() after where()");
-        static_assert(std::is_same_v<OrderByType, Nothing>,
-                     "Cannot call join() after order_by()");
-        static_assert(std::is_same_v<LimitType, Nothing>,
-                     "Cannot call join() after limit()");
-
         using NewJoinType = typename RightJoin<JoinTableType, JoinAlias, JoinConditionType>::JoinType;
         if constexpr (std::is_same_v<JoinListType, Nothing>) {
             using NewJoinListType = transpilation::JoinList<NewJoinType>;
@@ -236,12 +230,6 @@ struct SelectFrom {
         static_assert(std::is_same_v<LimitType, Nothing>,
                      "Cannot call join() after limit()");
 
-                     "Cannot call join() after where()");
-        static_assert(std::is_same_v<OrderByType, Nothing>,
-                     "Cannot call join() after order_by()");
-        static_assert(std::is_same_v<LimitType, Nothing>,
-                     "Cannot call join() after limit()");
-
         using NewJoinType = typename FullJoin<JoinTableType, JoinAlias, JoinConditionType>::JoinType;
         if constexpr (std::is_same_v<JoinListType, Nothing>) {
             using NewJoinListType = transpilation::JoinList<NewJoinType>;
@@ -278,11 +266,6 @@ struct SelectFrom {
                      "Cannot call join() after group_by()");
         static_assert(std::is_same_v<HavingType, Nothing>,
                      "Cannot call join() after having()");
-        static_assert(std::is_same_v<OrderByType, Nothing>,
-                     "Cannot call join() after order_by()");        static_assert(std::is_same_v<LimitType, Nothing>,
-                     "Cannot call join() after limit()");
-
-                     "Cannot call join() after where()");
         static_assert(std::is_same_v<OrderByType, Nothing>,
                      "Cannot call join() after order_by()");
         static_assert(std::is_same_v<LimitType, Nothing>,

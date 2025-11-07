@@ -36,7 +36,7 @@ template <>
 struct glz::meta<Sales> {
     using T = Sales;
     static constexpr std::string_view name = "sales";
-    static constexpr auto value = object(
+    [[maybe_unused]] static constexpr auto value = glz::object(
         "id", &T::id,
         "product", &T::product,
         "amount", &T::amount,
@@ -49,7 +49,7 @@ template <>
 struct glz::meta<Employees> {
     using T = Employees;
     static constexpr std::string_view name = "employees";
-    static constexpr auto value = object(
+    [[maybe_unused]] static constexpr auto value = glz::object(
         "id", &T::id,
         "name", &T::name,
         "department_id", &T::department_id,
@@ -119,7 +119,7 @@ TEST(AggregatesTest, MultipleAggregates) {
 
 TEST(AggregatesTest, GroupBySingleColumn) {
     auto query = select_from<Sales>("region"_c, sum("amount"_c)) |
-                 group_by("region"_c");
+                 group_by("region"_c);
 
     auto sql = query.to_sql();
     EXPECT_EQ(sql, "SELECT \"region\", SUM(\"amount\") FROM \"sales\" GROUP BY \"region\"");

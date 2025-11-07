@@ -183,11 +183,11 @@ std::string to_sql(const glz_sqlgen::advanced::InCondition<ColType, ValueTypes..
     std::string sql = to_sql(cond.column) + " IN (";
     bool first = true;
     std::apply([&](const auto&... values) {
-        (([&] {
+        (([&](const auto& val) {
             if (!first) sql += ", ";
-            sql += to_sql(transpilation::Value{values});
+            sql += to_sql(glz_sqlgen::transpilation::Value{val});
             first = false;
-        }()), ...);
+        }(values)), ...);
     }, cond.values);
     sql += ")";
     return sql;
@@ -199,11 +199,11 @@ std::string to_sql(const glz_sqlgen::advanced::NotInCondition<ColType, ValueType
     std::string sql = to_sql(cond.column) + " NOT IN (";
     bool first = true;
     std::apply([&](const auto&... values) {
-        (([&] {
+        (([&](const auto& val) {
             if (!first) sql += ", ";
-            sql += to_sql(transpilation::Value{values});
+            sql += to_sql(glz_sqlgen::transpilation::Value{val});
             first = false;
-        }()), ...);
+        }(values)), ...);
     }, cond.values);
     sql += ")";
     return sql;
@@ -213,16 +213,16 @@ std::string to_sql(const glz_sqlgen::advanced::NotInCondition<ColType, ValueType
 template <class ColType, class LowerType, class UpperType>
 std::string to_sql(const glz_sqlgen::advanced::BetweenCondition<ColType, LowerType, UpperType>& cond) {
     return to_sql(cond.column) + " BETWEEN " +
-           to_sql(transpilation::Value{cond.lower}) + " AND " +
-           to_sql(transpilation::Value{cond.upper});
+           to_sql(glz_sqlgen::transpilation::Value{cond.lower}) + " AND " +
+           to_sql(glz_sqlgen::transpilation::Value{cond.upper});
 }
 
 /// Convert NOT BETWEEN condition to SQL
 template <class ColType, class LowerType, class UpperType>
 std::string to_sql(const glz_sqlgen::advanced::NotBetweenCondition<ColType, LowerType, UpperType>& cond) {
     return to_sql(cond.column) + " NOT BETWEEN " +
-           to_sql(transpilation::Value{cond.lower}) + " AND " +
-           to_sql(transpilation::Value{cond.upper});
+           to_sql(glz_sqlgen::transpilation::Value{cond.lower}) + " AND " +
+           to_sql(glz_sqlgen::transpilation::Value{cond.upper});
 }
 
 
