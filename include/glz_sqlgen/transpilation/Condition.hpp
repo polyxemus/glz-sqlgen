@@ -79,4 +79,55 @@ constexpr auto operator>=(const Operation<Op, O1, O2>& lhs, const T& rhs) {
         make_condition<Operator::greater_equal>(lhs, Value<T>{rhs}));
 }
 
+// Logical operators for combining conditions
+template <class L, Operator Op1, class R, class L2, Operator Op2, class R2>
+constexpr auto operator&&(const Condition<L, Op1, R>& lhs, const Condition<L2, Op2, R2>& rhs) {
+    return make_condition_wrapper(
+        make_condition<Operator::logical_and>(lhs, rhs));
+}
+
+template <class L, Operator Op1, class R, class L2, Operator Op2, class R2>
+constexpr auto operator||(const Condition<L, Op1, R>& lhs, const Condition<L2, Op2, R2>& rhs) {
+    return make_condition_wrapper(
+        make_condition<Operator::logical_or>(lhs, rhs));
+}
+
+// Logical operators for ConditionWrapper types
+template <class T1, class T2>
+constexpr auto operator&&(const ConditionWrapper<T1>& lhs, const ConditionWrapper<T2>& rhs) {
+    return make_condition_wrapper(
+        make_condition<Operator::logical_and>(lhs.condition, rhs.condition));
+}
+
+template <class T1, class T2>
+constexpr auto operator||(const ConditionWrapper<T1>& lhs, const ConditionWrapper<T2>& rhs) {
+    return make_condition_wrapper(
+        make_condition<Operator::logical_or>(lhs.condition, rhs.condition));
+}
+
+// Mix ConditionWrapper with plain Condition
+template <class T1, class L, Operator Op, class R>
+constexpr auto operator&&(const ConditionWrapper<T1>& lhs, const Condition<L, Op, R>& rhs) {
+    return make_condition_wrapper(
+        make_condition<Operator::logical_and>(lhs.condition, rhs));
+}
+
+template <class T1, class L, Operator Op, class R>
+constexpr auto operator||(const ConditionWrapper<T1>& lhs, const Condition<L, Op, R>& rhs) {
+    return make_condition_wrapper(
+        make_condition<Operator::logical_or>(lhs.condition, rhs));
+}
+
+template <class L, Operator Op, class R, class T2>
+constexpr auto operator&&(const Condition<L, Op, R>& lhs, const ConditionWrapper<T2>& rhs) {
+    return make_condition_wrapper(
+        make_condition<Operator::logical_and>(lhs, rhs.condition));
+}
+
+template <class L, Operator Op, class R, class T2>
+constexpr auto operator||(const Condition<L, Op, R>& lhs, const ConditionWrapper<T2>& rhs) {
+    return make_condition_wrapper(
+        make_condition<Operator::logical_or>(lhs, rhs.condition));
+}
+
 } // namespace glz_sqlgen::transpilation

@@ -1,3 +1,4 @@
+#include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
 #include <optional>
 #include "glz_sqlgen/transpilation/table_info.hpp"

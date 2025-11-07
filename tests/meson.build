@@ -8,6 +8,14 @@ test_sources = files(
   'unit/test_table_info.cpp',
   'unit/test_select.cpp',
   'unit/test_insert_update_delete.cpp',
+  'unit/test_joins.cpp',
+  'unit/test_aggregates.cpp',
+  'unit/test_advanced_conditions.cpp',
+  'unit/test_string_functions.cpp',
+  'unit/test_math_functions.cpp',
+  'unit/test_date_functions.cpp',
+  'unit/test_constraints.cpp',
+  'unit/test_create_table_constraints.cpp',
   'integration/test_sqlite.cpp',
 )
 

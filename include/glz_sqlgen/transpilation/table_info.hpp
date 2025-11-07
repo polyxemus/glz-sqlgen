@@ -8,6 +8,8 @@
 #include <glaze/core/meta.hpp>
 #include "to_sql_type.hpp"
 #include "quote.hpp"
+#include "../constraints/metadata.hpp"
+#include "../constraints/traits.hpp"
 
 namespace glz_sqlgen::transpilation {
 
@@ -63,6 +65,7 @@ struct FieldInfo {
     std::string name;
     std::string sql_type;
     bool nullable;
+    constraints::FieldConstraints constraints;  // Constraint metadata
 };
 
 /// Get field information for a type using glaze reflection
@@ -80,8 +83,35 @@ std::vector<FieldInfo> get_fields() {
 
             FieldInfo info;
             info.name = std::string(glz::member_nameof<Is, Type>);
-            info.sql_type = std::string(to_sql_type<FieldType>());
             info.nullable = is_optional_v<FieldType>;
+
+            // Extract constraint metadata
+            if constexpr (constraints::is_primary_key_v<FieldType>) {
+                info.constraints.is_primary_key = true;
+                info.constraints.auto_increment = constraints::is_auto_increment_v<FieldType>;
+                info.constraints.is_not_null = true;  // Primary keys are always NOT NULL
+                info.nullable = false;  // Override nullability
+                // Get SQL type from underlying type
+                using UnderlyingType = constraints::underlying_type_t<FieldType>;
+                info.sql_type = std::string(to_sql_type<UnderlyingType>());
+            }
+            else if constexpr (constraints::is_unique_v<FieldType>) {
+                info.constraints.is_unique = true;
+                // Get SQL type from underlying type
+                using UnderlyingType = constraints::underlying_type_t<FieldType>;
+                info.sql_type = std::string(to_sql_type<UnderlyingType>());
+            }
+            else if constexpr (constraints::is_not_null_v<FieldType>) {
+                info.constraints.is_not_null = true;
+                info.nullable = false;  // Override nullability
+                // Get SQL type from underlying type
+                using UnderlyingType = constraints::underlying_type_t<FieldType>;
+                info.sql_type = std::string(to_sql_type<UnderlyingType>());
+            }
+            else {
+                // No constraint wrapper, use FieldType directly
+                info.sql_type = std::string(to_sql_type<FieldType>());
+            }
 
             fields.push_back(std::move(info));
         }(), ...);
@@ -117,6 +147,8 @@ std::string create_table_sql(bool if_not_exists = false) {
     sql += " (\n";
 
     auto fields = get_fields<T>();
+    std::vector<std::string> table_constraints;  // For FOREIGN KEY constraints
+
     for (size_t i = 0; i < fields.size(); ++i) {
         if (i > 0) sql += ",\n";
         sql += "    ";
@@ -124,9 +156,48 @@ std::string create_table_sql(bool if_not_exists = false) {
         sql += " ";
         sql += fields[i].sql_type;
 
-        if (!fields[i].nullable) {
-            sql += " NOT NULL";
+        // Add PRIMARY KEY constraint
+        if (fields[i].constraints.is_primary_key) {
+            sql += " PRIMARY KEY";
+            if (fields[i].constraints.auto_increment) {
+                sql += " AUTOINCREMENT";
+            }
         }
+
+        // Add UNIQUE constraint
+        if (fields[i].constraints.is_unique) {
+            sql += " UNIQUE";
+        }
+
+        // Add NOT NULL constraint (if not already added by PRIMARY KEY)
+        if (!fields[i].nullable || fields[i].constraints.is_not_null) {
+            if (!fields[i].constraints.is_primary_key) {  // PRIMARY KEY implies NOT NULL
+                sql += " NOT NULL";
+            }
+        }
+
+        // Collect FOREIGN KEY constraints for table-level addition
+        if (fields[i].constraints.foreign_key) {
+            auto& fk = *fields[i].constraints.foreign_key;
+            std::string fk_constraint = "FOREIGN KEY (" +
+                quote_identifier(fields[i].name) + ") REFERENCES " +
+                quote_identifier(fk.table) + "(" + quote_identifier(fk.column) + ")";
+
+            // Add ON DELETE/UPDATE actions if specified
+            if (!fk.on_delete.empty()) {
+                fk_constraint += " ON DELETE " + fk.on_delete;
+            }
+            if (!fk.on_update.empty()) {
+                fk_constraint += " ON UPDATE " + fk.on_update;
+            }
+
+            table_constraints.push_back(fk_constraint);
+        }
+    }
+
+    // Add table-level constraints (FOREIGN KEY)
+    for (const auto& constraint : table_constraints) {
+        sql += ",\n    " + constraint;
     }
 
     sql += "\n)";
