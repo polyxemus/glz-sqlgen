@@ -14,9 +14,9 @@ namespace glz_sqlgen {
 /// CONCAT - Concatenate strings
 template <class... ArgTypes>
 auto concat(const ArgTypes&... args) {
-    using Type = std::tuple<typename transpilation::ToTranspilationType<std::remove_cvref_t<ArgTypes>>::Type...>;
-    return transpilation::Function<transpilation::FunctionType::concat, Type>{
-        std::make_tuple(transpilation::to_transpilation_type(args)...)
+    return transpilation::Function<transpilation::FunctionType::concat,
+        typename transpilation::ToTranspilationType<std::remove_cvref_t<ArgTypes>>::Type...>{
+        transpilation::to_transpilation_type(args)...
     };
 }
 
@@ -264,9 +264,9 @@ constexpr auto cast(const ExprType& expr) {
 /// COALESCE - Return first non-NULL value
 template <class... ArgTypes>
 auto coalesce(const ArgTypes&... args) {
-    using Type = std::tuple<typename transpilation::ToTranspilationType<std::remove_cvref_t<ArgTypes>>::Type...>;
-    return transpilation::Function<transpilation::FunctionType::coalesce, Type>{
-        std::make_tuple(transpilation::to_transpilation_type(args)...)
+    return transpilation::Function<transpilation::FunctionType::coalesce,
+        typename transpilation::ToTranspilationType<std::remove_cvref_t<ArgTypes>>::Type...>{
+        transpilation::to_transpilation_type(args)...
     };
 }
 

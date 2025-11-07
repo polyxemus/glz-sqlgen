@@ -3,8 +3,13 @@
 #include <string>
 #include <type_traits>
 #include "Value.hpp"
+#include <glaze/util/string_literal.hpp>
 
 namespace glz_sqlgen::transpilation {
+
+// Forward declarations
+template <glz::string_literal Name, glz::string_literal Alias>
+struct Col;
 
 /// Trait to convert user-facing types to transpilation types
 template <class T>
@@ -33,6 +38,16 @@ struct ToTranspilationType<char[Length]> {
 
     Type operator()(const char* val) const noexcept {
         return Value<std::string>{std::string(val)};
+    }
+};
+
+/// Specialize for Col types - they're already transpilation types
+template <glz::string_literal Name, glz::string_literal Alias>
+struct ToTranspilationType<Col<Name, Alias>> {
+    using Type = Col<Name, Alias>;
+
+    constexpr Type operator()(const Col<Name, Alias>& col) const noexcept {
+        return col;
     }
 };
 

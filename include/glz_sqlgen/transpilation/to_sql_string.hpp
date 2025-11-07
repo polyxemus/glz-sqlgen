@@ -79,6 +79,50 @@ inline std::string to_sql(const glz_sqlgen::Col<Name, Alias>& col) {
 
 namespace glz_sqlgen::transpilation {
 
+/// Forward declaration for Col and Operation type checking
+template <glz::string_literal, glz::string_literal>
+struct Col;
+
+template <Operator, class, class>
+struct Operation;
+
+/// Overloads for primitive types (when not wrapped in Value)
+inline std::string to_sql(int value) {
+    return std::to_string(value);
+}
+
+inline std::string to_sql(int64_t value) {
+    return std::to_string(value);
+}
+
+inline std::string to_sql(uint32_t value) {
+    return std::to_string(value);
+}
+
+inline std::string to_sql(uint64_t value) {
+    return std::to_string(value);
+}
+
+inline std::string to_sql(double value) {
+    return std::to_string(value);
+}
+
+inline std::string to_sql(float value) {
+    return std::to_string(value);
+}
+
+inline std::string to_sql(bool value) {
+    return value ? "1" : "0";
+}
+
+inline std::string to_sql(const std::string& value) {
+    return quote_string(value);
+}
+
+inline std::string to_sql(const char* value) {
+    return quote_string(std::string(value));
+}
+
 /// Convert a value to SQL
 template <class T>
 std::string to_sql(const Value<T>& value) {
@@ -92,10 +136,8 @@ std::string to_sql(const Value<T>& value) {
     } else if constexpr (std::is_same_v<T, bool>) {
         return value.get() ? "1" : "0";
     } else {
-        // For other types, try to convert to string
-        std::ostringstream oss;
-        oss << value.get();
-        return quote_string(oss.str());
+        // For Col, Operation, and other transpilation types, recursively call to_sql
+        return to_sql(value.get());
     }
 }
 
@@ -109,6 +151,35 @@ std::string to_sql(const Operation<Op, Operand1, Operand2>& operation) {
     result += ")";
     return result;
 }
+
+// Forward declarations for advanced condition types
+namespace glz_sqlgen::advanced {
+    template <class ColType> struct IsNullCondition;
+    template <class ColType> struct IsNotNullCondition;
+    template <class ColType, class... ValueTypes> struct InCondition;
+    template <class ColType, class... ValueTypes> struct NotInCondition;
+    template <class ColType, class LowerType, class UpperType> struct BetweenCondition;
+    template <class ColType, class LowerType, class UpperType> struct NotBetweenCondition;
+}
+
+// Forward declarations for to_sql of advanced conditions
+template <class ColType>
+inline std::string to_sql(const glz_sqlgen::advanced::IsNullCondition<ColType>& cond);
+
+template <class ColType>
+inline std::string to_sql(const glz_sqlgen::advanced::IsNotNullCondition<ColType>& cond);
+
+template <class ColType, class... ValueTypes>
+inline std::string to_sql(const glz_sqlgen::advanced::InCondition<ColType, ValueTypes...>& cond);
+
+template <class ColType, class... ValueTypes>
+inline std::string to_sql(const glz_sqlgen::advanced::NotInCondition<ColType, ValueTypes...>& cond);
+
+template <class ColType, class LowerType, class UpperType>
+inline std::string to_sql(const glz_sqlgen::advanced::BetweenCondition<ColType, LowerType, UpperType>& cond);
+
+template <class ColType, class LowerType, class UpperType>
+inline std::string to_sql(const glz_sqlgen::advanced::NotBetweenCondition<ColType, LowerType, UpperType>& cond);
 
 /// Convert a condition to SQL
 template <class Left, Operator Op, class Right>
@@ -167,19 +238,19 @@ std::string to_sql(const Aggregate<Type, ExprType>& agg) {
 
 /// Convert IS NULL condition to SQL
 template <class ColType>
-std::string to_sql(const glz_sqlgen::advanced::IsNullCondition<ColType>& cond) {
+inline std::string to_sql(const glz_sqlgen::advanced::IsNullCondition<ColType>& cond) {
     return to_sql(cond.column) + " IS NULL";
 }
 
 /// Convert IS NOT NULL condition to SQL
 template <class ColType>
-std::string to_sql(const glz_sqlgen::advanced::IsNotNullCondition<ColType>& cond) {
+inline std::string to_sql(const glz_sqlgen::advanced::IsNotNullCondition<ColType>& cond) {
     return to_sql(cond.column) + " IS NOT NULL";
 }
 
 /// Convert IN condition to SQL
 template <class ColType, class... ValueTypes>
-std::string to_sql(const glz_sqlgen::advanced::InCondition<ColType, ValueTypes...>& cond) {
+inline std::string to_sql(const glz_sqlgen::advanced::InCondition<ColType, ValueTypes...>& cond) {
     std::string sql = to_sql(cond.column) + " IN (";
     bool first = true;
     std::apply([&](const auto&... values) {
@@ -195,7 +266,7 @@ std::string to_sql(const glz_sqlgen::advanced::InCondition<ColType, ValueTypes..
 
 /// Convert NOT IN condition to SQL
 template <class ColType, class... ValueTypes>
-std::string to_sql(const glz_sqlgen::advanced::NotInCondition<ColType, ValueTypes...>& cond) {
+inline std::string to_sql(const glz_sqlgen::advanced::NotInCondition<ColType, ValueTypes...>& cond) {
     std::string sql = to_sql(cond.column) + " NOT IN (";
     bool first = true;
     std::apply([&](const auto&... values) {
@@ -211,7 +282,7 @@ std::string to_sql(const glz_sqlgen::advanced::NotInCondition<ColType, ValueType
 
 /// Convert BETWEEN condition to SQL
 template <class ColType, class LowerType, class UpperType>
-std::string to_sql(const glz_sqlgen::advanced::BetweenCondition<ColType, LowerType, UpperType>& cond) {
+inline std::string to_sql(const glz_sqlgen::advanced::BetweenCondition<ColType, LowerType, UpperType>& cond) {
     return to_sql(cond.column) + " BETWEEN " +
            to_sql(glz_sqlgen::transpilation::Value{cond.lower}) + " AND " +
            to_sql(glz_sqlgen::transpilation::Value{cond.upper});
@@ -219,7 +290,7 @@ std::string to_sql(const glz_sqlgen::advanced::BetweenCondition<ColType, LowerTy
 
 /// Convert NOT BETWEEN condition to SQL
 template <class ColType, class LowerType, class UpperType>
-std::string to_sql(const glz_sqlgen::advanced::NotBetweenCondition<ColType, LowerType, UpperType>& cond) {
+inline std::string to_sql(const glz_sqlgen::advanced::NotBetweenCondition<ColType, LowerType, UpperType>& cond) {
     return to_sql(cond.column) + " NOT BETWEEN " +
            to_sql(glz_sqlgen::transpilation::Value{cond.lower}) + " AND " +
            to_sql(glz_sqlgen::transpilation::Value{cond.upper});

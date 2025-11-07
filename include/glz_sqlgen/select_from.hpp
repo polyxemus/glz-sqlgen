@@ -121,10 +121,14 @@ struct SelectFrom {
         } else {
             // Append to existing JOINs
             auto new_joins = std::tuple_cat(s.joins_.joins, std::make_tuple(j.join_clause));
-            using NewJoinListType = decltype(transpilation::JoinList{new_joins});
+            using NewJoinListType = decltype(std::apply([](auto&&... joins) {
+                return transpilation::JoinList{joins...};
+            }, new_joins));
             return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, GroupByType, HavingType, OrderByType, LimitType>{
                 .fields_ = s.fields_,
-                .joins_ = transpilation::JoinList{new_joins},
+                .joins_ = std::apply([](auto&&... joins) {
+                    return transpilation::JoinList{joins...};
+                }, new_joins),
                 .where_ = s.where_,
                 .group_by_ = s.group_by_,
                 .having_ = s.having_,
@@ -162,10 +166,14 @@ struct SelectFrom {
             };
         } else {
             auto new_joins = std::tuple_cat(s.joins_.joins, std::make_tuple(j.join_clause));
-            using NewJoinListType = decltype(transpilation::JoinList{new_joins});
+            using NewJoinListType = decltype(std::apply([](auto&&... joins) {
+                return transpilation::JoinList{joins...};
+            }, new_joins));
             return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, GroupByType, HavingType, OrderByType, LimitType>{
                 .fields_ = s.fields_,
-                .joins_ = transpilation::JoinList{new_joins},
+                .joins_ = std::apply([](auto&&... joins) {
+                    return transpilation::JoinList{joins...};
+                }, new_joins),
                 .where_ = s.where_,
                 .group_by_ = s.group_by_,
                 .having_ = s.having_,
@@ -203,10 +211,14 @@ struct SelectFrom {
             };
         } else {
             auto new_joins = std::tuple_cat(s.joins_.joins, std::make_tuple(j.join_clause));
-            using NewJoinListType = decltype(transpilation::JoinList{new_joins});
+            using NewJoinListType = decltype(std::apply([](auto&&... joins) {
+                return transpilation::JoinList{joins...};
+            }, new_joins));
             return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, GroupByType, HavingType, OrderByType, LimitType>{
                 .fields_ = s.fields_,
-                .joins_ = transpilation::JoinList{new_joins},
+                .joins_ = std::apply([](auto&&... joins) {
+                    return transpilation::JoinList{joins...};
+                }, new_joins),
                 .where_ = s.where_,
                 .group_by_ = s.group_by_,
                 .having_ = s.having_,
@@ -244,10 +256,14 @@ struct SelectFrom {
             };
         } else {
             auto new_joins = std::tuple_cat(s.joins_.joins, std::make_tuple(j.join_clause));
-            using NewJoinListType = decltype(transpilation::JoinList{new_joins});
+            using NewJoinListType = decltype(std::apply([](auto&&... joins) {
+                return transpilation::JoinList{joins...};
+            }, new_joins));
             return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, GroupByType, HavingType, OrderByType, LimitType>{
                 .fields_ = s.fields_,
-                .joins_ = transpilation::JoinList{new_joins},
+                .joins_ = std::apply([](auto&&... joins) {
+                    return transpilation::JoinList{joins...};
+                }, new_joins),
                 .where_ = s.where_,
                 .group_by_ = s.group_by_,
                 .having_ = s.having_,
@@ -285,10 +301,14 @@ struct SelectFrom {
             };
         } else {
             auto new_joins = std::tuple_cat(s.joins_.joins, std::make_tuple(j.join_clause));
-            using NewJoinListType = decltype(transpilation::JoinList{new_joins});
+            using NewJoinListType = decltype(std::apply([](auto&&... joins) {
+                return transpilation::JoinList{joins...};
+            }, new_joins));
             return SelectFrom<TableType, FieldsTuple, NewJoinListType, WhereType, GroupByType, HavingType, OrderByType, LimitType>{
                 .fields_ = s.fields_,
-                .joins_ = transpilation::JoinList{new_joins},
+                .joins_ = std::apply([](auto&&... joins) {
+                    return transpilation::JoinList{joins...};
+                }, new_joins),
                 .where_ = s.where_,
                 .group_by_ = s.group_by_,
                 .having_ = s.having_,
