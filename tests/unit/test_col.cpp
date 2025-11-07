@@ -1,6 +1,8 @@
 #include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
-#include "glz_sqlgen/col.hpp"
+#include <glz_sqlgen/core.hpp>
+#include <glz_sqlgen/query_builders.hpp>
+#include <glz_sqlgen/query_clauses.hpp>
 #include "glz_sqlgen/transpilation/Col.hpp"
 
 using namespace glz_sqlgen;

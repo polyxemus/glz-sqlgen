@@ -1,13 +1,8 @@
 #include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
-#include <glz_sqlgen/select_from.hpp>
-#include <glz_sqlgen/aggregates.hpp>
-#include <glz_sqlgen/group_by.hpp>
-#include <glz_sqlgen/having.hpp>
-#include <glz_sqlgen/where.hpp>
-#include <glz_sqlgen/order_by.hpp>
-#include <glz_sqlgen/limit.hpp>
-#include <glz_sqlgen/literals.hpp>
+#include <glz_sqlgen/core.hpp>
+#include <glz_sqlgen/query_builders.hpp>
+#include <glz_sqlgen/query_clauses.hpp>
 
 namespace {
 

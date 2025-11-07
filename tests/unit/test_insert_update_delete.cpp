@@ -1,12 +1,9 @@
 #include <glaze/glaze.hpp>
 #include <gtest/gtest.h>
+#include <glz_sqlgen/core.hpp>
+#include <glz_sqlgen/query_builders.hpp>
+#include <glz_sqlgen/query_clauses.hpp>
 #include <optional>
-#include "glz_sqlgen/literals.hpp"
-#include "glz_sqlgen/insert.hpp"
-#include "glz_sqlgen/update.hpp"
-#include "glz_sqlgen/delete_from.hpp"
-#include "glz_sqlgen/create_table.hpp"
-#include "glz_sqlgen/where.hpp"
 
 using namespace glz_sqlgen::literals;
 using namespace glz_sqlgen;

@@ -3,13 +3,10 @@
 #include <string>
 #include <tuple>
 #include <type_traits>
-#include "common_types.hpp"
-#include "where.hpp"
-#include "order_by.hpp"
-#include "limit.hpp"
-#include "join.hpp"
-#include "group_by.hpp"
-#include "having.hpp"
+#include <vector>
+#include <ranges>
+#include "core.hpp"
+#include "query_clauses.hpp"
 #include "transpilation/field_list.hpp"
 #include "transpilation/table_info.hpp"
 #include "transpilation/where_clause.hpp"
@@ -17,8 +14,15 @@
 #include "transpilation/join_clause.hpp"
 #include "transpilation/group_by_clause.hpp"
 #include "transpilation/having_clause.hpp"
+#include "transpilation/to_sql_string.hpp"
+#include "transpilation/Set.hpp"
+#include "transpilation/quote.hpp"
 
 namespace glz_sqlgen {
+
+// ============================================================================
+// SELECT Query Builder
+// ============================================================================
 
 /// SELECT query builder
 template <class TableType, class FieldsTuple = Nothing, class JoinListType = Nothing,
@@ -453,6 +457,174 @@ auto select_from(const FieldTypes&... fields) {
         .order_by_ = Nothing{},
         .limit_ = Nothing{}
     };
+}
+
+// ============================================================================
+// INSERT Query Builder
+// ============================================================================
+
+/// INSERT query builder
+template <class TableType>
+struct Insert {
+    /// Convert to SQL string (returns statement with placeholders)
+    std::string to_sql() const {
+        std::string sql = or_replace_ ? "INSERT OR REPLACE INTO " : "INSERT INTO ";
+
+        sql += transpilation::quote_identifier(transpilation::get_table_name<TableType>());
+        sql += " (";
+        sql += transpilation::insert_field_list<TableType>();
+        sql += ") VALUES (";
+        sql += transpilation::insert_placeholders<TableType>();
+        sql += ")";
+
+        return sql;
+    }
+
+    bool or_replace_ = false;
+};
+
+/// Create an INSERT INTO Table query
+template <class TableType>
+auto insert() {
+    return Insert<TableType>{.or_replace_ = false};
+}
+
+/// Create an INSERT OR REPLACE INTO Table query
+template <class TableType>
+auto insert_or_replace() {
+    return Insert<TableType>{.or_replace_ = true};
+}
+
+// ============================================================================
+// UPDATE Query Builder
+// ============================================================================
+
+/// UPDATE query builder
+template <class TableType, class SetsTuple, class WhereType = Nothing>
+struct Update {
+    /// Convert to SQL string
+    std::string to_sql() const {
+        std::string sql = "UPDATE ";
+
+        sql += transpilation::quote_identifier(transpilation::get_table_name<TableType>());
+        sql += " SET ";
+
+        // Add SET clauses
+        bool first = true;
+        std::apply([&](const auto&... sets) {
+            (([&] {
+                if (first) {
+                    sql += transpilation::to_sql(sets);
+                    first = false;
+                } else {
+                    sql += ", " + transpilation::to_sql(sets);
+                }
+            }()), ...);
+        }, sets_);
+
+        // Add WHERE if specified
+        if constexpr (!std::is_same_v<WhereType, Nothing>) {
+            sql += " ";
+            sql += transpilation::where_clause(where_);
+        }
+
+        return sql;
+    }
+
+    /// Pipe operator for WHERE clause
+    template <class ConditionType>
+    friend auto operator|(const Update& u, const Where<ConditionType>& w) {
+        static_assert(std::is_same_v<WhereType, Nothing>,
+                     "Cannot call where() twice");
+
+        return Update<TableType, SetsTuple, ConditionType>{
+            .sets_ = u.sets_,
+            .where_ = w.condition
+        };
+    }
+
+    SetsTuple sets_;
+    WhereType where_;
+};
+
+/// Create an UPDATE Table SET ... query
+template <class TableType, class... SetTypes>
+auto update(const SetTypes&... sets) {
+    static_assert(sizeof...(sets) > 0, "Must update at least one column");
+    using SetsTuple = std::tuple<SetTypes...>;
+    return Update<TableType, SetsTuple>{
+        .sets_ = std::make_tuple(sets...),
+        .where_ = Nothing{}
+    };
+}
+
+/// Helper function to create SET clauses
+template <class Col, class Value>
+auto set(const Col& col, const Value& val) {
+    return transpilation::make_set(col, transpilation::Value<Value>{val});
+}
+
+// ============================================================================
+// DELETE Query Builder
+// ============================================================================
+
+/// DELETE FROM query builder
+template <class TableType, class WhereType = Nothing>
+struct DeleteFrom {
+    /// Convert to SQL string
+    std::string to_sql() const {
+        std::string sql = "DELETE FROM ";
+
+        sql += transpilation::quote_identifier(transpilation::get_table_name<TableType>());
+
+        // Add WHERE if specified
+        if constexpr (!std::is_same_v<WhereType, Nothing>) {
+            sql += " ";
+            sql += transpilation::where_clause(where_);
+        }
+
+        return sql;
+    }
+
+    /// Pipe operator for WHERE clause
+    template <class ConditionType>
+    friend auto operator|(const DeleteFrom& /*unused*/, const Where<ConditionType>& w) {
+        static_assert(std::is_same_v<WhereType, Nothing>,
+                     "Cannot call where() twice");
+
+        return DeleteFrom<TableType, ConditionType>{
+            .where_ = w.condition
+        };
+    }
+
+    WhereType where_;
+};
+
+/// Create a DELETE FROM Table query
+template <class TableType>
+auto delete_from() {
+    return DeleteFrom<TableType>{};
+}
+
+// ============================================================================
+// CREATE TABLE Query Builder
+// ============================================================================
+
+/// CREATE TABLE query builder
+template <class TableType>
+struct CreateTable {
+    /// Convert to SQL string
+    std::string to_sql() const {
+        return transpilation::create_table_sql<TableType>(if_not_exists_);
+    }
+
+    bool if_not_exists_ = false;
+};
+
+/// Create a CREATE TABLE query
+template <class TableType>
+auto create_table(bool if_not_exists = false) {
+    return CreateTable<TableType>{.if_not_exists_ = if_not_exists};
 }
 
 } // namespace glz_sqlgen

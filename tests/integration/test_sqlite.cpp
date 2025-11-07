@@ -1,12 +1,7 @@
 #include <gtest/gtest.h>
 #include "glz_sqlgen/sqlite.hpp"
-#include "glz_sqlgen/select_from.hpp"
-#include "glz_sqlgen/insert.hpp"
-#include "glz_sqlgen/update.hpp"
-#include "glz_sqlgen/delete_from.hpp"
-#include "glz_sqlgen/create_table.hpp"
-#include "glz_sqlgen/col.hpp"
-#include "glz_sqlgen/where.hpp"
+#include "glz_sqlgen/query_builders.hpp"
+#include "glz_sqlgen/query_clauses.hpp"
 
 namespace glz_sqlgen::test {
 
