@@ -1,6 +1,9 @@
 # Test sources
 test_sources = files(
   'test_query_builder.cpp',
+  'unit/test_col.cpp',
+  'unit/test_literals.cpp',
+  'unit/test_transpilation.cpp',
 )
 
 # Test executable
